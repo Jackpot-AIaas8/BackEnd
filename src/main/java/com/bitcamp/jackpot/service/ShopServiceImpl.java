@@ -83,7 +83,6 @@ public class ShopServiceImpl implements ShopService {
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-        log.info("findList : " + shopDTOList);
         return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
     }
 
@@ -94,7 +93,6 @@ public class ShopServiceImpl implements ShopService {
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-        log.info(shopDTOList);
 
         return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
     }

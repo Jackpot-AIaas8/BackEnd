@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
     public void signUp(MemberDTO memberDTO) {
         Member member = modelMapper.map(memberDTO, Member.class);
         // 비밀번호 인코딩
-        member.encodePassword(memberDTO.getPwd(),bCryptPasswordEncoder);
+        member.encodePassword(memberDTO.getPwd(), bCryptPasswordEncoder);
         //엔티티 저장
         try {
             memberRepository.save(member);
@@ -82,7 +82,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO findOne(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        log.info("omember : " + optionalMember);
+
         Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
         log.info("member : " + member);
         return modelMapper.map(member, MemberDTO.class);
@@ -98,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Pageable pageable = PageRequest.of(page, size);
-  
+
         Page<Member> members = memberRepository.findAll(pageable);
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
@@ -115,7 +115,6 @@ public class MemberServiceImpl implements MemberService {
     public boolean checkNickName(String nickName) {
         return memberRepository.existsByNickName(nickName);
     }
-
 
 
     @Override
@@ -135,6 +134,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public void adminRemove(int memberId) {
+        log.info(memberId);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
         memberRepository.deleteById(memberId);
@@ -147,5 +147,17 @@ public class MemberServiceImpl implements MemberService {
         modelMapper.map(memberDTO, member);
         memberRepository.save(member);
     }
+
+    @Override
+    public Page<MemberDTO> searchMembersByName(String name, Pageable pageable) {
+        try {
+            Page<Member> members = memberRepository.findByNameContaining(name, pageable);
+            return members.map(member -> modelMapper.map(member, MemberDTO.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while searching members by name", e);
+        }
+    }
+
+
 
 }
