@@ -146,4 +146,10 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    @Override
+    public Page<Member> searchMembersByName(String name, Pageable pageable) {
+        return memberRepository.findByNameContaining(name, pageable);
+
+    }
+
 }

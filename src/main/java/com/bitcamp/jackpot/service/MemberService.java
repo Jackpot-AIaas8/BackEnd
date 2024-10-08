@@ -6,6 +6,7 @@ import com.bitcamp.jackpot.dto.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.MemberEditDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +38,8 @@ public interface MemberService {
     public void adminRemove(int memberId);
 
     public void adminEdit(int memberId, MemberDTO memberDTO);
+
+    public Page<Member> searchMembersByName(String name, Pageable pageable);
 
 
 }

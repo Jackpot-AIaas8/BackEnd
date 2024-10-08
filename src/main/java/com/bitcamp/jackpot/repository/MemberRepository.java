@@ -23,5 +23,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     Optional<Member> findByPhoneAndNameAndEmail(String phone, String name, String email);
 
     void deleteByEmail(String email);
+    Page<Member> findByNameContaining(String name, Pageable pageable);
 
 }
