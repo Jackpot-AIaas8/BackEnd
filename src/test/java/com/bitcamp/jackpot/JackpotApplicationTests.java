@@ -20,6 +20,7 @@ import java.util.Optional;
 //@SpringBootTest
 @Log4j2
 class JackpotApplicationTests {
+    //webhook테스트
 //
 //    @Autowired
 //    private DogRepository dogRepository;
