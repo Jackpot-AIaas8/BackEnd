@@ -115,7 +115,7 @@ public class AdminController {
         return new ResponseEntity<>(members, HttpStatus.OK);
     }
 
-    @PostMapping("/member/findOne/{email}")
+    @GetMapping("/member/findOne/{email}")
     public ResponseEntity<MemberDTO> getMember(@PathVariable("email") String email) {
         try {
             MemberDTO memberDTO = memberService.findOne(email);
@@ -149,6 +149,20 @@ public class AdminController {
                 .body(pageResponseDTO);
         // 보드디티오 리스트 리턴. 그런데 전체 다 리턴하는게 아니라 열개만 리턴
         // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
+    }
+
+    @GetMapping("/admin/search")
+    public PageResponseDTO<BoardDTO> searchBoard(@RequestParam("search") String keyword, PageRequestDTO pageRequestDTO) {
+
+        log.info(keyword);
+        log.info(pageRequestDTO);
+
+        PageResponseDTO<BoardDTO> pageResponseDTO = boardService.search(keyword, pageRequestDTO);
+
+        log.info(pageResponseDTO);
+
+        return pageResponseDTO;
+
     }
 
 
