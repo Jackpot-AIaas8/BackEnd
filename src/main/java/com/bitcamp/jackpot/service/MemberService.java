@@ -39,5 +39,4 @@ public interface MemberService {
     public void adminEdit(int memberId, MemberDTO memberDTO);
 
 
-
 }
