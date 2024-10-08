@@ -130,10 +130,17 @@ public class MemberController {
         }
     }
     @GetMapping("/search")
-    public Page<Member> searchMembers(
+    public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
             Pageable pageable) {
-        return memberService.searchMembersByName(name, pageable);
+        try {
+            Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
+            return new ResponseEntity<>(members, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
+
+
 
 }
