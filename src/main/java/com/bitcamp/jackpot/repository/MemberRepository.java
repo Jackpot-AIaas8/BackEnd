@@ -9,7 +9,7 @@ import org.springframework.lang.NonNullApi;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member,Integer> {
-    Optional<Member> findByEmail(String Email);
+    Optional<Member> findByEmail(String email);
     Boolean existsByEmail(String email);
     Boolean existsByNickName(String nickName);
     Optional<Member> findByNameAndPhone(String name, String phone);

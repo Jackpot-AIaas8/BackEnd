@@ -82,8 +82,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO findOne(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-
+        log.info("omember : " + optionalMember);
         Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        log.info("member : " + member);
         return modelMapper.map(member, MemberDTO.class);
 
     }

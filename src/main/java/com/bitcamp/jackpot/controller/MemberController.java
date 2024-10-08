@@ -45,6 +45,7 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
         MemberDTO memberDTO = memberService.findOne(email);
+        log.info(memberDTO.toString());
         return ResponseEntity.ok(memberDTO);
     }
 
