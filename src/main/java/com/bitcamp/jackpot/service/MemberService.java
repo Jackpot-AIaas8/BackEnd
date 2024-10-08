@@ -42,5 +42,4 @@ public interface MemberService {
     public Page<MemberDTO> searchMembersByName(String name, Pageable pageable);
 
 
-
 }
