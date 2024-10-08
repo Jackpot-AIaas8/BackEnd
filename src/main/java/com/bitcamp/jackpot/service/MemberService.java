@@ -39,7 +39,7 @@ public interface MemberService {
 
     public void adminEdit(int memberId, MemberDTO memberDTO);
 
-    public Page<Member> searchMembersByName(String name, Pageable pageable);
+    public Page<MemberDTO> searchMembersByName(String name, Pageable pageable);
 
 
 }
