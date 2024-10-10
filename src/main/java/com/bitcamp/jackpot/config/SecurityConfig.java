@@ -31,6 +31,7 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RefreshRepository refreshRepository;
+    private final RedisUtil redisUtil;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -45,7 +46,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService, RedisUtil redisUtil) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -107,7 +108,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
         //JWT토큰필터
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil,redisUtil), LoginFilter.class);
         http                  //커스텀한 로그인 필터를 세션 생성에 앞서 필터링하게끔 추가
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
         http
