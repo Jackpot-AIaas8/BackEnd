@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,6 +38,12 @@ public class JWTFilter extends OncePerRequestFilter {
         //접두사 자르기
         accessToken = accessToken.substring(7);
 
+        //블랙리스트 등록여부 확인
+        if(redisUtil.hasKeyBlackList(accessToken)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return ;
+        }
+
 // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
             jwtUtil.isExpired(accessToken);
@@ -49,6 +55,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
             //response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             return;
         }
 
@@ -65,6 +72,7 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
 
 // username, role 값을 획득
         String username = jwtUtil.getUsername(accessToken);
