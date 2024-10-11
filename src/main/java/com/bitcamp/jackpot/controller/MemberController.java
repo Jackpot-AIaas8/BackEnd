@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.controller;
 
+import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.MemberEditDTO;
@@ -10,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,6 +48,7 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
         MemberDTO memberDTO = memberService.findOne(email);
+        log.info(memberDTO.toString());
         return ResponseEntity.ok(memberDTO);
     }
 
@@ -124,6 +128,17 @@ public class MemberController {
         } catch (RuntimeException e) {
             // Member가 없을 경우 404 Not Found 반환
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<MemberDTO>> searchMembers(
+            @RequestParam("name") String name,
+            Pageable pageable) {
+        try {
+            Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
+            return new ResponseEntity<>(members, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 

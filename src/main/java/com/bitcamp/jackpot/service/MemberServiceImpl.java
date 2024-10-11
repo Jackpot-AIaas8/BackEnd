@@ -82,7 +82,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO findOne(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
+
         Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        log.info("member : " + member);
         return modelMapper.map(member, MemberDTO.class);
 
     }
@@ -145,5 +147,17 @@ public class MemberServiceImpl implements MemberService {
         modelMapper.map(memberDTO, member);
         memberRepository.save(member);
     }
+
+    @Override
+    public Page<MemberDTO> searchMembersByName(String name, Pageable pageable) {
+        try {
+            Page<Member> members = memberRepository.findByNameContaining(name, pageable);
+            return members.map(member -> modelMapper.map(member, MemberDTO.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while searching members by name", e);
+        }
+    }
+
+
 
 }

@@ -1,20 +1,22 @@
 package com.bitcamp.jackpot.jwt;
 
-import com.bitcamp.jackpot.jwt.JWTUtil;
-import com.bitcamp.jackpot.repository.RefreshRepository;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class LogoutService {
 
-    private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
+    private final RedisUtil redisUtil;
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
@@ -46,12 +48,13 @@ public class LogoutService {
         }
 
         // DB에서 토큰 존재 여부 확인
-        if (!refreshRepository.existsByRefresh(refresh)) {
+        String username = jwtUtil.getUsername(refresh);
+        if (!redisUtil.hasKey(username)) {
             throw new IllegalArgumentException("Refresh token not found.");
         }
 
         // 토큰 삭제 (DB 및 쿠키)
-        refreshRepository.deleteByRefresh(refresh);
+        redisUtil.delete(username);
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
@@ -59,5 +62,16 @@ public class LogoutService {
         cookie.setHttpOnly(true);
 
         response.addCookie(cookie);
+
+
+        String accessToken = request.getHeader("Authorization");
+
+            accessToken = accessToken.substring(7);
+
+            Date expirationDate = jwtUtil.getExpiration(accessToken);
+            Long expirationMs = expirationDate.getTime()-System.currentTimeMillis();  // Date를 밀리초 단위의 Long으로 변환
+            redisUtil.setBlackList(accessToken, "access_token", expirationMs);
+
+
     }
 }
