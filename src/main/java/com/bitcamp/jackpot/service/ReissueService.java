@@ -3,7 +3,6 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.bitcamp.jackpot.jwt.JWTUtil;
 import com.bitcamp.jackpot.jwt.RedisUtil;
-import com.bitcamp.jackpot.repository.RefreshRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
