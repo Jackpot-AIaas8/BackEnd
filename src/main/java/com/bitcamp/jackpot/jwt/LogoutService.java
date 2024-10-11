@@ -52,12 +52,13 @@ public class LogoutService {
         }
 
         // DB에서 토큰 존재 여부 확인
-        if (!refreshRepository.existsByRefresh(refresh)) {
+        String username = jwtUtil.getUsername(refresh);
+        if (!redisUtil.hasKey(username)) {
             throw new IllegalArgumentException("Refresh token not found.");
         }
 
         // 토큰 삭제 (DB 및 쿠키)
-        refreshRepository.deleteByRefresh(refresh);
+        redisUtil.delete(username);
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
