@@ -48,11 +48,11 @@ public class RedisUtil {
         return redisBlackListTemplate.opsForValue().get(key);
     }
 
-    public boolean deleteBlackList(String key) {
-        return redisBlackListTemplate.delete(key);
-    }
+
 
     public boolean hasKeyBlackList(String key) {
+
         return redisBlackListTemplate.hasKey(key);
     }
+
 }

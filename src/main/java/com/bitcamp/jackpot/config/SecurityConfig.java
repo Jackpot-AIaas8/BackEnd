@@ -1,7 +1,6 @@
 package com.bitcamp.jackpot.config;
 
 import com.bitcamp.jackpot.jwt.*;
-import com.bitcamp.jackpot.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,7 +29,6 @@ import java.util.Collections;
 public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final RefreshRepository refreshRepository;
     private final RedisUtil redisUtil;
 
     @Bean
@@ -46,7 +44,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService, RedisUtil redisUtil) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService ) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -110,7 +108,7 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new JWTFilter(jwtUtil,redisUtil), LoginFilter.class);
         http                  //커스텀한 로그인 필터를 세션 생성에 앞서 필터링하게끔 추가
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(logoutService), LogoutFilter.class);
         http

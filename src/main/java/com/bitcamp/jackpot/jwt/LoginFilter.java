@@ -22,15 +22,15 @@ import java.util.*;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
+    private final RedisUtil redisUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper 추가
 
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RedisUtil redisUtil ) {
 
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.redisUtil=redisUtil;
         this.authenticationManager = authenticationManager;
         setFilterProcessesUrl("/member/signIn"); // 요청 처리 URL 설정
     }
@@ -101,6 +101,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
     }
+
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
@@ -110,7 +111,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
 
-        refreshRepository.save(refreshEntity);
+        // Redis에 저장 (키는 username, 값은 refreshEntity 객체, 만료 시간은 밀리초 단위로 설정)
+        redisUtil.set(username, refreshEntity, expiredMs.intValue() / (1000 * 60));  // 밀리초를 분 단위로 변환
     }
 
     private Cookie createCookie(String key, String value) {

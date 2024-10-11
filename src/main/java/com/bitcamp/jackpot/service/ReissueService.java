@@ -2,6 +2,7 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.bitcamp.jackpot.jwt.JWTUtil;
+import com.bitcamp.jackpot.jwt.RedisUtil;
 import com.bitcamp.jackpot.repository.RefreshRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,8 +23,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class ReissueService {
-    private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
+    private final RedisUtil redisUtil;
 
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
     //get refresh token
@@ -69,24 +70,26 @@ public class ReissueService {
         //response status code
         return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
     }
-        //DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
-        if (!isExist) {
 
-            //response body
+        String username = jwtUtil.getUsername(refresh);
+        String role = jwtUtil.getRole(refresh);
+
+        // Redis에서 refresh token이 존재하는지 확인
+        Boolean isExist = redisUtil.hasKey(username);
+        if (!isExist) {
+            // response body
             return new ResponseEntity<>("invalid refresh token2", HttpStatus.BAD_REQUEST);
         }
 
 
-    String username = jwtUtil.getUsername(refresh);
-    String role = jwtUtil.getRole(refresh);
 
     //make new JWT
     String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
     String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-        refreshRepository.deleteByRefresh(refresh);
+        redisUtil.delete(username);
+
         addRefreshEntity(username, newRefresh, 86400000L);
 
         //response
@@ -120,6 +123,7 @@ public class ReissueService {
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
 
-        refreshRepository.save(refreshEntity);
+        redisUtil.set(username, refreshEntity, expiredMs.intValue() / (1000 * 60));  // 밀리초를 분 단위로 변환
     }
+
 }
