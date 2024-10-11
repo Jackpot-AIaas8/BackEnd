@@ -1,15 +1,12 @@
 package com.bitcamp.jackpot.jwt;
 
-import com.bitcamp.jackpot.dto.CustomUserDetails;
-import com.bitcamp.jackpot.jwt.RedisUtil;
-import com.bitcamp.jackpot.repository.RefreshRepository;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,7 +15,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class LogoutService {
 
-    private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
 

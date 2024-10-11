@@ -2,7 +2,6 @@ package com.bitcamp.jackpot.jwt;
 
 import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.bitcamp.jackpot.dto.SignInDTO;
-import com.bitcamp.jackpot.repository.RefreshRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
