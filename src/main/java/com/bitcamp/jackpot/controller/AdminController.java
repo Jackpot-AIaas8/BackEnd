@@ -151,19 +151,38 @@ public class AdminController {
         // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
     }
 
-    @GetMapping("/admin/search")
+    @GetMapping("/board/search")
     public PageResponseDTO<BoardDTO> searchBoard(@RequestParam("search") String keyword, PageRequestDTO pageRequestDTO) {
 
-        log.info(keyword);
-        log.info(pageRequestDTO);
-
         PageResponseDTO<BoardDTO> pageResponseDTO = boardService.search(keyword, pageRequestDTO);
-
-        log.info(pageResponseDTO);
 
         return pageResponseDTO;
 
     }
 
+    @GetMapping("/board/findOne/{boardId}")
+    public ResponseEntity<?> findOne(@PathVariable("boardId") Integer boardId) {
+//        int boardId = Integer.valueOf(boardIdStr);
+        //패스버라이어블은 스트링으로 받아오기때문에 인트값으로 바꿔줌. 수정 - 바꿔줄 필요 없음 자동으로 바뀜
+        BoardDTO boardDTO = boardService.findOne(boardId);
+        // 서비스단 메서드를 실행시켜 게시글 객체를 글번호로 검색해서 가져옴
+        // 글 번호는 uri에 담아 가져옴
+
+        // 서비스단에서 객체를 제대로 잘 가져왔는가 로그찍어봄.
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(boardDTO);
+        // 리스폰스엔티티 객체에 찾은 게시글을 실어 보낸다.
+    }
+
+    @DeleteMapping("/board/remove/{boardId}")
+    public void remove(@PathVariable Integer boardId) {
+
+//        int boardId = Integer.valueOf(boardIdStr);
+//        System.out.println(boardId);
+        boardService.remove(boardId);
+        // 인트값을 넣어서 리무브 메서드 실행해도 오토박싱되서 실행됨.
+        // 게시글 삭제 시 게시글에 달린 댓글들도 삭제되게 해야 함.
+    }
 
 }

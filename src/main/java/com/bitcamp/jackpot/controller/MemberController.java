@@ -48,6 +48,7 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
         MemberDTO memberDTO = memberService.findOne(email);
+        log.info(memberDTO.toString());
         return ResponseEntity.ok(memberDTO);
     }
 
@@ -130,10 +131,16 @@ public class MemberController {
         }
     }
     @GetMapping("/search")
-    public Page<Member> searchMembers(
+    public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
             Pageable pageable) {
-        return memberService.searchMembersByName(name, pageable);
+        try {
+            Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
+            return new ResponseEntity<>(members, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
+
 
 }
