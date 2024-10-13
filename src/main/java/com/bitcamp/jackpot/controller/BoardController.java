@@ -102,6 +102,17 @@ public class BoardController {
         // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
     }
 
+    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
+    @GetMapping("/findAllAskMyPage")
+    public ResponseEntity<List<BoardDTO>> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+        List<BoardDTO> boardDTOList = boardService.findAllAskMyPage(pageRequestDTO); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
+        log.info(boardDTOList);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(boardDTOList); // 반환 타입에 맞춰서 boardDTOList를 사용
+    }
+
+
 //    // 게시글 수정, update
 //    @PostMapping("/edit/{boardId}")
 //    public ResponseEntity<String> edit(@PathVariable("boardId") String boardIdStr, @RequestBody @Valid BoardDTO boardDTO) {

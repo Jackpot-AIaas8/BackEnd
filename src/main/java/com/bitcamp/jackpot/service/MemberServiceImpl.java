@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
     public void signUp(MemberDTO memberDTO) {
         Member member = modelMapper.map(memberDTO, Member.class);
         // 비밀번호 인코딩
-        member.encodePassword(memberDTO.getPwd(),bCryptPasswordEncoder);
+        member.encodePassword(memberDTO.getPwd(), bCryptPasswordEncoder);
         //엔티티 저장
         try {
             memberRepository.save(member);
@@ -74,16 +74,26 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(editMember);
     }
 
+//    @Override
+//    public void remove(String email) {
+//        memberRepository.deleteByEmail(email);
+//    }
+
     @Override
     public void remove(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
         memberRepository.deleteByEmail(email);
+        // cascade.remove로 멤버 삭제시 그 멤버의 게시글도 같이 삭제하려면 삭제하려는 엔티티가 이미 로드되어 있어야 함.
+        // 그래서 그냥 딜리트만 하면 안되고 엔티티를 한번 찾아야 함.
     }
+
 
     @Override
     public MemberDTO findOne(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        log.info("member : " + member);
         return modelMapper.map(member, MemberDTO.class);
 
     }
@@ -97,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Pageable pageable = PageRequest.of(page, size);
-  
+
         Page<Member> members = memberRepository.findAll(pageable);
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
@@ -114,7 +124,6 @@ public class MemberServiceImpl implements MemberService {
     public boolean checkNickName(String nickName) {
         return memberRepository.existsByNickName(nickName);
     }
-
 
 
     @Override
@@ -134,6 +143,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public void adminRemove(int memberId) {
+        log.info(memberId);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
         memberRepository.deleteById(memberId);
@@ -146,5 +156,17 @@ public class MemberServiceImpl implements MemberService {
         modelMapper.map(memberDTO, member);
         memberRepository.save(member);
     }
+
+    @Override
+    public Page<MemberDTO> searchMembersByName(String name, Pageable pageable) {
+        try {
+            Page<Member> members = memberRepository.findByNameContaining(name, pageable);
+            return members.map(member -> modelMapper.map(member, MemberDTO.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while searching members by name", e);
+        }
+    }
+
+
 
 }
