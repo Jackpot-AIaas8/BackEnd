@@ -1,6 +1,7 @@
 package com.bitcamp.jackpot.repository;
 
 import com.bitcamp.jackpot.domain.Board;
+import com.bitcamp.jackpot.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +28,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     // 위 메서드명 사용시 쿼리문 안적어도 자동으로 쿼리문을 생성함
     // 대소문자 구분 없이 받아온 키워드로 제목 검색함. 검색결과는 리스트에 저장해서 반환함.
 
-
-
+    @Query("SELECT b FROM Board b WHERE b.member.memberId = :memberId")
+    Page<Board> findByMemberId(@Param("memberId") int memberId, Pageable pageable);
 
 }
+
