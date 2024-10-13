@@ -102,17 +102,16 @@ public class BoardController {
         // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
     }
 
-    // 1:1문의게시판 게시글 목록 조회, read.
+    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
     @GetMapping("/findAllAskMyPage")
-    public ResponseEntity<PageResponseDTO<BoardDTO>> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
-        PageResponseDTO<BoardDTO> pageResponseDTO = boardService.findAllAskMyPage(pageRequestDTO);
-//        System.out.println(pageResponseDTO);
+    public ResponseEntity<List<BoardDTO>> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+        List<BoardDTO> boardDTOList = boardService.findAllAskMyPage(pageRequestDTO); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
+        log.info(boardDTOList);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(pageResponseDTO);
-        // 보드디티오 리스트 리턴. 그런데 전체 다 리턴하는게 아니라 열개만 리턴
-        // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
+                .body(boardDTOList); // 반환 타입에 맞춰서 boardDTOList를 사용
     }
+
 
 //    // 게시글 수정, update
 //    @PostMapping("/edit/{boardId}")

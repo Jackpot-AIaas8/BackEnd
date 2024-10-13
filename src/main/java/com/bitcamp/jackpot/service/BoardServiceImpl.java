@@ -14,11 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -186,36 +189,117 @@ public class BoardServiceImpl implements BoardService {
         return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages-1);
     }
 
+//    @Override
+//    public PageResponseDTO<BoardDTO> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+//        // 현재 사용자의 memberId 가져오기
+//        CustomUserDetails ud = getUserDetails();
+//        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+//        Member member = oMember.orElseThrow();
+//        int memberId = member.getMemberId();
+//        log.info(memberId);
+//
+//        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
+//        Pageable pageable = pageRequestDTO.getPageable("boardId");
+//        Page<Board> result = boardRepository.findByMemberId(memberId, pageable); // 멤버의 게시글 조회 (pageable 적용)
+//        log.info("Found boards: {}", result.getContent());
+//
+//        // 조회된 게시글을 DTO로 변환하고 필터링
+//        // 타입 3인 게시글만 필터링
+//        List<BoardDTO> filteredBoardDTOList = result.getContent().stream()
+//                .map(board -> {
+//                    BoardDTO dto = modelMapper.map(board, BoardDTO.class);
+//                    dto.setMemberId(board.getMember() != null ? board.getMember().getMemberId() : null);
+//                    return dto;
+//                })
+//                .filter(dto -> {
+//                    boolean isType3 = dto.getType() == 3;
+//                    if (isType3) {
+//                        log.info("Found type 3 board: {}", dto);
+//                    }
+//                    return isType3;
+//                })
+//                .collect(Collectors.toList());
+//
+//            log.info(filteredBoardDTOList);
+//
+////        // 페이징 처리
+////        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
+////        int totalPages = (int) Math.ceil((double) totalElements / pageRequestDTO.getSize()); // 페이지당 게시글 수를 기반으로 계산
+////        int startIndex = Math.min(pageRequestDTO.getPage() * pageRequestDTO.getSize(), totalElements);
+////        int endIndex = Math.min(startIndex + pageRequestDTO.getSize(), totalElements);
+////
+////        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
+//
+//        // 페이징 처리
+//        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
+//        int totalPages = (int) Math.ceil((double) totalElements / pageRequestDTO.getSize()); // 페이지당 게시글 수를 기반으로 계산
+//
+//// 페이지 범위 체크
+//        if (pageRequestDTO.getPage() >= totalPages) {
+//            return new PageResponseDTO<>(pageRequestDTO, new ArrayList<>(), totalPages - 1); // 빈 리스트 반환
+//        }
+//
+//        int startIndex = Math.min(pageRequestDTO.getPage() * pageRequestDTO.getSize(), totalElements);
+//        int endIndex = Math.min(startIndex + pageRequestDTO.getSize(), totalElements);
+//
+//        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
+//
+//        log.info("Found boards: {}", paginatedList);
+//        // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
+//        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
+//    }
+
     @Override
-    public PageResponseDTO<BoardDTO> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+    public List<BoardDTO> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
         // 현재 사용자의 memberId 가져오기
         CustomUserDetails ud = getUserDetails();
         Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
-        Member member = oMember.orElseThrow(() -> new RuntimeException("User not found")); // 사용자 찾기
+        Member member = oMember.orElseThrow();
+        int memberId = member.getMemberId();
+//        log.info("Current memberId: {}", memberId);
 
-        // 전체 게시글을 가져온 후 필터링
+        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
         Pageable pageable = pageRequestDTO.getPageable("boardId");
-        Page<Board> result = boardRepository.findAll(pageable); // 페이지 처리된 게시글 조회
+        Page<Board> result = boardRepository.findByMemberId(memberId, pageable);
+//        log.info("Found boards: {}", result.getContent());
 
+        // 조회된 게시글을 DTO로 변환하고 필터링
         List<BoardDTO> filteredBoardDTOList = result.getContent().stream()
                 .map(board -> {
                     BoardDTO dto = modelMapper.map(board, BoardDTO.class);
-                    dto.setMemberId(board.getMember() != null ? board.getMember().getMemberId() : null); // memberId 수동 설정
+                    dto.setMemberId(board.getMember() != null ? board.getMember().getMemberId() : null);
                     return dto;
                 })
-                .filter(dto -> dto.getType() == 3 && dto.getMemberId() != null && dto.getMemberId().equals(member.getMemberId())) // type 필터링 및 memberId 확인
+                .filter(dto -> {
+                    boolean isType3 = dto.getType() == 3;
+                    if (isType3) {
+//                        log.info("Found type 3 board: {}", dto);
+                    }
+                    return isType3;
+                })
                 .collect(Collectors.toList());
 
-        // 페이징 처리
-        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
-        int totalPages = (int) Math.ceil((double) totalElements / 10); // 전체 페이지 수
-        int startIndex = Math.min(pageRequestDTO.getPage() * 10, totalElements);
-        int endIndex = Math.min(startIndex + 10, totalElements);
+//        log.info("Filtered BoardDTO list size: {}", filteredBoardDTOList.size());
+//
+//        // 페이징 처리
+//        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
+//        int totalPages = (int) Math.ceil((double) totalElements / pageRequestDTO.getSize());
+//
+//        // 페이지 범위 체크
+//        if (pageRequestDTO.getPage() >= totalPages) {
+//            return new PageResponseDTO<>(pageRequestDTO, new ArrayList<>(), totalPages - 1); // 빈 리스트 반환
+//        }
+//
+//        int startIndex = Math.min(pageRequestDTO.getPage() * pageRequestDTO.getSize(), totalElements);
+//        int endIndex = Math.min(startIndex + pageRequestDTO.getSize(), totalElements);
+//
+//        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
+//        log.info(paginatedList);
+//
+//        // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
+//        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
 
-        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
-
-        // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
-        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
+        return filteredBoardDTOList;
     }
 
 
