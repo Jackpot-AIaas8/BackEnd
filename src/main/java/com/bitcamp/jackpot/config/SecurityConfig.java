@@ -98,7 +98,8 @@ public class SecurityConfig {
                                 "/shop/findList",
                                 "/shop/findOne/**",
                                 "/shop/category/**",
-
+                                "/member/findId",
+                                "/member/findPwd",
                                 "/shop/search",
                                 "/swagger-ui/**", "/v3/api-docs/**",
                                 "/dog/**"
