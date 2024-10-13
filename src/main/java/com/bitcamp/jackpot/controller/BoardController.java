@@ -102,6 +102,18 @@ public class BoardController {
         // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
     }
 
+    // 1:1문의게시판 게시글 목록 조회, read.
+    @GetMapping("/findAllAskMyPage")
+    public ResponseEntity<PageResponseDTO<BoardDTO>> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+        PageResponseDTO<BoardDTO> pageResponseDTO = boardService.findAllAskMyPage(pageRequestDTO);
+//        System.out.println(pageResponseDTO);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pageResponseDTO);
+        // 보드디티오 리스트 리턴. 그런데 전체 다 리턴하는게 아니라 열개만 리턴
+        // 리스폰스엔티티에 페이지리스폰스디티오를 실어보냄.
+    }
+
 //    // 게시글 수정, update
 //    @PostMapping("/edit/{boardId}")
 //    public ResponseEntity<String> edit(@PathVariable("boardId") String boardIdStr, @RequestBody @Valid BoardDTO boardDTO) {

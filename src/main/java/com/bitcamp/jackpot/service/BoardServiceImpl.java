@@ -186,6 +186,37 @@ public class BoardServiceImpl implements BoardService {
         return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages-1);
     }
 
+    @Override
+    public PageResponseDTO<BoardDTO> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
+        // 현재 사용자의 memberId 가져오기
+        CustomUserDetails ud = getUserDetails();
+        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+        Member member = oMember.orElseThrow(() -> new RuntimeException("User not found")); // 사용자 찾기
+
+        // 전체 게시글을 가져온 후 필터링
+        Pageable pageable = pageRequestDTO.getPageable("boardId");
+        Page<Board> result = boardRepository.findAll(pageable); // 페이지 처리된 게시글 조회
+
+        List<BoardDTO> filteredBoardDTOList = result.getContent().stream()
+                .map(board -> {
+                    BoardDTO dto = modelMapper.map(board, BoardDTO.class);
+                    dto.setMemberId(board.getMember() != null ? board.getMember().getMemberId() : null); // memberId 수동 설정
+                    return dto;
+                })
+                .filter(dto -> dto.getType() == 3 && dto.getMemberId() != null && dto.getMemberId().equals(member.getMemberId())) // type 필터링 및 memberId 확인
+                .collect(Collectors.toList());
+
+        // 페이징 처리
+        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
+        int totalPages = (int) Math.ceil((double) totalElements / 10); // 전체 페이지 수
+        int startIndex = Math.min(pageRequestDTO.getPage() * 10, totalElements);
+        int endIndex = Math.min(startIndex + 10, totalElements);
+
+        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
+
+        // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
+        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
+    }
 
 
     @Override
