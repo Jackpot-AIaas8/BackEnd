@@ -3,7 +3,6 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.Board;
 
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.repository.BoardRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
