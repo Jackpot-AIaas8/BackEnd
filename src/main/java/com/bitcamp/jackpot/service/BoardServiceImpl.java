@@ -44,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private CustomUserDetails getUserDetails(){
+    private CustomUserDetails getUserDetails() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return (CustomUserDetails) auth.getPrincipal();
     }
@@ -149,7 +149,6 @@ public class BoardServiceImpl implements BoardService {
                 })
                 .filter(dto -> dto.getType() == 1 || dto.getType() == 2) // type 필터링
                 .collect(Collectors.toList());
-
         // 페이징 처리
         int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
         int totalPages = (int) Math.ceil((double) totalElements / 10); // 전체 페이지 수
@@ -157,9 +156,9 @@ public class BoardServiceImpl implements BoardService {
         int endIndex = Math.min(startIndex + 10, totalElements);
 
         List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
-
+        log.info(paginatedList);
         // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
-        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages-1);
+        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
     }
 
     @Override
@@ -186,7 +185,7 @@ public class BoardServiceImpl implements BoardService {
         List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
 
         // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
-        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages-1);
+        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
     }
 
 //    @Override
@@ -302,7 +301,6 @@ public class BoardServiceImpl implements BoardService {
         return filteredBoardDTOList;
     }
 
-
     @Override
     public BoardDTO edit(Integer id, Board board) {
 
@@ -357,7 +355,6 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
-
 //    @Override
 //    public List<BoardDTO> search(String keyword) {
 //        List<Board> boards = boardRepository.searchByTitle(keyword);
@@ -408,7 +405,6 @@ public class BoardServiceImpl implements BoardService {
 
         return new PageResponseDTO<>(pageRequestDTO, boardDTOList, (int) result.getTotalElements());
     }
-
 
 
 }
