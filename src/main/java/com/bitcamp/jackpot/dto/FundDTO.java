@@ -13,6 +13,7 @@ public class FundDTO {
     private int fundId;
 
     private int dogId;
+
     private int memberId;
 
     private int collection;

@@ -1,9 +1,6 @@
 package com.bitcamp.jackpot.service;
 
-import com.bitcamp.jackpot.domain.Dog;
-import com.bitcamp.jackpot.domain.Fund;
-import com.bitcamp.jackpot.domain.Heart;
-import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.domain.*;
 import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.repository.DogRepository;
 import com.bitcamp.jackpot.repository.FundRepository;
@@ -18,15 +15,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
 public class DogServiceImpl implements DogService {
 
     private final DogRepository dogRepository;
@@ -220,4 +216,24 @@ public class DogServiceImpl implements DogService {
     public Long getTotalDogNum(){
         return dogRepository.count();
     }
+
+//    public List<FundDTO> fundListMyPage(){
+//        // 현재 사용자의 memberId 가져오기
+//        CustomUserDetails ud = getUserDetails();
+//        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+//        Member member = oMember.orElseThrow();
+//        int memberId = member.getMemberId();
+////        log.info("Current memberId: {}", memberId);
+//
+//        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
+//
+//       List<Fund> result = fundRepository.findFundByMemberId(member.getMemberId());
+////        log.info("Found boards: {}", result.getContent());
+//
+//        List<FundDTO> dtoList = result.stream()
+//                .map(fund -> modelMapper.map(fund, FundDTO.class))
+//                .collect(Collectors.toList());
+//
+//        return dtoList;
+//    }
 }

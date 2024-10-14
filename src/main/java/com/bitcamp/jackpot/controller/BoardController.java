@@ -106,7 +106,7 @@ public class BoardController {
     @GetMapping("/findAllAskMyPage")
     public ResponseEntity<List<BoardDTO>> findAllAskMyPage(PageRequestDTO pageRequestDTO) {
         List<BoardDTO> boardDTOList = boardService.findAllAskMyPage(pageRequestDTO); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
-        log.info(boardDTOList);
+//        log.info(boardDTOList);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(boardDTOList); // 반환 타입에 맞춰서 boardDTOList를 사용
