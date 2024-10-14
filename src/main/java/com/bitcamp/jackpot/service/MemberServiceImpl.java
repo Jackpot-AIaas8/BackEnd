@@ -74,10 +74,19 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(editMember);
     }
 
+//    @Override
+//    public void remove(String email) {
+//        memberRepository.deleteByEmail(email);
+//    }
+
     @Override
     public void remove(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
         memberRepository.deleteByEmail(email);
+        // cascade.remove로 멤버 삭제시 그 멤버의 게시글도 같이 삭제하려면 삭제하려는 엔티티가 이미 로드되어 있어야 함.
+        // 그래서 그냥 딜리트만 하면 안되고 엔티티를 한번 찾아야 함.
     }
+
 
     @Override
     public MemberDTO findOne(String email) {
@@ -118,8 +127,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public String findId(String phone, String name) {
-        Optional<Member> result = memberRepository.findByNameAndPhone(phone, name);
+    public String findId(String name, String phone) {
+        Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
 
         return result.map(Member::getEmail)
                 .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name"));
