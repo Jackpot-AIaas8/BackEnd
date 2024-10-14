@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FundDTO {
-    private int fundId;
-
-    private int dogId;
-
+public class AuctionDTO {
+    private Integer auctionId;
+    private int startPrice;
+    private int endPrice;
+    private int shopId;
     private int memberId;
-
-    private int collection;
+    private String shopName;
 }

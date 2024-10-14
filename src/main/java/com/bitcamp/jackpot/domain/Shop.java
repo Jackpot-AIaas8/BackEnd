@@ -36,6 +36,8 @@ public class Shop extends BaseEntity {
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Cart> carts;
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Auction> auctions;
 
 
 }
