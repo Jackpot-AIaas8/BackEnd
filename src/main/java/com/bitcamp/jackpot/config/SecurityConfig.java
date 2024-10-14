@@ -53,9 +53,8 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
                                 //cicd로 기능구현
-//                              configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-//                                configuration.setAllowedOrigins(Collections.singletonList("*"));  // 모든 출처 허용
-
+//                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
+                                configuration.setAllowedOrigins(Collections.singletonList("http://223.130.158.97:80")); //실제 프론트서버
 
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
