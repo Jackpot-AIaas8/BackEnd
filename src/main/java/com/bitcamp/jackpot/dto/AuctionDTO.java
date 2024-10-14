@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,7 +15,10 @@ public class AuctionDTO {
     private Integer auctionId;
     private int startPrice;
     private int endPrice;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private int shopId;
     private int memberId;
     private String shopName;
+    private int shopPrice;
 }
