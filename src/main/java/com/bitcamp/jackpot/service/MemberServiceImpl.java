@@ -3,6 +3,7 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.MemberEditDTO;
+import com.bitcamp.jackpot.jwt.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -29,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
-
+    private final RedisUtil redisUtil;
 
     @Override
     public void signUp(MemberDTO memberDTO) {
@@ -121,13 +122,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name"));
     }
 
-    @Override
-    public String findPwd(String phone, String name, String email) {
-        Optional<Member> result = memberRepository.findByPhoneAndNameAndEmail(phone, name, email);
 
-        return result.map(Member::getPwd)
-                .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name and email"));
-    }
 
     public void adminRemove(int memberId) {
         log.info(memberId);

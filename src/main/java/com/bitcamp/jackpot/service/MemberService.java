@@ -33,7 +33,6 @@ public interface MemberService {
 
     public String findId(String name, String phone);
 
-    public String findPwd(String phone, String name, String email);
 
     public void adminRemove(int memberId);
 
