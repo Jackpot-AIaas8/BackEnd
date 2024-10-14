@@ -127,8 +127,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public String findId(String phone, String name) {
-        Optional<Member> result = memberRepository.findByNameAndPhone(phone, name);
+    public String findId(String name, String phone) {
+        Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
 
         return result.map(Member::getEmail)
                 .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name"));
