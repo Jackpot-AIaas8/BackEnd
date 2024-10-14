@@ -107,11 +107,11 @@ public class MemberController {
     }
 
 
-    @PostMapping("/findId")
-    public ResponseEntity<String> findId(@RequestBody String phone, String name) {
+    @GetMapping("/findId")
+    public ResponseEntity<String> findId(@RequestParam String name, String phone) {
         try {
             // 서비스에서 이메일 찾기
-            String email = memberService.findId(phone, name);
+            String email = memberService.findId(name, phone);
             return ResponseEntity.ok(email);  // 200 OK와 함께 이메일 반환
         } catch (RuntimeException e) {
             // Member가 없을 경우 404 Not Found 반환
@@ -119,8 +119,8 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/findPwd")
-    public ResponseEntity<String> findPwd(@RequestBody String phone, String name, String email) {
+    @GetMapping("/findPwd")
+    public ResponseEntity<String> findPwd(@RequestParam String phone, String name, String email) {
         try {
             // 서비스에서 이메일 찾기
             String pwd = memberService.findPwd(phone, name, email);

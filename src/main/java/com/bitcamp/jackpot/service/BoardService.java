@@ -18,6 +18,8 @@ public interface BoardService {
 
     PageResponseDTO<BoardDTO> findAllAsk(PageRequestDTO pageRequestDTO);
 
+    List<BoardDTO> findAllAskMyPage(PageRequestDTO pageRequestDTO);
+
     BoardDTO edit(Integer boardId, Board board);
 
     void remove(Integer boardId);

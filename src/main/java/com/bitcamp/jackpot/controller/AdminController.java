@@ -1,24 +1,22 @@
 package com.bitcamp.jackpot.controller;
 
-import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.domain.Board;
 import com.bitcamp.jackpot.dto.*;
-
 import com.bitcamp.jackpot.service.BoardService;
 import com.bitcamp.jackpot.service.DogService;
 import com.bitcamp.jackpot.service.MemberService;
 import com.bitcamp.jackpot.service.ShopService;
 import lombok.NonNull;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -143,7 +141,9 @@ public class AdminController {
     //board
     @GetMapping("/board/findAll")
     public ResponseEntity<PageResponseDTO<BoardDTO>> findAll(PageRequestDTO pageRequestDTO) {
+        log.info(pageRequestDTO);
         PageResponseDTO<BoardDTO> pageResponseDTO = boardService.findAll(pageRequestDTO);
+        log.info(pageResponseDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(pageResponseDTO);
@@ -153,7 +153,7 @@ public class AdminController {
 
     @GetMapping("/board/search")
     public PageResponseDTO<BoardDTO> searchBoard(@RequestParam("search") String keyword, PageRequestDTO pageRequestDTO) {
-
+        log.info(keyword);
         PageResponseDTO<BoardDTO> pageResponseDTO = boardService.search(keyword, pageRequestDTO);
 
         return pageResponseDTO;
@@ -183,6 +183,23 @@ public class AdminController {
         boardService.remove(boardId);
         // 인트값을 넣어서 리무브 메서드 실행해도 오토박싱되서 실행됨.
         // 게시글 삭제 시 게시글에 달린 댓글들도 삭제되게 해야 함.
+    }
+
+    @PostMapping("/board/register")
+    public ResponseEntity<String> register(@RequestBody Board board, BindingResult bindingResult) throws BindException {
+        log.info(board);
+        try {
+            boardService.register(board);
+            String successPath = "\"status\":200";
+            return ResponseEntity.ok(successPath);
+            // BoardDTO유효성 검사(낫널, 낫임티 어노테이션)통과하면 트라이문 실행해서 글목록으로 이동함.
+        } catch (Exception e) {
+            log.error(e);
+            String failPath = "\"status\":403";
+            return ResponseEntity.ok(failPath);
+            // BoardDTO유효성 검사 통과 못해서 익셉션 터지면 다시 글작성 페이지로 돌아감.
+            // 근데 작성내용이 유지되는지는 모르겠네. 유지안되면 처음부터 다시 써야함.
+        }
     }
 
 }

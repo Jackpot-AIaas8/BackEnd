@@ -44,7 +44,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService ) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -55,7 +55,6 @@ public class SecurityConfig {
                                 //개발중 스웨거 활용을 위해 주석 처리함
                               configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
 //                                configuration.setAllowedOrigins(Collections.singletonList("*"));  // 모든 출처 허용
-
 
 
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -98,10 +97,12 @@ public class SecurityConfig {
                                 "/shop/findList",
                                 "/shop/findOne/**",
                                 "/shop/category/**",
-
+                                "/member/findId",
+                                "/member/findPwd",
                                 "/shop/search",
                                 "/swagger-ui/**", "/v3/api-docs/**",
                                 "/dog/**"
+
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")
@@ -110,13 +111,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
         //JWT토큰필터
         http
-                .addFilterBefore(new JWTFilter(jwtUtil,redisUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil, redisUtil), LoginFilter.class);
         http                  //커스텀한 로그인 필터를 세션 생성에 앞서 필터링하게끔 추가
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(logoutService), LogoutFilter.class);
         http
-                .sessionManagement((session) ->session
+                .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
