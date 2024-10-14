@@ -1,5 +1,7 @@
 package com.bitcamp.jackpot.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,10 +33,11 @@ public class Board extends BaseEntity {
     @Column
     private int type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId", referencedColumnName = "memberId")
+//    @JsonBackReference
+//    @JsonManagedReference
     private Member member;
-
 
     public void edit(String title, String content) {
         this.title = title;

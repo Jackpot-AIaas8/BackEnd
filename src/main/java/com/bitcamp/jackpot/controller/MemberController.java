@@ -107,8 +107,8 @@ public class MemberController {
     }
 
 
-    @PostMapping("/findId")
-    public ResponseEntity<String> findId(@RequestBody String phone, String name) {
+    @GetMapping("/findId")
+    public ResponseEntity<String> findId(@RequestParam String phone, String name) {
         try {
             // 서비스에서 이메일 찾기
             String email = memberService.findId(phone, name);
@@ -119,8 +119,8 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/findPwd")
-    public ResponseEntity<String> findPwd(@RequestBody String phone, String name, String email) {
+    @GetMapping("/findPwd")
+    public ResponseEntity<String> findPwd(@RequestParam String phone, String name, String email) {
         try {
             // 서비스에서 이메일 찾기
             String pwd = memberService.findPwd(phone, name, email);
