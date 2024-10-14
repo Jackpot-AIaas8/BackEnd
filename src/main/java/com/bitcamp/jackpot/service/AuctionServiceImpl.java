@@ -2,12 +2,13 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Auction;
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.domain.Orders;
+import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.AuctionDTO;
 import com.bitcamp.jackpot.dto.CustomUserDetails;
-import com.bitcamp.jackpot.dto.OrdersDTO;
+import com.bitcamp.jackpot.dto.ShopDTO;
+import com.bitcamp.jackpot.repository.AuctionRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
-import com.bitcamp.jackpot.repository.OrdersRepository;
+import com.bitcamp.jackpot.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -15,15 +16,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
 public class AuctionServiceImpl implements AuctionService {
-    private final OrdersRepository ordersRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final AuctionRepository auctionRepository;
+    private final ShopRepository shopRepository;
 
     // 로그인된 사용자 정보를 가져오는 메서드
     private CustomUserDetails getUserDetails() {
@@ -32,39 +35,51 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void register(AuctionDTO auctionDTO) {
+    public void register(AuctionDTO auctionDTO, int shopId) {
         CustomUserDetails userDetails = getUserDetails();
         Member member = memberRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
-        
-//        ordersRepository.save(orders);
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다"));
+        Auction auction = dtoToEntity(auctionDTO, shop);
+        auctionRepository.save(auction);
     }
 
     @Override
-    public void edit(OrdersDTO ordersDTO) {
-        log.info(ordersDTO);
-
-        Orders orders = dtoToEntity(ordersDTO);
-        ordersRepository.save(orders);
+    public void edit(AuctionDTO auctionDTO) {
+        CustomUserDetails userDetails = getUserDetails();
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        Auction auction = modelMapper.map(auctionDTO, Auction.class);
+        auctionRepository.save(auction);
     }
 
     @Override
-    public void remove(Integer orderId) {
-        log.info(ordersRepository.findById(orderId));
-        ordersRepository.deleteById(orderId);
+    public void remove(Integer auctionId) {
+        CustomUserDetails userDetails = getUserDetails();
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        auctionRepository.deleteById(auctionId);
     }
 
     @Override
-    public OrdersDTO findOne(Integer orderId) {
-        Orders orders = ordersRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Orders not found"));
-        ;
-        return entityToDto(orders);
+    public AuctionDTO findOne(Integer auctionId) {
+        CustomUserDetails userDetails = getUserDetails();
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new RuntimeException("auction not found"));
+        AuctionDTO auctionDTO = modelMapper.map(auction, AuctionDTO.class);
+        return auctionDTO;
     }
 
     @Override
-    public List<OrdersDTO> findAll() {
-        List<OrdersDTO> ordersDTO = entityListToDtoList(ordersRepository.findAll());
-        return ordersDTO;
+    public List<AuctionDTO> findAll() {
+        CustomUserDetails userDetails = getUserDetails();
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        List<Auction> auction = auctionRepository.findAll();
+        List<AuctionDTO> auctionDTOList = Collections.singletonList(modelMapper.map(auction, AuctionDTO.class));
+        return auctionDTOList;
     }
 }
