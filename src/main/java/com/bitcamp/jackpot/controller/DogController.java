@@ -59,28 +59,20 @@ public class DogController {
 //        dogService.addFund(fundDTO); 안돼서 주석갈김 ㅅㄱ
     }
 
-//    @GetMapping("/dogList")
-//    public Map<String, Object> dogList(@RequestParam int page, int size, String sort) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//        DogListRequestDTO dogListRequestDTO = DogListRequestDTO.builder()
-//                .page(page)
-//                .size(size)
-//                .sort(sort)
-//                .build();
-//
-//        response.put("totalDogNum", dogService.getTotalDogNum());
-//        response.put("dogList", dogService.dogList(dogListRequestDTO));
-//
-//        return response;
-//    }
-
     @GetMapping("/dogList")
-    public void test(HttpServletRequest request){
+    public Map<String, Object> dogList(@RequestParam int page, int size, String sort) {
 
-        String clientIP = request.getRemoteAddr();
-        int clientPort = request.getRemotePort();
-        System.out.println("ip: " + clientIP + ", port: " + clientPort);
+        Map<String, Object> response = new HashMap<>();
+        DogListRequestDTO dogListRequestDTO = DogListRequestDTO.builder()
+                .page(page)
+                .size(size)
+                .sort(sort)
+                .build();
+
+        response.put("totalDogNum", dogService.getTotalDogNum());
+        response.put("dogList", dogService.dogList(dogListRequestDTO));
+
+        return response;
     }
 
 //    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
