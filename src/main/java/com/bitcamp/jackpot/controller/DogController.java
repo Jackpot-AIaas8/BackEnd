@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -60,9 +61,9 @@ public class DogController {
     @GetMapping("/dogList")
     public Map<String, Object> dogList(@RequestParam int page, int size, String sort) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println(page);
-        System.out.println(size);
-        System.out.println(sort);
+//        System.out.println(page);
+//        System.out.println(size);
+//        System.out.println(sort);
         DogListRequestDTO dogListRequestDTO = DogListRequestDTO.builder()
                 .page(page)
                 .size(size)
@@ -74,4 +75,16 @@ public class DogController {
 
         return response;
     }
+
+//    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
+//    @GetMapping("/fundListMyPage")
+//    public ResponseEntity<List<FundDTO>> fundListMyPage() {
+//        List<FundDTO> fundDTOList = dogService.fundListMyPage(); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
+//        System.out.println(fundDTOList);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(fundDTOList); // 반환 타입에 맞춰서 fundDTOList를 사용
+//    }
+
+
 }

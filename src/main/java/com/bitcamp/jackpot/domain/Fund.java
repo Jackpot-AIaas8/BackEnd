@@ -21,6 +21,10 @@ public class Fund extends  BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Member memberId;
 
+//    @ManyToOne
+//    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
+//    private Member member;
+
     @Column(nullable = false)
     private int collection;
 }

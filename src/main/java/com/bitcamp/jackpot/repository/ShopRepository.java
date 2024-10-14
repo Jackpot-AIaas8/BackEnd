@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
@@ -17,7 +16,7 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     @Query("SELECT s FROM Shop s WHERE s.category = :category")
     Page<Shop> findByCategory(@Param("category") int category, Pageable pageable);
 
-    @Transactional
+
     @Modifying
     @Query("UPDATE Shop s SET s.buy_count = s.buy_count + :buyCount WHERE s.shopId = :shopId")
     int increaseBuyCount(@Param("shopId") int shopId, @Param("buyCount") int buyCount);
