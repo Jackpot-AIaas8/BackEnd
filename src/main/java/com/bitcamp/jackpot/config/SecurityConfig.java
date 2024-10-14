@@ -52,7 +52,7 @@ public class SecurityConfig {
                             @Override
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
-                                //개발중 스웨거 활용을 위해 주석 처리함
+
                               configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
 //                                configuration.setAllowedOrigins(Collections.singletonList("*"));  // 모든 출처 허용
 
@@ -101,6 +101,7 @@ public class SecurityConfig {
                                 "/member/findPwd",
                                 "/shop/search",
                                 "/swagger-ui/**", "/v3/api-docs/**",
+                                "/simple",
                                 "/dog/**"
 
                         ).permitAll()

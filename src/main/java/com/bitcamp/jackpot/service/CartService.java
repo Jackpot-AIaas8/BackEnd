@@ -4,13 +4,11 @@ import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Cart;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.CartDTO;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public interface CartService {
-    @Transactional
     void register(CartDTO cartDTO);
 
     void edit(CartDTO cartDTO);

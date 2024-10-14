@@ -18,7 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -26,7 +25,6 @@ import java.util.*;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
 public class DogServiceImpl implements DogService {
 
     private final DogRepository dogRepository;
