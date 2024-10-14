@@ -56,6 +56,7 @@ public class SecurityConfig {
 //                              configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
                                 configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
 
+
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -102,7 +103,10 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/dog/dogList",
-                                "/dog/findOne"
+                                "/dog/findOne",
+                                "/simple"
+
+
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")
 

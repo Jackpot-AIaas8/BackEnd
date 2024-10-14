@@ -1,11 +1,8 @@
 package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.domain.Shop;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.MemberEditDTO;
-import com.bitcamp.jackpot.dto.ShopDTO;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -14,24 +11,17 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import reactor.util.annotation.NonNullApi;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
-@Transactional(readOnly = false)
 @RequiredArgsConstructor
 @Log4j2
 public class MemberServiceImpl implements MemberService {
@@ -40,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
-    @Transactional
+
     @Override
     public void signUp(MemberDTO memberDTO) {
         Member member = modelMapper.map(memberDTO, Member.class);
@@ -74,10 +64,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(editMember);
     }
 
-//    @Override
-//    public void remove(String email) {
-//        memberRepository.deleteByEmail(email);
-//    }
+
 
     @Override
     public void remove(String email) {
