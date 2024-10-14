@@ -31,7 +31,7 @@ public interface MemberService {
 
     public boolean checkNickName(String password);
 
-    public String findId(String phone, String name);
+    public String findId(String name, String phone);
 
     public String findPwd(String phone, String name, String email);
 
