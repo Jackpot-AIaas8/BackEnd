@@ -23,25 +23,25 @@ public class ShopController {
 
     @GetMapping("/findOne/{shopId}")
     public ShopDTO findOne(@PathVariable("shopId") int shopId) {
-        log.info(shopId);
+//        log.info(shopId);
         return shopService.findOne(shopId);
     }
 
     @GetMapping("/findList")
     public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
-        log.info(pageRequestDTO);
+//        log.info(pageRequestDTO);
         return shopService.findList(pageRequestDTO);
     }
 
     @GetMapping("/search")
     public PageResponseDTO<ShopDTO> search(@RequestParam("name") String name, PageRequestDTO pageRequestDTO) {
-        log.info(name);
+//        log.info(name);
         return shopService.search(name, pageRequestDTO);
     }
 
     @GetMapping("/category/{category}")
     public PageResponseDTO<ShopDTO> getProductsByCategory(@PathVariable("category") int category, PageRequestDTO pageRequestDTO) {
-        log.info("Category: {}", category);
+//        log.info("Category: {}", category);
         return shopService.findByCategory(category, pageRequestDTO);
     }
 

@@ -4,13 +4,11 @@ import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Review;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.ReviewDTO;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public interface ReviewService {
-     @Transactional
      void register(ReviewDTO reviewDTO);
      void edit(ReviewDTO reviewDTO);
      void remove(Integer reviewId);

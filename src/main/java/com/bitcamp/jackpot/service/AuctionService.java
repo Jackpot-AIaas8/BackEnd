@@ -3,13 +3,16 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
+import com.bitcamp.jackpot.dto.AuctionDTO;
 import com.bitcamp.jackpot.dto.OrdersDTO;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface OrdersService {
-    void register(OrdersDTO ordersDTO);
+public interface AuctionService {
+    @Transactional
+    void register(AuctionDTO auctionDTO);
 
     void edit(OrdersDTO ordersDTO);
 

@@ -2,6 +2,8 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.dto.*;
 
+import java.util.List;
+
 public interface DogService {
 
     DogDTO register(DogDTO dogDTO);
@@ -19,4 +21,6 @@ public interface DogService {
     Iterable<DogListDTO> dogList(DogListRequestDTO dogListRequestDTO);
 
     Long getTotalDogNum();
+
+//    public List<FundDTO> fundListMyPage();
 }
