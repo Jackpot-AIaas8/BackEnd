@@ -11,13 +11,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FundRepository extends JpaRepository<Fund, Integer> {
-    List<Fund> findFundByDogId(Dog dogId, Pageable pageable);
+    @Query("SELECT f FROM Fund f WHERE f.dog.dogId = :dogId")
+    List<Fund> findFundByDogId(int dogId, Pageable pageable);
 
-    List<Fund> findFundByMemberId(Member memberId, Pageable pageable);
+    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
+    List<Fund> findFundByMemberId(int memberId, Pageable pageable);
 
-
-//    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
-//    List<Fund> findByMemberId(int memberId);
+    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
+    List<Fund> findAllByMemberId(int memberId);
 
 //    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
 //    List<Fund> findFundByMemberId(@Param("memberId") int memberId, Pageable pageable);

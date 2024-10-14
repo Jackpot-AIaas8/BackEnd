@@ -71,12 +71,12 @@ public class DogServiceImpl implements DogService {
         Optional<Dog> oDog = dogRepository.findById(dogId);
         Dog dog = oDog.orElseThrow();
 
-        List<Fund> funds = fundRepository.findFundByDogId(dog, Pageable.unpaged());
+        List<Fund> funds = fundRepository.findFundByDogId(dogId, Pageable.unpaged());
         int totalCollection = 0;
         Set<Member> members = new HashSet<>();
         for (Fund fund : funds){
             totalCollection += fund.getCollection();
-            members.add(fund.getMemberId());
+            members.add(fund.getMember());
         }
 
         return DogResponseDTO.builder()
@@ -206,8 +206,8 @@ public class DogServiceImpl implements DogService {
         Optional<Dog> oDog = dogRepository.findById(fundDTO.getDogId());
 
         Fund fund = Fund.builder()
-                .dogId(oDog.orElseThrow())
-                .memberId(oMember.orElseThrow())
+                .dog(oDog.orElseThrow())
+                .member(oMember.orElseThrow())
                 .collection(fundDTO.getCollection())
                 .build();
         fundRepository.save(fund);
@@ -217,23 +217,24 @@ public class DogServiceImpl implements DogService {
         return dogRepository.count();
     }
 
-//    public List<FundDTO> fundListMyPage(){
-//        // 현재 사용자의 memberId 가져오기
-//        CustomUserDetails ud = getUserDetails();
-//        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
-//        Member member = oMember.orElseThrow();
-//        int memberId = member.getMemberId();
-////        log.info("Current memberId: {}", memberId);
-//
-//        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
-//
-//       List<Fund> result = fundRepository.findFundByMemberId(member.getMemberId());
-////        log.info("Found boards: {}", result.getContent());
-//
-//        List<FundDTO> dtoList = result.stream()
-//                .map(fund -> modelMapper.map(fund, FundDTO.class))
-//                .collect(Collectors.toList());
-//
-//        return dtoList;
-//    }
+    public List<FundDTO> fundListMyPage(){
+        // 현재 사용자의 memberId 가져오기
+        CustomUserDetails ud = getUserDetails();
+        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+        Member member = oMember.orElseThrow();
+        int memberId = member.getMemberId();
+        log.info("Current memberId: {}", memberId);
+
+        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
+       List<Fund> result = fundRepository.findAllByMemberId(memberId);
+//        log.info("Found boards: {}", result.getContent());
+        log.info(result);
+
+        List<FundDTO> dtoList = result.stream()
+                .map(fund -> modelMapper.map(fund, FundDTO.class))
+                .collect(Collectors.toList());
+        log.info(dtoList);
+
+        return dtoList;
+    }
 }

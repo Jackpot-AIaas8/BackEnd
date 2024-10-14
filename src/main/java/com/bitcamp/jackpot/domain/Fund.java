@@ -16,14 +16,12 @@ public class Fund extends  BaseEntity{
     private int fundId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Dog dogId;
+    @JoinColumn(name = "dogId", referencedColumnName = "dogId")
+    private Dog dog;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member memberId;
-
-//    @ManyToOne
-//    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
-//    private Member member;
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
+    private Member member;
 
     @Column(nullable = false)
     private int collection;

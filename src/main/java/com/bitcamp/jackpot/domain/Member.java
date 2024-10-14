@@ -47,9 +47,9 @@ public class Member extends BaseEntity {
     }
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    @JsonManagedReference
-//    //    @JsonBackReference
-//    private List<Board> boards;
+////    @JsonManagedReference
+////    //    @JsonBackReference
+////    private List<Board> boards;
 
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
