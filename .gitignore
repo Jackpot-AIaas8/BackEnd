@@ -36,3 +36,5 @@ src/main/resources/application.properties
 
 ### VS Code ###
 .vscode/
+src/main/resources/application.properties
+src/main/java/com/bitcamp/jackpot/config/SecurityConfig.java
