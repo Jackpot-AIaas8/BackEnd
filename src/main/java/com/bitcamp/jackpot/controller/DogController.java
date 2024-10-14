@@ -2,6 +2,7 @@ package com.bitcamp.jackpot.controller;
 
 import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.service.DogService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,11 @@ public class DogController {
     }
 
     @GetMapping("/dogList")
-    public Map<String, Object> dogList(@RequestParam int page, int size, String sort) {
+    public Map<String, Object> dogList(@RequestParam int page, int size, String sort, HttpServletRequest request) {
+        String clientIP = request.getRemoteAddr();
+        int clientPort = request.getRemotePort();
+        System.out.println("ip: " + clientIP + ", port: " + clientPort);
+
         Map<String, Object> response = new HashMap<>();
 //        System.out.println(page);
 //        System.out.println(size);
