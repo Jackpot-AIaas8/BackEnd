@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
+
 
 @Service
 @Slf4j
@@ -17,16 +21,31 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendSimpleMailMessage() {
+
+
+    private String createCode() throws NoSuchAlgorithmException {
+        int lenth = 6;
+
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < lenth; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+
+    }
+
+    public void sendSimpleMailMessage(String email) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         try {
             // 메일을 받을 수신자 설정
-            simpleMailMessage.setTo("chm2006@naver.com");
+            simpleMailMessage.setTo(email);
             // 메일의 제목 설정
-            simpleMailMessage.setSubject("테스트 메일 제목");
+            simpleMailMessage.setSubject("ppyppy 인증번호");
             // 메일의 내용 설정
-            simpleMailMessage.setText("테스트 메일 내용");
+
+            simpleMailMessage.setText("인증번호 : "+createCode());
 
             javaMailSender.send(simpleMailMessage);
 

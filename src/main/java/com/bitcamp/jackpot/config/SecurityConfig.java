@@ -104,7 +104,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/dog/dogList",
                                 "/dog/findOne",
-                                "/simple"
+                                "/sendEmail"
 
 
                         ).permitAll()

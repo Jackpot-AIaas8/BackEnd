@@ -13,8 +13,9 @@ public class MailController {
     private final MailService mailService;
 
 
-    @GetMapping("/simple")
-    public void sendSimpleMailMessage() {
-        mailService.sendSimpleMailMessage();
+    @GetMapping("/sendEmail")
+    public void sendSimpleMailMessage(@RequestParam String email) {
+        mailService.sendSimpleMailMessage(email);
+
     }
 }
