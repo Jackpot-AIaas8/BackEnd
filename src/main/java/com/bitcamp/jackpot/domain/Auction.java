@@ -27,7 +27,9 @@ public class Auction extends BaseEntity {
     private int end_price;
 
     @ManyToOne
+    @JoinColumn(name = "shopId", referencedColumnName = "shopId")
     Shop shop;
     @ManyToOne
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
     Member member;
 }
