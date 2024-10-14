@@ -103,7 +103,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/dog/dogList",
                                 "/dog/findOne",
-                                "/sendEmail"
+                                "/sendEmail",
+                                "checkVerificationCode"
 
 
                         ).permitAll()
