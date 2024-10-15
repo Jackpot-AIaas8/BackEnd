@@ -105,9 +105,10 @@ public class SecurityConfig {
                                 "/dog/findOne",
                                 "/api/confirm",
                                 "/sendEmail",
-                                "checkVerificationCode"
-
-
+                                "/checkVerificationCode",
+                                "/member/resetPwd",
+                                "/auction/*",
+                                "/member/edit/{memberID}"
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")

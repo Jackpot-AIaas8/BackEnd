@@ -19,7 +19,7 @@ public interface MemberService {
 
     public void signUp(MemberDTO memberDTO);
 
-    public void edit(String email, MemberEditDTO memberEditDTO);
+    public void edit(int memberID, MemberDTO memberDTO);
 
     public void remove(String email);
 
@@ -33,6 +33,7 @@ public interface MemberService {
 
     public String findId(String name, String phone);
 
+    public boolean resetPwd(String email,String pwd);
 
     public void adminRemove(int memberId);
 

@@ -2,12 +2,15 @@ package com.bitcamp.jackpot.controller;
 
 import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.service.DogService;
+import com.bitcamp.jackpot.service.ObjectStorageService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +23,24 @@ public class DogController {
 
     private final DogService dogService;
 
+    private final ObjectStorageService objectStorageService;
+
     @PostMapping("/register")
-    public ResponseEntity<Integer> register(@RequestBody DogDTO dogDTO) {
+    public ResponseEntity<Integer> register(@RequestBody DogDTO dogDTO, List<MultipartFile> files) throws Exception {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileUrl = objectStorageService.uploadFile("dog/",file);
+            if (fileUrl == null){
+                continue;
+            }
+            imageUrls.add(fileUrl);
+        }
+        dogDTO.setMainImage(imageUrls.get(0));
+        dogDTO.setDetailImage1(imageUrls.get(1));
+        dogDTO.setDetailImage2(imageUrls.get(2));
+        dogDTO.setDetailImage3(imageUrls.get(3));
+        dogDTO.setDetailImage4(imageUrls.get(4));
+
         DogDTO savedDTO = dogService.register(dogDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDTO.getDogId());
@@ -75,15 +94,15 @@ public class DogController {
         return response;
     }
 
-//    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
-//    @GetMapping("/fundListMyPage")
-//    public ResponseEntity<List<FundDTO>> fundListMyPage() {
-//        List<FundDTO> fundDTOList = dogService.fundListMyPage(); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
-//        System.out.println(fundDTOList);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(fundDTOList); // 반환 타입에 맞춰서 fundDTOList를 사용
-//    }
+    // 1:1문의게시판마이페이지 게시글 목록 조회, read.
+    @GetMapping("/fundListMyPage")
+    public ResponseEntity<List<FundDTO>> fundListMyPage() {
+        List<FundDTO> fundDTOList = dogService.fundListMyPage(); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
+        System.out.println(fundDTOList);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(fundDTOList); // 반환 타입에 맞춰서 fundDTOList를 사용
+    }
 
 
 }

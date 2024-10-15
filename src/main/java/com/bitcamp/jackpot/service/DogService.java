@@ -22,5 +22,5 @@ public interface DogService {
 
     Long getTotalDogNum();
 
-    public List<FundDTO> fundListMyPage();
+     public List<FundDTO> fundListMyPage();
 }
