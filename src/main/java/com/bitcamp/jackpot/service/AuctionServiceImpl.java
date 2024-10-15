@@ -5,7 +5,6 @@ import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.AuctionDTO;
 import com.bitcamp.jackpot.dto.CustomUserDetails;
-import com.bitcamp.jackpot.dto.ShopDTO;
 import com.bitcamp.jackpot.repository.AuctionRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.ShopRepository;
