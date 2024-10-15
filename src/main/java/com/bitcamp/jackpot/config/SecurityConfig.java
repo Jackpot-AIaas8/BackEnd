@@ -105,8 +105,9 @@ public class SecurityConfig {
                                 "/dog/findOne",
                                 "/api/confirm",
                                 "/sendEmail",
-                                "checkVerificationCode"
-
+                                "/checkVerificationCode",
+                                "/member/resetPwd",
+                                "/auction/*"
 
 
                         ).permitAll()

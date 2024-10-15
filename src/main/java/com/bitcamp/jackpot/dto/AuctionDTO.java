@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AuctionDTO {
     private Integer auctionId;
+    private int auctionStatus;
     private int startPrice;
     private int endPrice;
     private LocalDateTime startTime;
@@ -20,5 +21,6 @@ public class AuctionDTO {
     private int shopId;
     private int memberId;
     private String shopName;
+    private String shopDetail;
     private int shopPrice;
 }
