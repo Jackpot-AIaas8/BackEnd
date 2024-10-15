@@ -103,7 +103,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/dog/dogList",
                                 "/dog/findOne",
-                                "/api/confirm"
+                                "/api/confirm",
                                 "/sendEmail",
                                 "checkVerificationCode"
 
