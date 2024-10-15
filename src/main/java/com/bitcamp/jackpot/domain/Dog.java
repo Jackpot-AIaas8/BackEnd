@@ -2,6 +2,7 @@ package com.bitcamp.jackpot.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -35,13 +36,31 @@ public class Dog extends BaseEntity{
     @Column(nullable = false)
     private int heart;
 
-    @Column(length = 20, nullable = false)
+    @Column(nullable = false)
     private String videoUrl;
 
-    @Column(length = 100, nullable = false)
+    @Column(nullable = false)
     private String dogDetail;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime regDate;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String mainImage;
+
+    @Column(nullable = false)
+    private String detailImage1;
+
+    @Column(nullable = false)
+    private String detailImage2;
+
+    @Column(nullable = false)
+    private String detailImage3;
+
+    @Column(nullable = false)
+    private String detailImage4;
 }
