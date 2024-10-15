@@ -104,9 +104,33 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean checkEmail(String email) {
         return memberRepository.existsByEmail(email);
-
-
     }
+
+    @Override
+    public boolean resetPwd(String email, String pwd) {
+        try{
+        // 1. 이메일로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
+
+        // 2. 명시적 메서드를 통해 비밀번호만 변경
+        member.changePassword(pwd, bCryptPasswordEncoder);
+
+        // 3. 변경된 엔티티 저장
+        memberRepository.save(member);
+        }catch (Exception e){
+        log.error(e);
+        return false;
+        }
+
+        return true;
+    }
+
+
+
+
+
+
 
     @Override
     public boolean checkNickName(String nickName) {
