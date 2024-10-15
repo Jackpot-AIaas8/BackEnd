@@ -52,11 +52,10 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<Void> edit(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                     @Valid @RequestBody MemberEditDTO memberEditDTO) {
-        String email = customUserDetails.getUsername();
-        memberService.edit(email, memberEditDTO);
+    @PutMapping("/edit/{memberID}")
+    public ResponseEntity<Void> edit(@PathVariable int memberID, @RequestBody MemberDTO memberDTO) {
+
+        memberService.edit(memberID,memberDTO);
 
         return ResponseEntity.noContent().build();
     }

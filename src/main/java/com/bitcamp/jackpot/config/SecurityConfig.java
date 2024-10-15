@@ -107,8 +107,8 @@ public class SecurityConfig {
                                 "/sendEmail",
                                 "/checkVerificationCode",
                                 "/member/resetPwd",
-                                "/auction/*"
-
+                                "/auction/*",
+                                "/member/edit/{memberID}"
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")

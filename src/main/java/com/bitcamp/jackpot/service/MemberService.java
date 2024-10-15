@@ -19,7 +19,7 @@ public interface MemberService {
 
     public void signUp(MemberDTO memberDTO);
 
-    public void edit(String email, MemberEditDTO memberEditDTO);
+    public void edit(int memberID, MemberDTO memberDTO);
 
     public void remove(String email);
 
