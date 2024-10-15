@@ -31,4 +31,18 @@ public class DogResponseDTO {
     private int fundCollection;
 
     private int fundMemberNum;
+
+    private int isHeart;
+
+    private String title;
+
+    private String mainImage;
+
+    private String detailImage1;
+
+    private String detailImage2;
+
+    private String detailImage3;
+
+    private String detailImage4;
 }
