@@ -106,7 +106,8 @@ public class SecurityConfig {
                                 "/api/confirm",
                                 "/sendEmail",
                                 "/checkVerificationCode",
-                                "/member/resetPwd"
+                                "/member/resetPwd",
+                                "/auction/*"
 
 
                         ).permitAll()
