@@ -104,8 +104,8 @@ public class SecurityConfig {
                                 "/dog/dogList",
                                 "/dog/findOne",
                                 "/sendEmail",
-                                "checkVerificationCode"
-
+                                "checkVerificationCode",
+                                "/auction/*"
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")
