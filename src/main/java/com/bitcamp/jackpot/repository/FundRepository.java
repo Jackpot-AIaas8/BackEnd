@@ -17,8 +17,8 @@ public interface FundRepository extends JpaRepository<Fund, Integer> {
     @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
     List<Fund> findFundByMemberId(int memberId, Pageable pageable);
 
-    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
-    List<Fund> findAllByMemberId(int memberId);
+    // @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
+    // List<Fund> findAllByMemberId(int memberId);
 
 //    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
 //    List<Fund> findFundByMemberId(@Param("memberId") int memberId, Pageable pageable);
