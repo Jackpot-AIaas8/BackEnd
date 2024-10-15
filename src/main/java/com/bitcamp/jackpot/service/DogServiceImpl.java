@@ -217,24 +217,31 @@ public class DogServiceImpl implements DogService {
         return dogRepository.count();
     }
 
-//     public List<FundDTO> fundListMyPage(){
-//         // 현재 사용자의 memberId 가져오기
-//         CustomUserDetails ud = getUserDetails();
-//         Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
-//         Member member = oMember.orElseThrow();
-//         int memberId = member.getMemberId();
-//         log.info("Current memberId: {}", memberId);
+    public List<FundDTO> fundListMyPage() {
+        // 현재 사용자의 memberId 가져오기
+        CustomUserDetails ud = getUserDetails();
+        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+        Member member = oMember.orElseThrow();
+        int memberId = member.getMemberId();
+//        log.info("Current memberId: {}", memberId);
 
-//         // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
-//        List<Fund> result = fundRepository.findAllByMemberId(memberId);
-// //        log.info("Found boards: {}", result.getContent());
-//         log.info(result);
+        // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
+        List<Fund> result = fundRepository.findAllByMemberId(memberId);
+//        log.info(result.toString());
 
-//         List<FundDTO> dtoList = result.stream()
-//                 .map(fund -> modelMapper.map(fund, FundDTO.class))
-//                 .collect(Collectors.toList());
-//         log.info(dtoList);
+        // ModelMapper 설정
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(Fund.class, FundDTO.class).addMappings(mapper -> {
+            mapper.map(src -> src.getDog().getDogId(), FundDTO::setDogId);
+            mapper.map(src -> src.getMember().getMemberId(), FundDTO::setMemberId);
+        });
 
-//         return dtoList;
-//     }
+        List<FundDTO> dtoList = result.stream()
+                .map(fund -> modelMapper.map(fund, FundDTO.class))
+                .collect(Collectors.toList());
+//        log.info(dtoList.toString());
+
+        return dtoList;
+    }
+
 }

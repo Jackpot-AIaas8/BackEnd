@@ -1,7 +1,5 @@
 package com.bitcamp.jackpot.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -51,6 +49,10 @@ public class Member extends BaseEntity {
 ////    //    @JsonBackReference
 ////    private List<Board> boards;
 
+    public Member changePassword(String newPassword, BCryptPasswordEncoder passwordEncoder) {
+        this.pwd = passwordEncoder.encode(newPassword);
+        return this;
+    }
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews;

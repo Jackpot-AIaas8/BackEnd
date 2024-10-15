@@ -53,7 +53,7 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
                                 //cicd로 기능구현
-//                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
+//                              configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
                                 configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
 
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -105,7 +105,8 @@ public class SecurityConfig {
                                 "/dog/findOne",
                                 "/api/confirm",
                                 "/sendEmail",
-                                "checkVerificationCode",
+                                "/checkVerificationCode",
+                                "/member/resetPwd",
                                 "/auction/*"
 
 
