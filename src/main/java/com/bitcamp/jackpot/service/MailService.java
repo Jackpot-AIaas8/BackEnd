@@ -6,7 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,20 +26,21 @@ public class MailService {
     private String createCode() throws NoSuchAlgorithmException {
         int length = 6;
 
-            Random random = SecureRandom.getInstanceStrong();
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < length; i++) {
-                builder.append(random.nextInt(10));
-            }
-            return builder.toString();
+        Random random = SecureRandom.getInstanceStrong();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            builder.append(random.nextInt(10));
+        }
+        return builder.toString();
     }
+
     public boolean checkVerificationCode(String email, String code) {
         try {
 
-            if (redisUtil.isValueEqual(email,code)){
+            if (redisUtil.isValueEqual(email, code)) {
                 redisUtil.delete(email);
                 return true;
-            }else return false;
+            } else return false;
         } catch (Exception e) {
             log.error(e.getMessage());
             return false;
@@ -56,12 +56,12 @@ public class MailService {
             // 메일의 제목 설정
             simpleMailMessage.setSubject("ppyppy 인증번호");
             // 메일의 내용 설정
-            String secretCode=createCode();
-            simpleMailMessage.setText("인증번호 : "+secretCode);
+            String secretCode = createCode();
+            simpleMailMessage.setText("인증번호 : " + secretCode);
 
             javaMailSender.send(simpleMailMessage);
-            redisUtil.set(email,secretCode,3);
-            
+            redisUtil.set(email, secretCode, 3);
+
             log.info("메일 발송 성공!");
         } catch (Exception e) {
             log.info("메일 발송 실패!");
