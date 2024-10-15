@@ -48,6 +48,13 @@ public class RedisUtil {
         return redisBlackListTemplate.opsForValue().get(key);
     }
 
+    public boolean isValueEqual(String key, Object expectedValue) {
+        Object storedValue = get(key);
+        if (storedValue == null) {
+            return false;
+        }
+        return storedValue.equals(expectedValue);
+    }
 
 
     public boolean hasKeyBlackList(String key) {
