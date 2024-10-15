@@ -97,13 +97,13 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMember(@RequestParam String email ) {
         try{
             MemberDTO memberDTO = memberService.findOne(email);
-        return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
-    } catch (
-    NoSuchElementException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-    }
+            return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
+        } catch (
+                NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
@@ -119,17 +119,8 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/findPwd")
-    public ResponseEntity<String> findPwd(@RequestParam String phone, String name, String email) {
-        try {
-            // 서비스에서 이메일 찾기
-            String pwd = memberService.findPwd(phone, name, email);
-            return ResponseEntity.ok(pwd);  // 200 OK와 함께 이메일 반환
-        } catch (RuntimeException e) {
-            // Member가 없을 경우 404 Not Found 반환
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+
+
     @GetMapping("/search")
     public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
