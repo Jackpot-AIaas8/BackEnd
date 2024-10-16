@@ -25,7 +25,6 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-//WebSecurityConfiguration < 이게 WebSecurityconfigererAdpater 의 상위 버전. 어댑터이건 사용중단
 public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -53,10 +52,8 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
                                 //cicd로 기능구현
-
 //                              configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
                                 configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
-
 
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
@@ -110,11 +107,11 @@ public class SecurityConfig {
                                 "/checkVerificationCode",
                                 "/member/resetPwd",
                                 "/auction/**",
-                                "/member/edit/{memberID}"
-
+                                "/api/chatbot/send"
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")
+                        .requestMatchers("/premium/*").hasRole("PREMIUM")
 
 
                         .anyRequest().authenticated());
