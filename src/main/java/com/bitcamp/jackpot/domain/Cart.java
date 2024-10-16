@@ -14,9 +14,11 @@ public class Cart extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
+
     @ManyToOne
     @JoinColumn(name="shopId", referencedColumnName = "shopId")
     Shop shop;
+
     @ManyToOne
     @JoinColumn(name="memberId", referencedColumnName = "memberId")
     Member member;
