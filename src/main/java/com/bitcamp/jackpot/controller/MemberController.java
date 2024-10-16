@@ -52,11 +52,10 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<Void> edit(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                     @Valid @RequestBody MemberEditDTO memberEditDTO) {
-        String email = customUserDetails.getUsername();
-        memberService.edit(email, memberEditDTO);
+    @PutMapping("/edit/{memberID}")
+    public ResponseEntity<Void> edit(@PathVariable int memberID, @RequestBody MemberDTO memberDTO) {
+
+        memberService.edit(memberID,memberDTO);
 
         return ResponseEntity.noContent().build();
     }
@@ -117,6 +116,16 @@ public class MemberController {
             // Member가 없을 경우 404 Not Found 반환
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+    @PatchMapping("/resetPwd")
+    public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String pwd = request.get("pwd");
+
+        if (memberService.resetPwd(email, pwd)) {
+            return ResponseEntity.ok("비밀번호 변경 성공");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
     }
 
 
