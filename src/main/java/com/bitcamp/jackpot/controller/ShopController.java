@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.controller;
 
+import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.dto.PageRequestDTO;
 import com.bitcamp.jackpot.dto.PageResponseDTO;
 import com.bitcamp.jackpot.dto.ShopDTO;
@@ -32,6 +33,15 @@ public class ShopController {
 //        log.info(pageRequestDTO);
         return shopService.findList(pageRequestDTO);
     }
+
+    @GetMapping("/findOrderList")
+    public List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO) {
+        List<OrdersDTO> result = shopService.findOrderList(pageRequestDTO);
+        log.info(result);
+        return (List<OrdersDTO>) result;
+    }
+
+
 
     @GetMapping("/search")
     public PageResponseDTO<ShopDTO> search(@RequestParam("name") String name, PageRequestDTO pageRequestDTO) {

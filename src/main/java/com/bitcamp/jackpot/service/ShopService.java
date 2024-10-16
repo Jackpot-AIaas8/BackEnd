@@ -1,8 +1,11 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.dto.PageRequestDTO;
 import com.bitcamp.jackpot.dto.PageResponseDTO;
 import com.bitcamp.jackpot.dto.ShopDTO;
+
+import java.util.List;
 
 public interface ShopService {
 
@@ -21,4 +24,6 @@ public interface ShopService {
     PageResponseDTO<ShopDTO> search(String name, PageRequestDTO pageRequestDTO);
 
     PageResponseDTO<ShopDTO> findByCategory(int category, PageRequestDTO pageRequestDTO);
+
+    List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO);
 }

@@ -61,5 +61,13 @@ public class Member extends BaseEntity {
     private List<Cart> carts;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
     private List<Auction> auctions;
+
+    public void updateMemberInfo(String name, String phone, String pwd, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.pwd = pwd;
+        this.address = address;
+    }
 }

@@ -13,8 +13,6 @@ public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderId;
-    @NonNull
-    private int pay_state;
     private int delivery_state;
 
     @ManyToOne
