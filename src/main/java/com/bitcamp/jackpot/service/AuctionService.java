@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface AuctionService {
-    
+
     void register(AuctionDTO auctionDTO, int shopId);
 
     void edit(int auctionId, int auctionStatus);
@@ -17,14 +17,19 @@ public interface AuctionService {
 
     AuctionDTO findOne(int auctionId);
 
-    AuctionDTO findNextAuction();
+//    AuctionDTO findNextAuction();
 
     PageResponseDTO<AuctionDTO> findAll(PageRequestDTO pageRequestDTO);
+
+    Auction getCurrentAuction();
+
+    Auction getNextAuction();
+
 
     default Auction dtoToEntity(AuctionDTO dto, Shop shop) {
         return Auction.builder()
 //                .auctionId(dto.getAuctionId())
-                .start_time(dto.getStartTime())
+                .startTime(dto.getStartTime())
                 .end_time(dto.getEndTime())
                 .start_price(dto.getStartPrice())
                 .end_price(dto.getEndPrice())
@@ -40,10 +45,10 @@ public interface AuctionService {
                 .shopName(auction.getShop() != null ? auction.getShop().getName() : null)  // shopName 처리
                 .shopPrice(auction.getShop() != null ? auction.getShop().getPrice() : null) // shopPrice 처리
                 .shopDetail(auction.getShop() != null ? auction.getShop().getDetail() : null)
-                .auctionStatus(auction.getAuction_status())
+                .auctionStatus(auction.getAuctionStatus())
                 .startPrice(auction.getStart_price())
                 .endPrice(auction.getEnd_price())
-                .startTime(auction.getStart_time())
+                .startTime(auction.getStartTime())
                 .endTime(auction.getEnd_time())
                 .build();
     }

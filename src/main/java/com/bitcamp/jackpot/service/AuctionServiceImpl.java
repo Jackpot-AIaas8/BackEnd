@@ -21,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +61,7 @@ public class AuctionServiceImpl implements AuctionService {
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
         auction.setAuctionStatus(auctionStatus);
+        log.info(auction);
         auctionRepository.save(auction);
     }
 
@@ -81,17 +84,47 @@ public class AuctionServiceImpl implements AuctionService {
         return auctionDTO;
     }
 
+    //    @Override
+//    public AuctionDTO findNextAuction() {
+//        LocalDateTime currentTime = LocalDateTime.now();
+//        Pageable pageable = PageRequest.of(0, 1);
+//        List<Auction> auction = auctionRepository.findNextAuction(pageable, currentTime);
+//        if (auction == null) {
+//            return null; // 경매가 없으면 null 반환
+//        }
+//        AuctionDTO auctionDTO = entityToDto(auction.get(0));
+//        log.info(auctionDTO);
+//        return auctionDTO;
+//    }
+// 현재 경매 가져오기 (진행 중이거나 곧 시작할 경매)
     @Override
-    public AuctionDTO findNextAuction() {
-        LocalDateTime currentTime = LocalDateTime.now();
-        Pageable pageable = PageRequest.of(0, 1);
-        List<Auction> auction = auctionRepository.findNextAuction(pageable, currentTime);
-        if (auction == null) {
-            return null; // 경매가 없으면 null 반환
-        }
-        AuctionDTO auctionDTO = entityToDto(auction.get(0));
-        log.info(auctionDTO);
-        return auctionDTO;
+    public Auction getCurrentAuction() {
+        LocalDateTime now = LocalDateTime.now();
+        log.info(now);
+        Auction auction = auctionRepository.findUpcomingAuctionNative(now, 2);
+        log.info(auction);
+        return auction;
+//        LocalDateTime now = LocalDateTime.now();
+//        log.info("Current time: {}", now);
+//
+//        List<Auction> upcomingAuctions = auctionRepository.findUpcomingAuctionNative(now, 2);
+//
+//        if (upcomingAuctions.isEmpty()) {
+//            log.info("No upcoming auctions found for time after {} and status not 2", now);
+//            return null;
+//        } else {
+//            Auction nextAuction = upcomingAuctions.get(0);
+//            log.info("Found upcoming auction: id={}, startTime={}, status={}",
+//                    nextAuction.getAuctionId(), nextAuction.getStartTime(), nextAuction.getAuctionStatus());
+//            return nextAuction;
+//        }
+    }
+
+    // 다음 경매 가져오기
+    @Override
+    public Auction getNextAuction() {
+        LocalDateTime now = LocalDateTime.now();
+        return auctionRepository.findFirstByStartTimeAfterAndAuctionStatus(now, 0); // 0: 대기 중인 경매
     }
 
     @Override
