@@ -108,7 +108,7 @@ public class SecurityConfig {
                                 "/checkVerificationCode",
                                 "/member/resetPwd",
                                 "/auction/*",
-                                "/member/edit/{memberID}"
+                                "/api/chatbot/send"
 
                         ).permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")

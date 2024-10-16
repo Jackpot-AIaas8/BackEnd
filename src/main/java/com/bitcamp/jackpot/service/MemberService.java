@@ -28,7 +28,7 @@ public interface MemberService {
     public Page<MemberDTO> findAll(int page, int size);
 
     public boolean checkEmail(String email);
-
+    public boolean checkPwd(String email,String pwd);
     public boolean checkNickName(String password);
 
     public String findId(String name, String phone);

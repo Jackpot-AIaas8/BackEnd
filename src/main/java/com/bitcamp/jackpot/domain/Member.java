@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
 
     @Builder.Default
     @Column(nullable = false)
-    private int isAdmin = 0;
+    private int grade = 0;
 
     //비밀번호 인코딩 메서드
     public void encodePassword(String rawPassword, BCryptPasswordEncoder encoder) {
