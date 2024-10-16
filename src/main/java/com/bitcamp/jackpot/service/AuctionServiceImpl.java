@@ -35,6 +35,23 @@ public class AuctionServiceImpl implements AuctionService {
     private final AuctionRepository auctionRepository;
     private final ShopRepository shopRepository;
 
+    private AuctionDTO checkAuction(Auction auction) {
+        LocalDateTime now = LocalDateTime.now();
+        Auction ongoingAuction = auctionRepository.findOngoingAuction();
+        if (ongoingAuction != null) {
+            log.info("진행 중인 경매가 있음: " + ongoingAuction);
+            return entityToDto(ongoingAuction);
+        }
+        Auction upcomingAuction = auctionRepository.findUpcomingAuction(now);
+        if (upcomingAuction != null && upcomingAuction.getAuctionId() == auction.getAuctionId()) {
+            log.info("새로 등록된 경매가 가장 가까운 경매임: " + upcomingAuction);
+            return entityToDto(upcomingAuction);
+        }
+        // 3. 기존의 가장 가까운 경매를 반환
+        log.info("가장 가까운 기존 경매: " + upcomingAuction);
+        return entityToDto(upcomingAuction);
+    }
+
     // 로그인된 사용자 정보를 가져오는 메서드
     private CustomUserDetails getUserDetails() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -42,7 +59,7 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void register(AuctionDTO auctionDTO, int shopId) {
+    public AuctionDTO register(AuctionDTO auctionDTO, int shopId) {
         CustomUserDetails userDetails = getUserDetails();
         Member member = memberRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
@@ -51,6 +68,8 @@ public class AuctionServiceImpl implements AuctionService {
         auctionDTO.setAuctionStatus(0);
         Auction auction = dtoToEntity(auctionDTO, shop);
         auctionRepository.save(auction);
+
+        return checkAuction(auction);
     }
 
     @Override
@@ -96,35 +115,16 @@ public class AuctionServiceImpl implements AuctionService {
 //        log.info(auctionDTO);
 //        return auctionDTO;
 //    }
-// 현재 경매 가져오기 (진행 중이거나 곧 시작할 경매)
-    @Override
-    public Auction getCurrentAuction() {
-        LocalDateTime now = LocalDateTime.now();
-        log.info(now);
-        Auction auction = auctionRepository.findUpcomingAuctionNative(now, 2);
-        log.info(auction);
-        return auction;
-//        LocalDateTime now = LocalDateTime.now();
-//        log.info("Current time: {}", now);
-//
-//        List<Auction> upcomingAuctions = auctionRepository.findUpcomingAuctionNative(now, 2);
-//
-//        if (upcomingAuctions.isEmpty()) {
-//            log.info("No upcoming auctions found for time after {} and status not 2", now);
-//            return null;
-//        } else {
-//            Auction nextAuction = upcomingAuctions.get(0);
-//            log.info("Found upcoming auction: id={}, startTime={}, status={}",
-//                    nextAuction.getAuctionId(), nextAuction.getStartTime(), nextAuction.getAuctionStatus());
-//            return nextAuction;
-//        }
-    }
 
-    // 다음 경매 가져오기
     @Override
-    public Auction getNextAuction() {
+    public AuctionDTO getAuction() {
         LocalDateTime now = LocalDateTime.now();
-        return auctionRepository.findFirstByStartTimeAfterAndAuctionStatus(now, 0); // 0: 대기 중인 경매
+        Auction ongoingAuction = auctionRepository.findOngoingAuction();
+        Auction upcomingAuction = auctionRepository.findUpcomingAuction(now);
+        if (ongoingAuction != null) {
+            return checkAuction(ongoingAuction);
+        }
+        return checkAuction(upcomingAuction);
     }
 
     @Override
