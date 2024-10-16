@@ -1,12 +1,11 @@
 package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
-import com.bitcamp.jackpot.dto.PageRequestDTO;
-import com.bitcamp.jackpot.dto.PageResponseDTO;
-import com.bitcamp.jackpot.dto.ShopDTO;
+import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.repository.MemberRepository;
+import com.bitcamp.jackpot.repository.OrdersRepository;
 import com.bitcamp.jackpot.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class ShopServiceImpl implements ShopService {
     private final ShopRepository shopRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final OrdersRepository ordersRepository;
 
     // 로그인된 사용자 정보를 가져오는 메서드
     private CustomUserDetails getUserDetails() {
@@ -107,4 +108,24 @@ public class ShopServiceImpl implements ShopService {
 
         return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
     }
+
+    @Override
+    public List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO) {
+        CustomUserDetails ud = getUserDetails();
+        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
+        Member member = oMember.orElseThrow();
+        int memberId = member.getMemberId();
+
+        Pageable pageable = pageRequestDTO.getPageable("orderId");
+//        log.info(memberId);
+        Page<Orders> result = ordersRepository.findByMemberId(memberId, pageable);
+        List<OrdersDTO> ordersDTOList = result.getContent().stream()
+                .map(order -> modelMapper.map(order, OrdersDTO.class)) // 수정된 부분
+                .collect(Collectors.toList());
+        log.info(ordersDTOList);
+        return ordersDTOList;
+    }
+
+
+
 }

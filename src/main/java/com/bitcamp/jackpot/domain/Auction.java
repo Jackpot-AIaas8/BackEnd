@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,15 +12,17 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"shop", "member"})
 public class Auction extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int auctionId;
-    private int auction_status;
+    @Column(name = "auction_status")
+    private int auctionStatus;
     @NonNull
-    private LocalDateTime start_time;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
 
     private LocalDateTime end_time;
     @NonNull
@@ -29,12 +32,14 @@ public class Auction extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "shopId", referencedColumnName = "shopId")
+    @JsonBackReference
     Shop shop;
     @ManyToOne
     @JoinColumn(name = "memberId", referencedColumnName = "memberId")
+    @JsonBackReference
     Member member;
 
     public void setAuctionStatus(int auction_status) {
-        this.auction_status = auction_status;
+        this.auctionStatus = auction_status;
     }
 }
