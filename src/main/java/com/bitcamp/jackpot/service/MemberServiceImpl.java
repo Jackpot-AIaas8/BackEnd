@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.domain.Auction;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.MemberEditDTO;
@@ -18,7 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -46,24 +48,31 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void edit(String email, MemberEditDTO memberEditDTO) {
-        // 해당 ID의 멤버 조회
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+    public void edit(int memberID, MemberDTO memberDTO) {
+        try {
+            // 해당 ID의 멤버 조회
+            Member member = memberRepository.findById(memberID)
+                    .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+            System.out.println("member 조회 완료");
 
-        Member editMember = Member.builder()
-                .memberId(member.getMemberId())
-                .name(memberEditDTO.getName())
-                .email(member.getEmail())
-                .phone(memberEditDTO.getPhone())
-                .pwd(memberEditDTO.getPwd())
-                .nickName(memberEditDTO.getNickname())
-                .address(memberEditDTO.getAddress())
-                .isAdmin(member.getIsAdmin())
-                //. 필요한 프로퍼티 채우기, 바뀌는애는 memberEditDTO에서 가져오고 변화가없는 필드는 member에서 가져온다.
-                .build();
-        memberRepository.save(editMember);
+            // Member 객체의 필드를 업데이트 (setter를 사용하지 않음)
+            member.updateMemberInfo(
+                    memberDTO.getName(),
+                    memberDTO.getPhone(),
+                    memberDTO.getPwd(),
+                    memberDTO.getAddress()
+            );
+
+            // 업데이트된 기존 객체를 저장
+            memberRepository.save(member);
+            System.out.println(member + " 저장 완료");
+
+        } catch (Exception e) {
+            System.out.println(e + " 실패");
+        }
     }
+
+
 
 
 
