@@ -16,6 +16,7 @@ public class ShopDummyDataGenerateTest {
     @Autowired
     private ShopRepository shopRepository;
 
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -38,6 +39,7 @@ public class ShopDummyDataGenerateTest {
             shopRepository.save(shopEntity);
 
             log.info("Saved Shop Entity: " + shopEntity);
+
         }
     }
 }
