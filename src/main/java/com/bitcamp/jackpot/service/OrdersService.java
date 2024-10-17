@@ -4,7 +4,6 @@ import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.OrdersDTO;
-import com.bitcamp.jackpot.dto.ProductDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +14,9 @@ public interface OrdersService {
 
     void edit(OrdersDTO ordersDTO);
 
-    // 기본키인 id를 기준으로 삭제
-    void remove(Integer id);
-
-    // 기본키인 id로 조회
     OrdersDTO findOne(Integer id);
 
-    OrdersDTO findOneByOrderId(String orderId);
+    OrdersDTO findOneByOrderId(Integer memberId);
 
     List<OrdersDTO> findAll();
 
@@ -29,40 +24,30 @@ public interface OrdersService {
     default Orders dtoToEntity(OrdersDTO ordersDTO) {
         Member member = Member.builder().name(ordersDTO.getName()).build();
 
-        List<Shop> shopList = ordersDTO.getProducts().stream()
-                .map(productDTO -> Shop.builder()
-                        .name(productDTO.getShopName())
-                        .shopId(productDTO.getShopId())
-                        .build())
-                .collect(Collectors.toList());
-
+        // shopId만 사용하여 Shop을 조회하고 매핑
+        Shop shop = Shop.builder()
+                .shopId(ordersDTO.getShopId())  // shopId로 Shop 엔티티 생성
+                .build();
 
         return Orders.builder()
                 .orderId(ordersDTO.getOrderId())  // DTO에서 엔티티로 매핑 확인
                 .delivery_state(ordersDTO.getDeliveryState())  // 배송 상태
                 .member(member)  // Member 엔티티
-                .shop(shopList.get(0))  // 첫 번째 상품으로 예시, 여러 상품의 경우 다르게 처리 필요
+                .shop(shop)  // Shop 엔티티
+                .quantity(ordersDTO.getQuantity())  // 상품 수량 매핑
                 .build();
     }
 
     // Entity -> DTO 변환 메서드 (orderId는 String으로, id는 DB에서 자동 생성된 값)
     default OrdersDTO entityToDto(Orders orders) {
-        // Shop 엔티티를 ProductDTO로 변환
-        List<ProductDTO> products = List.of(
-                ProductDTO.builder()
-                        .shopName(orders.getShop().getName())
-                        .productPrice(orders.getShop().getPrice())  // 적절히 가격 매핑 필요
-                        .quantity(1)  // 상품 수량 처리 필요
-                        .build()
-        );
-
         return OrdersDTO.builder()
                 .orderId(orders.getOrderId())
                 .deliveryState(orders.getDelivery_state())
                 .name(orders.getMember().getName())
                 .phone(orders.getMember().getPhone())
                 .address(orders.getMember().getAddress())
-                .products(products)  // 상품 리스트
+                .shopId(orders.getShop().getShopId())  // Shop의 ID를 DTO에 매핑
+                .quantity(orders.getQuantity())  // 상품 갯수 매핑
                 .build();
     }
 

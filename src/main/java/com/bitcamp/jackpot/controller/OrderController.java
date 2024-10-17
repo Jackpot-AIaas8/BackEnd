@@ -31,12 +31,12 @@ public class OrderController {
         ordersService.edit(ordersDTO);
     }
 
-    @GetMapping("/findall")
+    @GetMapping("/findAll")
     public List<OrdersDTO> findAll() {
         return ordersService.findAll();
     }
 
-    @GetMapping("/findone")
+    @GetMapping("/findOne")
     public OrdersDTO findOne(@RequestParam Integer orderId) {
         log.info(orderId);
         OrdersDTO ordersDTO = ordersService.findOne(orderId);
@@ -44,10 +44,5 @@ public class OrderController {
         return ordersDTO;
     }
 
-    @DeleteMapping("/remove")
-    public void remove(@RequestParam Integer orderId) {
-        log.info(orderId);
-        ordersService.remove(orderId);
-    }
 
 }
