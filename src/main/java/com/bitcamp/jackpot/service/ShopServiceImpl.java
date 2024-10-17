@@ -111,11 +111,6 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO) {
-        return List.of();
-    }
-
-//    @Override
-//    public List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO) {
 //        CustomUserDetails ud = getUserDetails();
 //        Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
 //        Member member = oMember.orElseThrow();
@@ -123,14 +118,12 @@ public class ShopServiceImpl implements ShopService {
 //
 //        Pageable pageable = pageRequestDTO.getPageable("orderId");
 ////        log.info(memberId);
-//        Page<Orders> result = ordersRepository.findByMemberId(memberId, pageable);
+////        Page<Orders> result = ordersRepository.findByMemberId(memberId, pageable);
 //        List<OrdersDTO> ordersDTOList = result.getContent().stream()
 //                .map(order -> modelMapper.map(order, OrdersDTO.class)) // 수정된 부분
 //                .collect(Collectors.toList());
 //        log.info(ordersDTOList);
 //        return ordersDTOList;
-//    }
-
-
-
+        return null;
+    }
 }

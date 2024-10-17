@@ -22,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                if(member.getGrade()==1){
+                if(member.getGrade()==0){
                     return "ROLE_ADMIN";
                 }else if(member.getGrade()==2){
                     return "ROLE_PREMIUM";
