@@ -1,9 +1,9 @@
 package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.*;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.OrdersRepository;
 import com.bitcamp.jackpot.repository.ShopRepository;
@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor

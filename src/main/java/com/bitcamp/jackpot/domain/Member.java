@@ -38,17 +38,14 @@ public class Member extends BaseEntity {
 
     @Builder.Default
     @Column(nullable = false)
-    private int grade = 0;
+    private int grade = 1;
 
     //비밀번호 인코딩 메서드
     public void encodePassword(String rawPassword, BCryptPasswordEncoder encoder) {
         this.pwd = encoder.encode(rawPassword);
     }
 
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-////    @JsonManagedReference
-////    //    @JsonBackReference
-////    private List<Board> boards;
+
 
     public Member changePassword(String newPassword, BCryptPasswordEncoder passwordEncoder) {
         this.pwd = passwordEncoder.encode(newPassword);

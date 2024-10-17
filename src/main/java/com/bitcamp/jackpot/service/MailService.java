@@ -1,7 +1,7 @@
 package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.dto.VerificationCodeDTO;
-import com.bitcamp.jackpot.jwt.RedisUtil;
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

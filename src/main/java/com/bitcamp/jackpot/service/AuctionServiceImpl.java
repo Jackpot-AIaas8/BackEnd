@@ -4,7 +4,7 @@ import com.bitcamp.jackpot.domain.Auction;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.AuctionDTO;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.PageRequestDTO;
 import com.bitcamp.jackpot.dto.PageResponseDTO;
 import com.bitcamp.jackpot.repository.AuctionRepository;
@@ -14,15 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

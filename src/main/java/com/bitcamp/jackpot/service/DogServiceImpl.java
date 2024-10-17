@@ -2,6 +2,7 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.*;
 import com.bitcamp.jackpot.dto.*;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.DogRepository;
 import com.bitcamp.jackpot.repository.FundRepository;
 import com.bitcamp.jackpot.repository.HeartRepository;

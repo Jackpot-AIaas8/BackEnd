@@ -1,9 +1,7 @@
 package com.bitcamp.jackpot.controller;
 
-import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.dto.MemberEditDTO;
 import com.bitcamp.jackpot.jwt.LogoutService;
 import com.bitcamp.jackpot.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;

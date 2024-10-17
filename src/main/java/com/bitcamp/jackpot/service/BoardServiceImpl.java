@@ -4,6 +4,7 @@ import com.bitcamp.jackpot.domain.Board;
 
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.*;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.BoardRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.ReplyRepository;
@@ -14,14 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

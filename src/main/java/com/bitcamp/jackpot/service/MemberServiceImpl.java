@@ -1,10 +1,9 @@
 package com.bitcamp.jackpot.service;
 
-import com.bitcamp.jackpot.domain.Auction;
+import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.dto.MemberEditDTO;
-import com.bitcamp.jackpot.jwt.RedisUtil;
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -15,12 +14,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -42,8 +43,8 @@ public class MemberServiceImpl implements MemberService {
         //엔티티 저장
         try {
             memberRepository.save(member);
-        } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("중복된 이메일입니다.");
+        } catch (Exception e) {
+            throw new DuplicateResourceException();
         }
     }
 
@@ -108,6 +109,10 @@ public class MemberServiceImpl implements MemberService {
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
+    @Override
+    public boolean checkNickName(String nickName) {
+        return memberRepository.existsByNickName(nickName);
+    }
 
     @Override
     public boolean checkEmail(String email) {
@@ -115,9 +120,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean checkPwd(String email,String pwd) {
+    public boolean checkPwd(String email, String pwd) {
+        // 이메일로 사용자 조회
+        Optional<Member> memberOptional = memberRepository.findByEmail(email);
 
-        return memberRepository.existsByEmailAndPwd(email,bCryptPasswordEncoder.encode(pwd));
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+
+            return bCryptPasswordEncoder.matches(pwd, member.getPwd());
+        }
+
+        return false;
+    }
+
+    public ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
+        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
+        return ResponseEntity.status(status).body(response);
     }
 
     @Override
@@ -146,10 +167,7 @@ public class MemberServiceImpl implements MemberService {
 
 
 
-    @Override
-    public boolean checkNickName(String nickName) {
-        return memberRepository.existsByNickName(nickName);
-    }
+
 
 
     @Override
