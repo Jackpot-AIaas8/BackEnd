@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,6 +39,9 @@ public class Board extends BaseEntity {
 //    @JsonBackReference
 //    @JsonManagedReference
     private Member member;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Reply> reply;
 
     public void edit(String title, String content) {
         this.title = title;
