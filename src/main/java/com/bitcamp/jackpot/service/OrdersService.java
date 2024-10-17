@@ -29,13 +29,13 @@ public interface OrdersService {
     default Orders dtoToEntity(OrdersDTO ordersDTO) {
         Member member = Member.builder().name(ordersDTO.getName()).build();
 
-        // 주문의 상품 리스트 처리 (ProductDTO 리스트 -> Shop 엔티티 리스트)
         List<Shop> shopList = ordersDTO.getProducts().stream()
                 .map(productDTO -> Shop.builder()
                         .name(productDTO.getShopName())
-                        .shopId(productDTO.getProductPrice())  // shopId를 적절히 변경해야 할 수도 있음
+                        .shopId(productDTO.getShopId())
                         .build())
                 .collect(Collectors.toList());
+
 
         return Orders.builder()
                 .orderId(ordersDTO.getOrderId())  // DTO에서 엔티티로 매핑 확인
@@ -57,7 +57,7 @@ public interface OrdersService {
         );
 
         return OrdersDTO.builder()
-                .orderId(orders.getOrderId())  // 주문 id는 String
+                .orderId(orders.getOrderId())
                 .deliveryState(orders.getDelivery_state())
                 .name(orders.getMember().getName())
                 .phone(orders.getMember().getPhone())

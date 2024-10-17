@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -9,9 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class Orders extends BaseEntity {
+@NoArgsConstructor public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,9 +22,10 @@ public class Orders extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
-    Shop shop;
+    @JsonIgnore
+    private Shop shop;
     @ManyToOne
-    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
-    Member member;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
 }
