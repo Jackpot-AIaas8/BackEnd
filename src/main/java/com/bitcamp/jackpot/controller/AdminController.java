@@ -186,8 +186,8 @@ public class AdminController {
     }
 
     @PostMapping("/board/register")
-    public ResponseEntity<String> register(@RequestBody Board board, BindingResult bindingResult) throws BindException {
-        log.info(board);
+    public ResponseEntity<String> register(@ModelAttribute Board board, BindingResult bindingResult) throws BindException {
+        log.info(bindingResult);
         try {
             boardService.register(board);
             String successPath = "\"status\":200";
