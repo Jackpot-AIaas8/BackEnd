@@ -115,9 +115,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean checkPwd(String email,String pwd) {
+    public boolean checkPwd(String email, String pwd) {
 
-        return memberRepository.existsByEmailAndPwd(email,bCryptPasswordEncoder.encode(pwd));
+        return memberRepository.existsByEmailAndPwd(email, bCryptPasswordEncoder.encode(pwd));
     }
 
     @Override
