@@ -2,10 +2,8 @@ package com.bitcamp.jackpot.controller;
 
 import com.bitcamp.jackpot.domain.Board;
 import com.bitcamp.jackpot.dto.*;
-import com.bitcamp.jackpot.service.BoardService;
-import com.bitcamp.jackpot.service.DogService;
-import com.bitcamp.jackpot.service.MemberService;
-import com.bitcamp.jackpot.service.ShopService;
+import com.bitcamp.jackpot.service.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -29,6 +29,7 @@ public class AdminController {
     private final DogService dogService;
     private final MemberService memberService;
     private final BoardService boardService;
+    private final ObjectStorageService objectStorageService;
 
     //shop
     @PostMapping("/shop/register")
@@ -70,6 +71,35 @@ public class AdminController {
     //end shop
 
     //dog
+    @PostMapping("/dog/register")
+    public ResponseEntity<Integer> register(@RequestParam("dogData") MultipartFile dogData, @RequestParam("files") List<MultipartFile> files) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        DogRegistDTO dogRegistDTO = objectMapper.readValue(dogData.getInputStream(), DogRegistDTO.class);
+
+        DogDTO dogDTO = new DogDTO();
+        for (int i = 0; i< files.size(); ++i){
+            switch (i){
+                case 0 : dogDTO.setMainImage(objectStorageService.uploadFile("dog/",files.get(0))); break;
+                case 1 : dogDTO.setDetailImage1(objectStorageService.uploadFile("dog/",files.get(1))); break;
+                case 2 : dogDTO.setDetailImage2(objectStorageService.uploadFile("dog/",files.get(2))); break;
+                case 3 : dogDTO.setDetailImage3(objectStorageService.uploadFile("dog/",files.get(3))); break;
+                case 4 : dogDTO.setDetailImage4(objectStorageService.uploadFile("dog/",files.get(4))); break;
+            }
+        }
+        dogDTO.setName(dogRegistDTO.getName());
+        dogDTO.setSpecies(dogRegistDTO.getSpecies());
+        dogDTO.setAge(dogRegistDTO.getAge());
+        dogDTO.setGender(dogRegistDTO.getGender());
+        dogDTO.setHeart(dogRegistDTO.getHeart());
+        dogDTO.setVideoUrl(dogRegistDTO.getVideoUrl());
+        dogDTO.setDogDetail(dogRegistDTO.getDogDetail());
+        dogDTO.setTitle(dogRegistDTO.getTitle());
+
+        DogDTO savedDTO = dogService.register(dogDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedDTO.getDogId());
+    }
+
     @PostMapping("/dog/edit")
     public void dogEdit(@RequestBody DogDTO dogDTO) {
         log.info(dogDTO);
