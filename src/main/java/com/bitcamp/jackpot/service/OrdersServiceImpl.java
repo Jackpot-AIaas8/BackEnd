@@ -2,10 +2,12 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
+import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.CustomUserDetails;
-//import com.bitcamp.jackpot.dto.OrdersDTO;
+import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.repository.MemberRepository;
-//import com.bitcamp.jackpot.repository.OrdersRepository;
+import com.bitcamp.jackpot.repository.OrdersRepository;
+import com.bitcamp.jackpot.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -19,50 +21,81 @@ import java.util.List;
 @RequiredArgsConstructor
 @Log4j2
 public class OrdersServiceImpl implements OrdersService {
-//    private final OrdersRepository ordersRepository;
-//    private final ModelMapper modelMapper;
-//    private final MemberRepository memberRepository;
-//
-//    // 로그인된 사용자 정보를 가져오는 메서드
-//    private CustomUserDetails getUserDetails() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        return (CustomUserDetails) auth.getPrincipal();
-//    }
-//
-//    @Override
-//    public void register(OrdersDTO ordersDTO) {
-//        CustomUserDetails userDetails = getUserDetails();
-//        Member member = memberRepository.findByEmail(userDetails.getUsername())
-//                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
-//        log.info(ordersDTO);
-//        Orders orders = dtoToEntity(ordersDTO);
-//        ordersRepository.save(orders);
-//    }
-//
-//    @Override
-//    public void edit(OrdersDTO ordersDTO) {
-//        log.info(ordersDTO);
-//
-//        Orders orders = dtoToEntity(ordersDTO);
-//        ordersRepository.save(orders);
-//    }
-//
-//    @Override
-//    public void remove(Integer orderId) {
-//        log.info(ordersRepository.findById(orderId));
-//        ordersRepository.deleteById(orderId);
-//    }
-//
-//    @Override
-//    public OrdersDTO findOne(Integer orderId) {
-//        Orders orders = ordersRepository.findById(orderId)
-//                .orElseThrow(() -> new RuntimeException("Orders not found"));
-//        return entityToDto(orders);
-//    }
-//
-//    @Override
-//    public List<OrdersDTO> findAll() {
-//        List<OrdersDTO> ordersDTO = entityListToDtoList(ordersRepository.findAll());
-//        return ordersDTO;
-//    }
+
+    private final OrdersRepository ordersRepository;
+    private final ModelMapper modelMapper;
+    private final MemberRepository memberRepository;
+    private final ShopRepository shopRepository;
+
+    // 로그인된 사용자 정보를 가져오는 메서드
+    private CustomUserDetails getUserDetails() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (CustomUserDetails) auth.getPrincipal();
+    }
+
+    @Override
+    public void register(OrdersDTO ordersDTO) {
+        log.info("Starting order registration for OrderDTO: {}", ordersDTO);
+
+        // Shop과 Member 엔티티 조회
+        Shop shop = shopRepository.findById(ordersDTO.getProducts().get(0).getShopId())
+                .orElseThrow(() -> {
+                    log.error("Shop not found for shopId: {}", ordersDTO.getProducts().get(0).getShopId());
+                    return new RuntimeException("Shop not found");
+                });
+
+        Member member = memberRepository.findById(ordersDTO.getMemberID())
+                .orElseThrow(() -> {
+                    log.error("Member not found for memberId: {}", ordersDTO.getMemberID());
+                    return new RuntimeException("Member not found");
+                });
+
+        // Orders 엔티티로 변환
+        Orders order = new Orders();
+        order.setOrderId(ordersDTO.getOrderId());
+        order.setShop(shop);
+        order.setMember(member);
+        order.setDelivery_state(0); // 초기 배송 상태 설정
+
+        // 주문을 저장
+        log.info("Saving order to database: {}", order);
+        ordersRepository.save(order);
+
+        log.info("Order registered successfully with orderId: {}", ordersDTO.getOrderId());
+    }
+    @Override
+    public void edit(OrdersDTO ordersDTO) {
+        log.info("OrdersDTO for Edit: {}", ordersDTO);
+
+        Orders orders = dtoToEntity(ordersDTO);
+        ordersRepository.save(orders);
+    }
+
+    @Override
+    public void remove(Integer id) {
+        log.info("Removing order with ID: {}", id);
+        ordersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Orders not found"));
+        ordersRepository.deleteById(id);
+    }
+
+    @Override
+    public OrdersDTO findOne(Integer id) {
+        Orders orders = ordersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Orders not found"));
+        return entityToDto(orders);
+    }
+
+    @Override
+    public List<OrdersDTO> findAll() {
+        List<OrdersDTO> ordersDTOList = entityListToDtoList(ordersRepository.findAll());
+        return ordersDTOList;
+    }
+
+    // 주문을 orderId로 조회하는 메서드 추가 (orderId는 String)
+    public OrdersDTO findOneByOrderId(String orderId) {
+        Orders orders = ordersRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with orderId: " + orderId));
+        return entityToDto(orders);
+    }
 }

@@ -55,7 +55,6 @@ public class MemberServiceImpl implements MemberService {
                     .orElseThrow(() -> new EntityNotFoundException("Member not found"));
             System.out.println("member 조회 완료");
 
-            // Member 객체의 필드를 업데이트 (setter를 사용하지 않음)
             member.updateMemberInfo(
                     memberDTO.getName(),
                     memberDTO.getPhone(),
@@ -113,6 +112,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean checkEmail(String email) {
         return memberRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean checkPwd(String email, String pwd) {
+
+        return memberRepository.existsByEmailAndPwd(email, bCryptPasswordEncoder.encode(pwd));
     }
 
     @Override

@@ -11,10 +11,11 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"reviews", "carts", "auctions"})
+@ToString(exclude = {"reviews", "carts", "auctions", "orders"})
 public class Shop extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "shopId")
     private int shopId;
 
     @Column(length = 20, nullable = false)
@@ -35,6 +36,8 @@ public class Shop extends BaseEntity {
     private List<Review> reviews;
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Cart> carts;
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Orders> orders;
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<Auction> auctions;

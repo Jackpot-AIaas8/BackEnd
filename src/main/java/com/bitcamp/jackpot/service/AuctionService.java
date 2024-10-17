@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public interface AuctionService {
 
-    void register(AuctionDTO auctionDTO, int shopId);
+    AuctionDTO register(AuctionDTO auctionDTO, int shopId);
 
     void edit(int auctionId, int auctionStatus);
 
@@ -21,10 +21,7 @@ public interface AuctionService {
 
     PageResponseDTO<AuctionDTO> findAll(PageRequestDTO pageRequestDTO);
 
-    Auction getCurrentAuction();
-
-    Auction getNextAuction();
-
+    AuctionDTO getAuction();
 
     default Auction dtoToEntity(AuctionDTO dto, Shop shop) {
         return Auction.builder()

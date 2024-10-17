@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.domain;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,17 +38,12 @@ public class Member extends BaseEntity {
 
     @Builder.Default
     @Column(nullable = false)
-    private int isAdmin = 0;
+    private int grade = 0;
 
     //비밀번호 인코딩 메서드
     public void encodePassword(String rawPassword, BCryptPasswordEncoder encoder) {
         this.pwd = encoder.encode(rawPassword);
     }
-
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-////    @JsonManagedReference
-////    //    @JsonBackReference
-////    private List<Board> boards;
 
     public Member changePassword(String newPassword, BCryptPasswordEncoder passwordEncoder) {
         this.pwd = passwordEncoder.encode(newPassword);
@@ -58,11 +54,21 @@ public class Member extends BaseEntity {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Cart> carts;
+    private List<Orders> orders;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Cart> carts;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Board> boards;
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<Auction> auctions;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Board> boards;
+
+
 
     public void updateMemberInfo(String name, String phone, String pwd, String address) {
         this.name = name;

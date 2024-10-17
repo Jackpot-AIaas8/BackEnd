@@ -1,25 +1,31 @@
 package com.bitcamp.jackpot.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class Orders extends BaseEntity {
+@NoArgsConstructor public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    private int id;
+
+    @Column(name = "orderId", nullable = false)
+    private String orderId;
+
     private int delivery_state;
 
     @ManyToOne
-    @JoinColumn(name = "shopId", referencedColumnName = "shopId")
-    Shop shop;
+    @JoinColumn(name = "shop_id", nullable = false)
+    @JsonIgnore
+    private Shop shop;
     @ManyToOne
-    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
-    Member member;
-   
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
 }

@@ -2,6 +2,7 @@ package com.bitcamp.jackpot.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,12 +21,12 @@ public class Auction extends BaseEntity {
     private int auctionId;
     @Column(name = "auction_status")
     private int auctionStatus;
-    @NonNull
+    @NotNull
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
     private LocalDateTime end_time;
-    @NonNull
+    @NotNull
     private int start_price;
 
     private int end_price;

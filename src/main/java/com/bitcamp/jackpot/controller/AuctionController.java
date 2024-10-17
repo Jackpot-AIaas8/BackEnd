@@ -1,14 +1,14 @@
 package com.bitcamp.jackpot.controller;
 
-import com.bitcamp.jackpot.domain.Auction;
 import com.bitcamp.jackpot.dto.*;
 import com.bitcamp.jackpot.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.net.http.HttpRequest;
+
 
 @RestController
 @Log4j2
@@ -16,10 +16,18 @@ import java.util.List;
 @RequestMapping("/auction")
 public class AuctionController {
     private final AuctionService auctionService;
+    private final String nodeWebSocketUrl = "http://localhost:3001";
+
+    private void sendToNodeWebSocket(AuctionDTO auctionDTO, String endpoint) {
+        String fullEndpoint = nodeWebSocketUrl + endpoint;
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject(fullEndpoint, auctionDTO, String.class);  // Node.js로 경매 데이터를 전송
+    }
 
     @PostMapping("/register/{shopId}")
     public void register(@RequestBody AuctionDTO auctionDTO, @PathVariable("shopId") int shopId) {
-        auctionService.register(auctionDTO, shopId);
+        AuctionDTO addAuctionDTO = auctionService.register(auctionDTO, shopId);
+        sendToNodeWebSocket(addAuctionDTO, "/send-auction");
     }
 
     @PostMapping("/edit")
@@ -37,30 +45,15 @@ public class AuctionController {
 //    public AuctionDTO findNextAuction() {
 //        return auctionService.findNextAuction();
 //    }
-// 현재 경매 데이터 가져오기
+
     @GetMapping("/current")
-    public ResponseEntity<Auction> getCurrentAuction() {
-        Auction currentAuction = auctionService.getCurrentAuction();
-        log.info(currentAuction);
-        if (currentAuction != null) {
-            return ResponseEntity.ok(currentAuction);
-        } else {
-            // 현재 진행 중인 경매가 없을 때
-            return ResponseEntity.noContent().build();
-        }
+    public AuctionDTO getAuction() {
+        AuctionDTO currentOrUpcomingAuctionDTO = auctionService.getAuction();
+        // WebSocket을 통해 Node 서버로 경매 데이터를 전송
+        sendToNodeWebSocket(currentOrUpcomingAuctionDTO, "/send-auction");
+        // 경매 데이터를 클라이언트에 반환
+        return currentOrUpcomingAuctionDTO;
     }
-
-    // 다음 경매 데이터 가져오기
-    @GetMapping("/next")
-    public ResponseEntity<Auction> getNextAuction() {
-        Auction nextAuction = auctionService.getNextAuction();
-        if (nextAuction != null) {
-            return ResponseEntity.ok(nextAuction);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
-    }
-
 
     @GetMapping("/findList")
     public PageResponseDTO<AuctionDTO> findList(PageRequestDTO pageRequestDTO) {
