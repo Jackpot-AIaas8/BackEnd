@@ -15,11 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,7 +71,11 @@ public class BoardServiceImpl implements BoardService {
         board.setMember(member);
         // 열어서 나온 멤버 객체를 넣으면 자동으로 멤버id를 넣어줌...
 
-        System.out.println(board);
+        LocalDateTime now = LocalDateTime.now();
+        board.setRegDate(now);
+        //원래는 프론트에서 현재시간을 받아오게 되어있었지만 못받아와서 여기서 넣어줌
+
+//        System.out.println(board);
 
         boardRepository.save(board);
         //보드레포지토리에 있는 쿼리문 이용해서 변경한 보드 객체를 저장함.
@@ -260,7 +267,7 @@ public class BoardServiceImpl implements BoardService {
         boardToEdit.setMember(member);
         // 열어서 나온 멤버 객체를 넣으면 자동으로 멤버id를 넣어줌...
 
-        System.out.println(boardToEdit);
+//        System.out.println(boardToEdit);
 
         boardRepository.save(boardToEdit);
         // 수정된 보드객체를 db에 저장함.

@@ -27,10 +27,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper = new ObjectMapper(); // ObjectMapper 추가
 
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RedisUtil redisUtil ) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RedisUtil redisUtil) {
 
         this.jwtUtil = jwtUtil;
-        this.redisUtil=redisUtil;
+        this.redisUtil = redisUtil;
         this.authenticationManager = authenticationManager;
         setFilterProcessesUrl("/member/signIn"); // 요청 처리 URL 설정
     }
@@ -38,14 +38,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         try {
-        SignInDTO signInDTO = objectMapper.readValue(request.getInputStream(), SignInDTO.class);
-        String email = signInDTO.getEmail();
-        String pwd = signInDTO.getPwd();
+            SignInDTO signInDTO = objectMapper.readValue(request.getInputStream(), SignInDTO.class);
+            String email = signInDTO.getEmail();
+            String pwd = signInDTO.getPwd();
 
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, pwd, null);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, pwd, null);
 
-   //어덴티케이션 매니저에 검증을위해 토큰위임
+            //어덴티케이션 매니저에 검증을위해 토큰위임
             return authenticationManager.authenticate(authToken);
         } catch (Exception e) {
             throw new RuntimeException("Authentication failed: " + e.getMessage());
@@ -57,7 +57,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
 
-
         //유저 정보
         String username = authentication.getName();
 
@@ -65,12 +64,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
-
+        System.out.println(role);
         //토큰 생성
         String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
         //refresh 토큰 저장
-        addRefreshEntity(username,refresh,86400000L);
+        addRefreshEntity(username, refresh, 86400000L);
         //응답 설정
 
         response.addCookie(createCookie("refresh", refresh));
@@ -118,7 +117,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(24 * 60 * 60);
 //        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true); // 클라에서 접근을막아 XSS 방지

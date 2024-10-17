@@ -33,7 +33,7 @@ public class BoardController {
 
     // 게시글 등록, create
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Board board, BindingResult bindingResult) throws BindException {
+    public ResponseEntity<String> register(@ModelAttribute Board board, BindingResult bindingResult) throws BindException {
 
         System.out.println(board);
         log.info(board);

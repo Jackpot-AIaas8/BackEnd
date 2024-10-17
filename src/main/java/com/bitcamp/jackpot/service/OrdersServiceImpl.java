@@ -1,10 +1,14 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
+import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
+
 import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.OrdersRepository;
+import com.bitcamp.jackpot.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -22,6 +26,7 @@ public class OrdersServiceImpl implements OrdersService {
     private final OrdersRepository ordersRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final ShopRepository shopRepository;
 
     // 로그인된 사용자 정보를 가져오는 메서드
     private CustomUserDetails getUserDetails() {
@@ -31,23 +36,34 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public void register(OrdersDTO ordersDTO) {
-        // 사용자 인증 없이 처리하는 로직
-        log.info("OrdersDTO: {}", ordersDTO);
+        log.info("Starting order registration for OrderDTO: {}", ordersDTO);
 
+        // Shop과 Member 엔티티 조회
+        Shop shop = shopRepository.findById(ordersDTO.getProducts().get(0).getShopId())
+                .orElseThrow(() -> {
+                    log.error("Shop not found for shopId: {}", ordersDTO.getProducts().get(0).getShopId());
+                    return new RuntimeException("Shop not found");
+                });
 
-        // 주문 정보를 저장 (사용자 정보가 필요하지 않다면 생략)
-        Orders orders = dtoToEntity(ordersDTO);
-        // 필요한 경우 기본값이나 다른 방식으로 member를 설정하거나 아예 member 설정을 하지 않음
-        ordersRepository.save(orders);
-        log.info("Orders Entity: {}", orders);
+        Member member = memberRepository.findById(ordersDTO.getMemberID())
+                .orElseThrow(() -> {
+                    log.error("Member not found for memberId: {}", ordersDTO.getMemberID());
+                    return new RuntimeException("Member not found");
+                });
 
-        if (ordersDTO.getOrderId() == null || ordersDTO.getOrderId().isEmpty()) {
-            throw new RuntimeException("OrderId is required");
+        // Orders 엔티티로 변환
+        Orders order = new Orders();
+        order.setOrderId(ordersDTO.getOrderId());
+        order.setShop(shop);
+        order.setMember(member);
+        order.setDelivery_state(0); // 초기 배송 상태 설정
 
-        }
+        // 주문을 저장
+        log.info("Saving order to database: {}", order);
+        ordersRepository.save(order);
 
+        log.info("Order registered successfully with orderId: {}", ordersDTO.getOrderId());
     }
-
     @Override
     public void edit(OrdersDTO ordersDTO) {
         log.info("OrdersDTO for Edit: {}", ordersDTO);
