@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 
 //한번만 실행하는 필터 상속
 @RequiredArgsConstructor
@@ -77,12 +78,16 @@ public class JWTFilter extends OncePerRequestFilter {
 // username, role 값을 획득
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
-        int roleInt=0;
-        if (role=="ROLE_ADMIN") {
+        int roleInt;
+        if (Objects.equals(role, "ROLE_ADMIN")) {
             roleInt = 1;
         }
+        else if(Objects.equals(role, "ROLE_PREMIUM")) {
+            roleInt = 2;
+        }
+        else roleInt = 0;
 
-       Member member =Member.builder().email(username).isAdmin(roleInt).build();
+       Member member =Member.builder().email(username).grade(roleInt).build();
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

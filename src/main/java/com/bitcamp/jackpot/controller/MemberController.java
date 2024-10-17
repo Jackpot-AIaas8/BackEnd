@@ -74,12 +74,18 @@ public class MemberController {
         return buildDuplicateCheckResponse(memberService.checkEmail(email));
     }
 
+    @GetMapping("/checkPwd")
+    public ResponseEntity<Map<String, Boolean>> checkPwd(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String pwd) {
+        String email = customUserDetails.getUsername();
+        return buildDuplicateCheckResponse(memberService.checkPwd(email,pwd));
+    }
+
     @GetMapping("/checkNickName")
     public ResponseEntity<Map<String, Boolean>> checkNickName(@RequestParam String nickName) {
         return buildDuplicateCheckResponse(memberService.checkNickName(nickName));
     }
 
-    // 중복 체크 결과 응답을 생성하는 메서드
+    // 중복 체크 결과 응답을 생성하는 메서드 리팩토링해야함
     private ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
         Map<String, Boolean> response = new HashMap<>();
         response.put("isDuplicate", isDuplicate);

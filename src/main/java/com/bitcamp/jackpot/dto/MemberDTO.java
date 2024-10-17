@@ -32,7 +32,7 @@ public class MemberDTO {
 
     private String address;
 
-    private int isAdmin;
+    private int grade;
 
 
 }
