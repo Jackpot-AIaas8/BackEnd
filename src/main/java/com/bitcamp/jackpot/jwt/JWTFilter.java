@@ -80,12 +80,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(accessToken);
         int roleInt;
         if (Objects.equals(role, "ROLE_ADMIN")) {
-            roleInt = 1;
+            roleInt = 0;
         }
         else if(Objects.equals(role, "ROLE_PREMIUM")) {
             roleInt = 2;
         }
-        else roleInt = 0;
+        else roleInt = 1;
 
        Member member =Member.builder().email(username).grade(roleInt).build();
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
