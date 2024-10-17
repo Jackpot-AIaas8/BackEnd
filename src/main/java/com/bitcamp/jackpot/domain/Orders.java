@@ -18,6 +18,9 @@ import lombok.*;
     @Column(name = "orderId", nullable = false)
     private String orderId;
 
+    @Column(nullable = false)
+    private int quantity;
+
     private int delivery_state;
 
     @ManyToOne

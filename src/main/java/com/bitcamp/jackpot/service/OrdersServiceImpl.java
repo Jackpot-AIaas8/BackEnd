@@ -27,20 +27,14 @@ public class OrdersServiceImpl implements OrdersService {
     private final MemberRepository memberRepository;
     private final ShopRepository shopRepository;
 
-    // 로그인된 사용자 정보를 가져오는 메서드
-    private CustomUserDetails getUserDetails() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (CustomUserDetails) auth.getPrincipal();
-    }
-
     @Override
     public void register(OrdersDTO ordersDTO) {
         log.info("Starting order registration for OrderDTO: {}", ordersDTO);
 
         // Shop과 Member 엔티티 조회
-        Shop shop = shopRepository.findById(ordersDTO.getProducts().get(0).getShopId())
+        Shop shop = shopRepository.findById(ordersDTO.getShopId())
                 .orElseThrow(() -> {
-                    log.error("Shop not found for shopId: {}", ordersDTO.getProducts().get(0).getShopId());
+                    log.error("Shop not found for shopId: {}", ordersDTO.getShopId());
                     return new RuntimeException("Shop not found");
                 });
 
@@ -55,7 +49,8 @@ public class OrdersServiceImpl implements OrdersService {
         order.setOrderId(ordersDTO.getOrderId());
         order.setShop(shop);
         order.setMember(member);
-        order.setDelivery_state(0); // 초기 배송 상태 설정
+        order.setDelivery_state(0);  // 초기 배송 상태 설정
+        order.setQuantity(ordersDTO.getQuantity());  // 상품 수량 저장
 
         // 주문을 저장
         log.info("Saving order to database: {}", order);
@@ -63,6 +58,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         log.info("Order registered successfully with orderId: {}", ordersDTO.getOrderId());
     }
+
     @Override
     public void edit(OrdersDTO ordersDTO) {
         log.info("OrdersDTO for Edit: {}", ordersDTO);
@@ -72,18 +68,15 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void remove(Integer id) {
-        log.info("Removing order with ID: {}", id);
-        ordersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orders not found"));
-        ordersRepository.deleteById(id);
-    }
-
-    @Override
     public OrdersDTO findOne(Integer id) {
         Orders orders = ordersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orders not found"));
         return entityToDto(orders);
+    }
+
+    @Override
+    public OrdersDTO findOneByOrderId(Integer memberId) {
+        return null;
     }
 
     @Override
