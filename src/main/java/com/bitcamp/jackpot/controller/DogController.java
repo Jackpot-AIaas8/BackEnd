@@ -23,29 +23,6 @@ public class DogController {
 
     private final DogService dogService;
 
-    private final ObjectStorageService objectStorageService;
-
-    @PostMapping("/register")
-    public ResponseEntity<Integer> register(@RequestBody DogDTO dogDTO, List<MultipartFile> files) throws Exception {
-        List<String> imageUrls = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String fileUrl = objectStorageService.uploadFile("dog/",file);
-            if (fileUrl == null){
-                continue;
-            }
-            imageUrls.add(fileUrl);
-        }
-        dogDTO.setMainImage(imageUrls.get(0));
-        dogDTO.setDetailImage1(imageUrls.get(1));
-        dogDTO.setDetailImage2(imageUrls.get(2));
-        dogDTO.setDetailImage3(imageUrls.get(3));
-        dogDTO.setDetailImage4(imageUrls.get(4));
-
-        DogDTO savedDTO = dogService.register(dogDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDTO.getDogId());
-    }
-
     @PostMapping("/edit")
     public ResponseEntity<Integer> edit(@RequestBody DogDTO dogDTO) {
         if (dogService.edit(dogDTO) == 0) {
