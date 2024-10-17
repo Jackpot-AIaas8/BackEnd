@@ -1,16 +1,16 @@
 package com.bitcamp.jackpot.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
+
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 public class OrdersDTO {
 
     private int id;
@@ -20,5 +20,6 @@ public class OrdersDTO {
     private String address;            // 배송지 주소
     private int deliveryState;         // 배송 상태
     private int totalPrice;
+    private int memberID;              // 회원 ID 추가
     private List<ProductDTO> products; // 상품 리스트
 }

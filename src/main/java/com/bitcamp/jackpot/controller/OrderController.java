@@ -19,7 +19,7 @@ public class OrderController {
 
     @PostMapping("/register")
     public void register(@RequestBody OrdersDTO ordersDTO) {
-        System.out.println("Order ID from Frontend: " + ordersDTO.getOrderId());
+        log.info("Order ID from Frontend: " + ordersDTO.getOrderId());
 
         log.info(ordersDTO);
         ordersService.register(ordersDTO);
