@@ -1,14 +1,12 @@
-package com.bitcamp.jackpot.dto;
+package com.bitcamp.jackpot.jwt;
 
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {

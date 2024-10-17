@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.config;
 
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.jwt.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,7 +44,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LogoutServiceImp logoutService) throws Exception {
 
         http
                 .cors((cors) -> cors

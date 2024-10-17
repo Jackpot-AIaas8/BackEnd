@@ -1,7 +1,5 @@
-package com.bitcamp.jackpot.controller;
+package com.bitcamp.jackpot.jwt;
 
-import com.bitcamp.jackpot.jwt.JWTUtil;
-import com.bitcamp.jackpot.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @RequiredArgsConstructor
 @RestController

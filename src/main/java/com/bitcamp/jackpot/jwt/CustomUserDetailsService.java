@@ -1,7 +1,6 @@
-package com.bitcamp.jackpot.service;
+package com.bitcamp.jackpot.jwt;
 
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
