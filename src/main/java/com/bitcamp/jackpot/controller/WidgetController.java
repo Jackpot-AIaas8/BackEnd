@@ -39,28 +39,40 @@ public class WidgetController {
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
         logger.info("결제 확인 요청 수신: {}", jsonBody);
 
+
         JSONParser parser = new JSONParser();
         String orderId;
         String amount;
         String paymentKey;
-        String name;  // 구매자 이름
-        String phone; // 전화번호
-        String address; // 배송지 주소
-        int shopId; // shopId 추가
+        String name;
+        String phone;
+        String address;
+        int shopId;
+        int memberID;
+
 
         try {
             // 클라이언트에서 받은 JSON 요청 바디를 파싱
             JSONObject requestData = (JSONObject) parser.parse(jsonBody);
-            paymentKey = (String) requestData.get("paymentKey");
-            orderId = (String) requestData.get("orderId");
-            amount = (String) requestData.get("amount");
-            name = (String) requestData.get("name");   // name 필드 추가
-            phone = (String) requestData.get("phone"); // phone 필드 추가
-            address = (String) requestData.get("address"); // address 필드 추가
-            shopId = Integer.parseInt(requestData.get("shopId").toString());
+
+            paymentKey = requestData.get("paymentKey") != null ? requestData.get("paymentKey").toString() : null;
+            orderId = requestData.get("orderId") != null ? requestData.get("orderId").toString() : null;
+            amount = requestData.get("amount") != null ? requestData.get("amount").toString() : null;
+            name = requestData.get("name") != null ? requestData.get("name").toString() : null;
+            phone = requestData.get("phone") != null ? requestData.get("phone").toString() : null;
+            address = requestData.get("address") != null ? requestData.get("address").toString() : null;
+            shopId = requestData.get("shopId") != null ? Integer.parseInt(requestData.get("shopId").toString()) : 0;
+            memberID = requestData.get("memberID") != null ? Integer.parseInt(requestData.get("memberID").toString()) : 0;
+
+            // memberId, shopId 등의 필수 값을 체크하는 로직 추가 가능
+            if (memberID == 0 || shopId == 0) {
+                throw new IllegalArgumentException("memberId 또는 shopId 값이 유효하지 않습니다.");
+            }
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+
 
         // API 요청에 사용할 JSON 데이터 생성
         JSONObject obj = new JSONObject();
@@ -96,27 +108,31 @@ public class WidgetController {
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
 
-        // 결제 성공 시 주문 정보를 저장
         if (isSuccess) {
             OrdersDTO ordersDTO = new OrdersDTO();
-            ordersDTO.setOrderId(orderId);  // 주문 ID 설정
-            ordersDTO.setTotalPrice(Integer.parseInt(amount));  // 총 결제 금액 설정
-            ordersDTO.setName(name);  // 구매자 이름 설정
-            ordersDTO.setPhone(phone);  // 전화번호 설정
-            ordersDTO.setAddress(address);  // 배송지 주소 설정
+            ordersDTO.setOrderId(orderId);
+            ordersDTO.setTotalPrice(Integer.parseInt(amount));
+            ordersDTO.setName(name);
+            ordersDTO.setPhone(phone);
+            ordersDTO.setAddress(address);
+            ordersDTO.setMemberID(memberID);
 
-            // 상품 리스트 추가
-            ProductDTO product = new ProductDTO();
-            product.setShopId(shopId); // shopId 설정
-            product.setShopName("Example Shop");
-            product.setProductPrice(10000);  // 예시 가격
-            product.setQuantity(1);  // 예시 수량
+            logger.info("Order ID: {}", ordersDTO.getOrderId());
+            logger.info("Member ID: {}", ordersDTO.getMemberID());
+            logger.info("Name: {}", ordersDTO.getName());
+            logger.info("Total Price: {}", ordersDTO.getTotalPrice());
 
             List<ProductDTO> productList = new ArrayList<>();
-            productList.add(product);  // 리스트에 상품 추가
-            ordersDTO.setProducts(productList);  // OrdersDTO에 상품 리스트 설정
+            ProductDTO product = new ProductDTO();
+            product.setShopId(shopId);
+            product.setShopName("Example Shop");
+            product.setProductPrice(10000);
+            product.setQuantity(1);
+            productList.add(product);
 
-            // 주문을 저장하는 서비스 호출
+            ordersDTO.setProducts(productList);
+
+            // 서비스로 넘겨 주문 등록 처리
             ordersService.register(ordersDTO);
         }
 
