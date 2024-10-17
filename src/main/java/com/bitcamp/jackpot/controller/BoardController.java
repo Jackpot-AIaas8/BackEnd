@@ -135,7 +135,7 @@ public class BoardController {
 
         // 게시글 수정, update
     @PostMapping("/edit/{boardId}")
-    public ResponseEntity<String> edit(@PathVariable("boardId") String boardIdStr, @RequestBody Board board) {
+    public ResponseEntity<String> edit(@PathVariable("boardId") String boardIdStr, @ModelAttribute Board board) {
         int boardId = Integer.parseInt(boardIdStr);
         System.out.println(boardId);
         System.out.println(board);
@@ -178,15 +178,6 @@ public class BoardController {
 //    public List<BoardDTO> search(@PathVariable String keyword) {
 //        return boardService.search(keyword);
 //        // 리턴값은 보드디티오 리스트, 키워드를 받아서 제목을 검색함. 검색하는 메서드는 레포지토리에.
-//    }
-
-//    // 게시글 검색
-//    @GetMapping("/search")
-//    public ResponseEntity<PageResponseDTO<BoardDTO>> search(@RequestParam String keyword, PageRequestDTO pageRequestDTO) {
-//        PageResponseDTO<BoardDTO> pageResponseDTO = boardService.search(keyword, pageRequestDTO);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(pageResponseDTO);
 //    }
 
     // 게시글 검색
