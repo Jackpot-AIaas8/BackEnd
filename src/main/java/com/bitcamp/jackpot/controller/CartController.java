@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.controller;
 
+import com.bitcamp.jackpot.domain.Cart;
 import com.bitcamp.jackpot.dto.CartDTO;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.ShopRepository;
@@ -31,9 +32,11 @@ public class CartController {
         cartService.edit(cartDTO);
     }
 
-    @GetMapping("/findall")
+    @GetMapping("/findAll")
     public List<CartDTO> findAll() {
-        return cartService.findAll();
+        List<CartDTO> result= cartService.findAll();
+        log.info(result);
+        return result;
     }
 
 //    @GetMapping("/findone")
