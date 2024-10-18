@@ -2,6 +2,10 @@ package com.bitcamp.jackpot.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -9,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EntityListeners(AuditingEntityListener.class)
 public class Fund extends  BaseEntity{
 
     @Id
@@ -25,4 +30,8 @@ public class Fund extends  BaseEntity{
 
     @Column(nullable = false)
     private int collection;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime regDate;
 }

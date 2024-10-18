@@ -32,6 +32,22 @@ public class Shop extends BaseEntity {
 
     private int buy_count;
     private int cell_count;
+
+    @Column(nullable = false)
+    private String mainImage;
+
+    @Column(nullable = false)
+    private String detailImage1;
+
+    @Column(nullable = false)
+    private String detailImage2;
+
+    @Column(nullable = false)
+    private String detailImage3;
+
+    @Column(nullable = false)
+    private String detailImage4;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews;
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
