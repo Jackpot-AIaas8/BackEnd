@@ -20,6 +20,7 @@ public class AuctionDTO {
     private LocalDateTime endTime;
     private int shopId;
     private int memberId;
+    private String memberName;
     private String shopName;
     private String shopDetail;
     private int shopPrice;
