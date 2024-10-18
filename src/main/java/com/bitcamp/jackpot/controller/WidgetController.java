@@ -118,6 +118,7 @@ public class WidgetController {
             ordersDTO.setMemberID(memberID);
             ordersDTO.setShopId(shopId);
             ordersDTO.setQuantity(quantity);
+            ordersDTO.setTotalPrice(amount);
 
             logger.info("Order ID: {}", ordersDTO.getOrderId());
             logger.info("Member ID: {}", ordersDTO.getMemberID());

@@ -52,6 +52,7 @@ public class OrdersServiceImpl implements OrdersService {
         order.setMember(member);
         order.setDelivery_state(0);  // 초기 배송 상태 설정
         order.setQuantity(ordersDTO.getQuantity());  // 상품 수량 저장
+        order.setTotalPrice(ordersDTO.getTotalPrice());
 
         // 주문을 저장
         log.info("Saving order to database: {}", order);
