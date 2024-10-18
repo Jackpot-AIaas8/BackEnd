@@ -1,7 +1,9 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.config.error.ErrorCode;
 import com.bitcamp.jackpot.config.error.exception.DatabaseException;
 import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
+import com.bitcamp.jackpot.config.error.exception.InvalidPasswordException;
 import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
@@ -15,8 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -107,36 +107,44 @@ public class MemberServiceImpl implements MemberService {
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
     @Override
-    public boolean checkNickName(String nickName) {
-        return memberRepository.existsByNickName(nickName);
-    }
-
-    @Override
-    public boolean checkEmail(String email) {
-        return memberRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean checkPwd(String email, String pwd) {
-        // 이메일로 사용자 조회
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-
-        if (memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-
-            return bCryptPasswordEncoder.matches(pwd, member.getPwd());
-        }
-
-        return false;
-    }
-
-    public ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
+    public Map<String, Boolean> checkNickName(String nickName) {
         Map<String, Boolean> response = new HashMap<>();
-        response.put("isDuplicate", isDuplicate);
-        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
-        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
-        return ResponseEntity.status(status).body(response);
+        if (memberRepository.existsByEmail(nickName)) {
+            response.put("isDuplicate", true);
+            throw new DuplicateResourceException(true);
+        } else {
+            response.put("isDuplicate", false);
+        }
+        return response;
     }
+
+    @Override
+    public Map<String, Boolean> checkEmail(String email) {
+        Map<String, Boolean> response = new HashMap<>();
+        if (memberRepository.existsByEmail(email)) {
+            response.put("isDuplicate", true);
+            throw new DuplicateResourceException(true);
+        } else {
+            response.put("isDuplicate", false);
+        }
+        return response;
+    }
+
+    @Override
+    public Map<String, Boolean> checkPwd(String email, String pwd) {
+        // 이메일로 사용자 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+
+        boolean isMatchedPwd = bCryptPasswordEncoder.matches(pwd, member.getPwd());
+        if (!isMatchedPwd) {
+            throw new InvalidPasswordException("알맞지 않은 비밀번호",ErrorCode.INVALID_INPUT_VALUE); // 더 적절한 예외를 사용
+        }
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isMatchedPwd", true);
+        return response;
+    }
+
 
     @Override
     public boolean resetPwd(String email, String pwd) {

@@ -123,6 +123,7 @@ public class WidgetController {
 
             // 서비스로 넘겨 주문 등록 처리
             ordersService.register(ordersDTO);
+
         }
 
 

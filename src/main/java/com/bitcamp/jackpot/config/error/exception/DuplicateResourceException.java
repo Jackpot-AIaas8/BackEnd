@@ -1,14 +1,13 @@
 package com.bitcamp.jackpot.config.error.exception;
 
-import com.bitcamp.jackpot.config.error.ErrorCode;
+public class DuplicateResourceException extends RuntimeException {
+    private final boolean isDuplicate;
 
-public class DuplicateResourceException extends BusinessBaseException {
-
-    public DuplicateResourceException(ErrorCode errorCode) {
-        super(errorCode.getMessage(),errorCode);
+    public DuplicateResourceException(boolean isDuplicate) {
+        this.isDuplicate = isDuplicate;
     }
 
-    public DuplicateResourceException() {
-        super(ErrorCode.CONFLICT);
+    public boolean getIsDuplicate() {
+        return isDuplicate;
     }
 }
