@@ -4,6 +4,7 @@ import com.bitcamp.jackpot.domain.Board;
 
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.*;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.BoardRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import com.bitcamp.jackpot.repository.ReplyRepository;
@@ -14,15 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,7 +74,7 @@ public class BoardServiceImpl implements BoardService {
         LocalDateTime now = LocalDateTime.now();
         board.setRegDate(now);
         //원래는 프론트에서 현재시간을 받아오게 되어있었지만 못받아와서 여기서 넣어줌
-        
+
 //        System.out.println(board);
 
         boardRepository.save(board);
@@ -124,21 +124,7 @@ public class BoardServiceImpl implements BoardService {
 //        return response;
 //    }
 
-//    @Override
-//    public PageResponseDTO<BoardDTO> findAll(PageRequestDTO pageRequestDTO) {
-//        Pageable pageable = pageRequestDTO.getPageable("boardId");
-//        Page<Board> result = boardRepository.findAll(pageable);
-//
-//        List<BoardDTO> boardDTOList = result.getContent().stream()
-//                .map(board -> {
-//                    BoardDTO dto = modelMapper.map(board, BoardDTO.class);
-//                    dto.setMemberId(board.getMember() != null ? board.getMember().getMemberId() : null); // memberId 수동 설정
-//                    return dto;
-//                })
-//                .collect(Collectors.toList());
-//
-//        return new PageResponseDTO<>(pageRequestDTO, boardDTOList, (int) result.getTotalPages());
-//    }
+
 
     @Override
     public PageResponseDTO<BoardDTO> findAll(PageRequestDTO pageRequestDTO) {
@@ -223,26 +209,6 @@ public class BoardServiceImpl implements BoardService {
                 })
                 .collect(Collectors.toList());
 
-//        log.info("Filtered BoardDTO list size: {}", filteredBoardDTOList.size());
-//
-//        // 페이징 처리
-//        int totalElements = filteredBoardDTOList.size(); // 전체 요소 수
-//        int totalPages = (int) Math.ceil((double) totalElements / pageRequestDTO.getSize());
-//
-//        // 페이지 범위 체크
-//        if (pageRequestDTO.getPage() >= totalPages) {
-//            return new PageResponseDTO<>(pageRequestDTO, new ArrayList<>(), totalPages - 1); // 빈 리스트 반환
-//        }
-//
-//        int startIndex = Math.min(pageRequestDTO.getPage() * pageRequestDTO.getSize(), totalElements);
-//        int endIndex = Math.min(startIndex + pageRequestDTO.getSize(), totalElements);
-//
-//        List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
-//        log.info(paginatedList);
-//
-//        // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
-//        return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
-
         return filteredBoardDTOList;
     }
 
@@ -266,6 +232,10 @@ public class BoardServiceImpl implements BoardService {
         // 옵셔널객체를 열어본다.
         boardToEdit.setMember(member);
         // 열어서 나온 멤버 객체를 넣으면 자동으로 멤버id를 넣어줌...
+
+        LocalDateTime now = LocalDateTime.now();
+        boardToEdit.setRegDate(now);
+        //원래는 프론트에서 현재시간을 받아오게 되어있었지만 못받아와서 여기서 넣어줌
 
 //        System.out.println(boardToEdit);
 

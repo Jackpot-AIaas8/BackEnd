@@ -1,18 +1,9 @@
 package com.bitcamp.jackpot.service;
 
 
-import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.dto.MemberEditDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-import java.util.List;
-import java.util.Map;
 
 
 public interface MemberService {

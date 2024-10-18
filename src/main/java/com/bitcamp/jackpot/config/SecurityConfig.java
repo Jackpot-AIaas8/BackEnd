@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.config;
 
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.jwt.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,7 +44,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, LogoutService logoutService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LogoutServiceImp logoutService) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -53,8 +54,8 @@ public class SecurityConfig {
                                 CorsConfiguration configuration = new CorsConfiguration();
                                 //cicd로 기능구현
 
-                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
-//                                configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
+//                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
+                                configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));

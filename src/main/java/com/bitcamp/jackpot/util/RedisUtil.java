@@ -1,4 +1,4 @@
-package com.bitcamp.jackpot.jwt;
+package com.bitcamp.jackpot.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

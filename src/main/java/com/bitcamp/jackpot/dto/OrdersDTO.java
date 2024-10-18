@@ -19,7 +19,7 @@ public class OrdersDTO {
     private String phone;              // 전화번호
     private String address;            // 배송지 주소
     private int deliveryState;         // 배송 상태
-    private int totalPrice;
+    private int quantity;
     private int memberID;              // 회원 ID 추가
-    private List<ProductDTO> products; // 상품 리스트
+    private int shopId;
 }

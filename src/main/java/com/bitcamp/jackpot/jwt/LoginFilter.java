@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.jwt;
 
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.bitcamp.jackpot.dto.SignInDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
