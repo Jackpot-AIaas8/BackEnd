@@ -21,6 +21,6 @@ public class OrdersDTO {
     private int deliveryState;         // 배송 상태
     private int quantity;
     private int totalPrice;
-    private int memberID;              // 회원 ID 추가
+    private int memberId;              // 회원 ID 추가
     private int shopId;
 }
