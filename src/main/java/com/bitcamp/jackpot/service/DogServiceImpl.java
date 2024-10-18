@@ -178,6 +178,7 @@ public class DogServiceImpl implements DogService {
                         .species(dog.getSpecies())
                         .heart(dog.getHeart())
                         .isHeart((isHeart)? 1:0)
+                        .regDate(dog.getRegDate())
                         .build()
         ));
         return response;
