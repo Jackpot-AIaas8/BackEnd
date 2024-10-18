@@ -35,7 +35,7 @@ public class MemberController {
         //회원가입처리
         memberService.signUp(memberDTO);
 
-        log.info("회원가입 성공 - 이메일: {}", memberDTO);
+//        log.info("회원가입 성공 - 이메일: {}", memberDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
