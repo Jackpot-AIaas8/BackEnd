@@ -35,6 +35,7 @@ public interface OrdersService {
                 .member(member)  // Member 엔티티
                 .shop(shop)  // Shop 엔티티
                 .quantity(ordersDTO.getQuantity())  // 상품 수량 매핑
+                .totalPrice(ordersDTO.getTotalPrice())
                 .build();
     }
 
@@ -48,6 +49,7 @@ public interface OrdersService {
                 .address(orders.getMember().getAddress())
                 .shopId(orders.getShop().getShopId())  // Shop의 ID를 DTO에 매핑
                 .quantity(orders.getQuantity())  // 상품 갯수 매핑
+                .totalPrice(orders.getTotalPrice())
                 .build();
     }
 

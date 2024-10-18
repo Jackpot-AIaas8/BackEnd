@@ -159,7 +159,7 @@ public class ReplyServiceImpl implements ReplyService {
 public List<ReplyDTO> findAll(Integer boardId) {
     // boardId에 해당하는 모든 Reply 엔티티 조회
     List<Reply> replies = replyRepository.findAllByBoardId(boardId);
-    log.info("Replies: " + replies);
+//    log.info("Replies: " + replies);
 
     // Reply 엔티티를 ReplyDTO로 변환하고 memberId 추가
     return replies.stream()

@@ -1,21 +1,20 @@
     package com.bitcamp.jackpot.domain;
-    
+
     import com.fasterxml.jackson.annotation.JsonBackReference;
     import com.fasterxml.jackson.annotation.JsonIdentityInfo;
     import com.fasterxml.jackson.annotation.JsonManagedReference;
     import com.fasterxml.jackson.annotation.ObjectIdGenerators;
     import jakarta.persistence.*;
     import lombok.*;
-    
+
     import java.time.LocalDateTime;
-    
+
     @Entity
     @Getter
     @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ToString
     public class Board extends BaseEntity {
 
         @Id
@@ -37,7 +36,6 @@
 
         @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "memberId", referencedColumnName = "memberId")
-        @JsonBackReference
         private Member member;
 
         public void edit(String title, String content) {
