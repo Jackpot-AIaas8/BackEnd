@@ -1,8 +1,7 @@
-package com.bitcamp.jackpot.service;
+package com.bitcamp.jackpot.jwt;
 
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.domain.RefreshEntity;
-import com.bitcamp.jackpot.jwt.JWTUtil;
-import com.bitcamp.jackpot.jwt.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
@@ -21,10 +20,11 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-public class ReissueService {
+public class ReissueServiceImp implements ReissueService {
     private final JWTUtil jwtUtil;
     private final RedisUtil redisUtil;
 
+    @Override
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
     //get refresh token
     String refresh = null;
@@ -89,7 +89,7 @@ public class ReissueService {
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         redisUtil.delete(username);
 
-        addRefreshEntity(username, newRefresh, 86400000L);
+        addRefreshEntity(username, newRefresh, 86400000L,redisUtil);
 
         //response
         response.addCookie(createCookie("refresh", newRefresh));
@@ -101,28 +101,6 @@ public class ReissueService {
 
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUsername(username);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
-
-        redisUtil.set(username, refreshEntity, expiredMs.intValue() / (1000 * 60));  // 밀리초를 분 단위로 변환
     }
 
 }

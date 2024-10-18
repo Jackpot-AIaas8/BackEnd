@@ -4,7 +4,7 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.Board;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Reply;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
+import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.ReplyDTO;
 import com.bitcamp.jackpot.repository.BoardRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;

@@ -1,7 +1,7 @@
 package com.bitcamp.jackpot.jwt;
 
+import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.domain.Member;
-import com.bitcamp.jackpot.dto.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
