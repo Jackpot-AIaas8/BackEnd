@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,18 @@ public class AdminController {
 
     //shop
     @PostMapping("/shop/register")
-    public void register(@RequestBody ShopDTO shopDTO) {
+    public void shopRegister(@RequestParam("shopData") MultipartFile shopData, @RequestParam("files") List<MultipartFile> files) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ShopDTO shopDTO = objectMapper.readValue(shopData.getInputStream(), ShopDTO.class);
+        for (int i = 0; i< files.size(); ++i){
+            switch (i){
+                case 0 : shopDTO.setMainImage(objectStorageService.uploadFile("shop/",files.get(0))); break;
+                case 1 : shopDTO.setDetailImage1(objectStorageService.uploadFile("shop/",files.get(1))); break;
+                case 2 : shopDTO.setDetailImage2(objectStorageService.uploadFile("shop/",files.get(2))); break;
+                case 3 : shopDTO.setDetailImage3(objectStorageService.uploadFile("shop/",files.get(3))); break;
+                case 4 : shopDTO.setDetailImage4(objectStorageService.uploadFile("shop/",files.get(4))); break;
+            }
+        }
         shopService.register(shopDTO);
     }
 
@@ -72,7 +84,7 @@ public class AdminController {
 
     //dog
     @PostMapping("/dog/register")
-    public ResponseEntity<Integer> register(@RequestParam("dogData") MultipartFile dogData, @RequestParam("files") List<MultipartFile> files) throws Exception {
+    public ResponseEntity<Integer> dogRegister(@RequestParam("dogData") MultipartFile dogData, @RequestParam("files") List<MultipartFile> files) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         DogRegistDTO dogRegistDTO = objectMapper.readValue(dogData.getInputStream(), DogRegistDTO.class);
 

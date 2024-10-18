@@ -32,7 +32,9 @@ public class MemberDTO {
 
     private String address;
 
-    private int grade;
+    @Builder.Default
+    private int grade = 1; // 기본값을 1로 설정
+
 
 
 }

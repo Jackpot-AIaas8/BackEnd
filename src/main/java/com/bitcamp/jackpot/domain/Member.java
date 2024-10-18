@@ -66,6 +66,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Board> boards;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Bidding> bids;
 
 
     public void updateMemberInfo(String name, String phone, String pwd, String address) {

@@ -23,6 +23,9 @@ import lombok.*;
 
     private int delivery_state;
 
+    @Column(nullable = false)
+    private int totalPrice;
+
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     @JsonIgnore
@@ -30,5 +33,6 @@ import lombok.*;
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
 
 }

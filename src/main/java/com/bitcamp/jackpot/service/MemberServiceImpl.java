@@ -38,9 +38,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signUp(MemberDTO memberDTO) {
+        log.info("dto 확인  - 확인: {}", memberDTO);
+
         Member member = modelMapper.map(memberDTO, Member.class);
         // 비밀번호 인코딩
         member.encodePassword(memberDTO.getPwd(), bCryptPasswordEncoder);
+        log.info("저장할 멤버 - 확인: {}", member);
         //엔티티 저장
         try {
             memberRepository.save(member);
