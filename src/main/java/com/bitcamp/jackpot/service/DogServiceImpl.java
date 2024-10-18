@@ -71,6 +71,17 @@ public class DogServiceImpl implements DogService {
         Optional<Dog> oDog = dogRepository.findById(dogId);
         Dog dog = oDog.orElseThrow();
 
+        int isHeart= 0;
+        if(isSignInUser()){
+            CustomUserDetails ud = getUserDetails();
+            Member member = memberRepository.findByEmail(ud.getUsername()).orElseThrow();
+            Optional<Heart> oHeart = heartRepository.findByDogIdAndMemberId(dog,member);
+
+            if(oHeart.isPresent()){
+                isHeart = 1;
+            }
+        }
+
         List<Fund> funds = fundRepository.findFundByDogId(dogId, Pageable.unpaged());
         int totalCollection = 0;
         Set<Member> members = new HashSet<>();
@@ -90,6 +101,13 @@ public class DogServiceImpl implements DogService {
                 .regDate(dog.getRegDate())
                 .fundCollection(totalCollection)
                 .fundMemberNum(members.size())
+                .isHeart(isHeart)
+                .title(dog.getTitle())
+                .mainImage(dog.getMainImage())
+                .detailImage1(dog.getDetailImage1())
+                .detailImage2(dog.getDetailImage2())
+                .detailImage3(dog.getDetailImage3())
+                .detailImage4(dog.getDetailImage4())
                 .build();
     }
 

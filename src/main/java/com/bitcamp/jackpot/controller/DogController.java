@@ -39,20 +39,18 @@ public class DogController {
 
     @GetMapping("/findOne")
     public DogResponseDTO findOne(@RequestParam int dogId) {
-
         return dogService.findOne(dogId);
     }
 
     @PostMapping("/addHeart")
 
     public void addHeart(@RequestBody Map<String,Integer> dogId) {
-        
        dogService.addHeart(dogId.get("dogId"));
     }
 
     @PostMapping("/addFund")
     public void addFund(@RequestBody FundDTO fundDTO) {
-//        dogService.addFund(fundDTO); 안돼서 주석갈김 ㅅㄱ
+        dogService.addFund(fundDTO);
     }
 
     @GetMapping("/dogList")
