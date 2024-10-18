@@ -1,11 +1,13 @@
 package com.bitcamp.jackpot.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -39,6 +41,10 @@ public class Auction extends BaseEntity {
     @JoinColumn(name = "memberId", referencedColumnName = "memberId")
     @JsonBackReference
     Member member;
+
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Bidding> bids;
 
     public void setAuctionStatus(int auction_status) {
         this.auctionStatus = auction_status;

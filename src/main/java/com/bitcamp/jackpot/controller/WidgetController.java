@@ -34,42 +34,20 @@ public class WidgetController {
 
     @PostMapping("/confirm")
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
-        logger.info("결제 확인 요청 수신: {}", jsonBody);
 
         JSONParser parser = new JSONParser();
         String orderId;
         String paymentKey;
-        String name;
-        String phone;
         int amount;
-        String address;
-        int shopId;
-        int memberID;
-        int quantity;
+        boolean isFunding = false; // 펀딩 여부 추가
 
         try {
             // 클라이언트에서 받은 JSON 요청 바디를 파싱
             JSONObject requestData = (JSONObject) parser.parse(jsonBody);
-
             paymentKey = requestData.get("paymentKey") != null ? requestData.get("paymentKey").toString() : null;
             orderId = requestData.get("orderId") != null ? requestData.get("orderId").toString() : null;
-            quantity = requestData.get("quantity") != null ? Integer.parseInt(requestData.get("quantity").toString()) : 0;
-            name = requestData.get("name") != null ? requestData.get("name").toString() : null;
-            phone = requestData.get("phone") != null ? requestData.get("phone").toString() : null;
-            address = requestData.get("address") != null ? requestData.get("address").toString() : null;
-            shopId = requestData.get("shopId") != null ? Integer.parseInt(requestData.get("shopId").toString()) : 0;
-            memberID = requestData.get("memberID") != null ? Integer.parseInt(requestData.get("memberID").toString()) : 0;
             amount = requestData.get("amount") != null ? Integer.parseInt(requestData.get("amount").toString()) : 0;
-
-            // memberId, shopId, quantity 등의 필수 값을 체크하는 로직 추가
-            if (memberID == 0 || shopId == 0) {
-                throw new IllegalArgumentException("memberId 또는 shopId 값이 유효하지 않습니다.");
-            }
-            if (quantity <= 0) {
-                throw new IllegalArgumentException("유효하지 않은 상품 수량입니다.");
-            }
-            logger.info("Quantity received: {}", quantity);
-
+            isFunding = requestData.get("isFunding") != null && (boolean) requestData.get("isFunding");
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -80,6 +58,7 @@ public class WidgetController {
         obj.put("orderId", orderId);
         obj.put("amount", amount);
         obj.put("paymentKey", paymentKey);
+        obj.put("isFunding", isFunding); // 펀딩 여부 추가
 
         // 토스페이먼츠 API 시크릿 키 설정
         String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
@@ -108,25 +87,6 @@ public class WidgetController {
         Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
-
-        if (isSuccess) {
-            OrdersDTO ordersDTO = new OrdersDTO();
-            ordersDTO.setOrderId(orderId);
-            ordersDTO.setName(name);
-            ordersDTO.setPhone(phone);
-            ordersDTO.setAddress(address);
-            ordersDTO.setMemberID(memberID);
-            ordersDTO.setShopId(shopId);
-            ordersDTO.setQuantity(quantity);
-            ordersDTO.setTotalPrice(amount);
-
-
-            // 서비스로 넘겨 주문 등록 처리
-            ordersService.register(ordersDTO);
-
-        }
-
-
 
         // 결과 반환
         return ResponseEntity.status(code).body(jsonObject);

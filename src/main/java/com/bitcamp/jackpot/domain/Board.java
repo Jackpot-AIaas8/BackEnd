@@ -15,7 +15,6 @@
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ToString
     public class Board extends BaseEntity {
 
         @Id
@@ -37,7 +36,6 @@
 
         @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "memberId", referencedColumnName = "memberId")
-        @JsonBackReference
         private Member member;
 
         public void edit(String title, String content) {
