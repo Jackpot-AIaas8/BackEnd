@@ -59,7 +59,8 @@ public class BoardServiceImpl implements BoardService {
         int maxBoardId = boardRepository.findMaxBoardId();
         // 기존 포스트아이디를 알아오고 그 포스트아이디에 +1해서 셋포스트아이디 해줌. 알아오는 쿼리문은 레포지토리에 있음.
 
-        board.setBoardId(maxBoardId + 1);
+//        board.setBoardId(maxBoardId + 1);
+        board.setBoardId(maxBoardId);
         //보드 객체에 글번호를 자동으로 1올려준다. 트리거 이용해도 되지만 그냥 단순한 방법 사용.
 
         CustomUserDetails ud = getUserDetails();
@@ -147,7 +148,7 @@ public class BoardServiceImpl implements BoardService {
         int endIndex = Math.min(startIndex + 10, totalElements);
 
         List<BoardDTO> paginatedList = filteredBoardDTOList.subList(startIndex, endIndex); // 페이지에 해당하는 요소만 서브리스트로 가져오기
-        log.info(paginatedList);
+//        log.info(paginatedList);
         // PageResponseDTO로 필터된 게시글 목록과 페이지 정보 반환
         return new PageResponseDTO<>(pageRequestDTO, paginatedList, totalPages - 1);
     }
