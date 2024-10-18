@@ -23,7 +23,9 @@ public class Bidding extends BaseEntity {
     private LocalDateTime bid_time;
 
     @ManyToOne
+    @JoinColumn(name = "auctionId", referencedColumnName = "auctionId")
     Auction auction;
     @ManyToOne
+    @JoinColumn(name = "memberId", referencedColumnName = "memberId")
     Member member;
 }
