@@ -36,7 +36,7 @@ public class BoardController {
     public ResponseEntity<String> register(@ModelAttribute Board board, BindingResult bindingResult) throws BindException {
 
         System.out.println(board);
-        log.info(board);
+//        log.info(board);
 
         try {
             boardService.register(board);
@@ -60,7 +60,7 @@ public class BoardController {
         BoardDTO boardDTO = boardService.findOne(boardId);
         // 서비스단 메서드를 실행시켜 게시글 객체를 글번호로 검색해서 가져옴
         // 글 번호는 uri에 담아 가져옴
-        log.info(boardDTO);
+//        log.info(boardDTO);
         // 서비스단에서 객체를 제대로 잘 가져왔는가 로그찍어봄.
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -184,12 +184,12 @@ public class BoardController {
     @GetMapping("/search")
     public PageResponseDTO<BoardDTO> search(@RequestParam("keyword") String keyword, PageRequestDTO pageRequestDTO) {
 
-        log.info(keyword);
-        log.info(pageRequestDTO);
+//        log.info(keyword);
+//        log.info(pageRequestDTO);
 
         PageResponseDTO<BoardDTO> pageResponseDTO = boardService.search(keyword, pageRequestDTO);
 
-        log.info(pageResponseDTO);
+//        log.info(pageResponseDTO);
 
         return pageResponseDTO;
 
