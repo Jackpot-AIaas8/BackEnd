@@ -8,7 +8,6 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Cart extends BaseEntity {
 
     @Id

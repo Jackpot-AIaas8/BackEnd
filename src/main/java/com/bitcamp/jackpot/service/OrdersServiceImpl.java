@@ -17,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +41,9 @@ public class OrdersServiceImpl implements OrdersService {
                     return new RuntimeException("Shop not found");
                 });
 
-        Member member = memberRepository.findById(ordersDTO.getMemberID())
+        Member member = memberRepository.findById(ordersDTO.getMemberId())
                 .orElseThrow(() -> {
-                    log.error("Member not found for memberId: {}", ordersDTO.getMemberID());
+                    log.error("Member not found for memberId: {}", ordersDTO.getMemberId());
                     return new RuntimeException("Member not found");
                 });
 
@@ -81,11 +83,43 @@ public class OrdersServiceImpl implements OrdersService {
         return null;
     }
 
+//    @Override
+//    public List<OrdersDTO> findAll() {
+////        List<OrdersDTO> ordersDTOList = entityListToDtoList(ordersRepository.findAll());
+//        List<Orders> result = ordersRepository.findAll();
+//        log.info("Orders found: {}", result);
+//
+//        List<OrdersDTO> ordersDTOList = entityListToDtoList(result);
+//
+//        return ordersDTOList;
+//    }
+
+
     @Override
     public List<OrdersDTO> findAll() {
-        List<OrdersDTO> ordersDTOList = entityListToDtoList(ordersRepository.findAll());
+        List<Orders> result = ordersRepository.findAll();
+//        log.info("Orders found1: {}", result);
+
+        // 엔티티 리스트를 DTO 리스트로 변환
+        List<OrdersDTO> ordersDTOList = result.stream()
+                .map(order -> OrdersDTO.builder()
+                        .id(order.getId())
+                        .orderId(order.getOrderId())
+                        .quantity(order.getQuantity())
+                        .deliveryState(order.getDelivery_state())
+                        .totalPrice(order.getTotalPrice())
+                        .shopId(order.getShop().getShopId())
+                        .memberId(order.getMember().getMemberId())
+                        .build())
+                .collect(Collectors.toList());
+
+//        log.info("Orders found2: {}", ordersDTOList);
+
         return ordersDTOList;
     }
+
+
+
 
     // 주문을 orderId로 조회하는 메서드 추가 (orderId는 String)
     public OrdersDTO findOneByOrderId(String orderId) {
