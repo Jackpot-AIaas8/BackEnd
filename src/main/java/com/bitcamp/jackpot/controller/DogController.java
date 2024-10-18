@@ -78,6 +78,4 @@ public class DogController {
                 .status(HttpStatus.OK)
                 .body(fundDTOList); // 반환 타입에 맞춰서 fundDTOList를 사용
     }
-
-
 }
