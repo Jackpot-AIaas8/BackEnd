@@ -19,4 +19,9 @@ public class ShopDTO {
     private String detail;
     private int buy_count;
     private int cell_count;
+    private String mainImage;
+    private String detailImage1;
+    private String detailImage2;
+    private String detailImage3;
+    private String detailImage4;
 }

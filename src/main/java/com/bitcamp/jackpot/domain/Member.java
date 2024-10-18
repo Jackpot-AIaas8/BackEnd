@@ -45,7 +45,6 @@ public class Member extends BaseEntity {
         this.pwd = encoder.encode(rawPassword);
     }
 
-
     public Member changePassword(String newPassword, BCryptPasswordEncoder passwordEncoder) {
         this.pwd = passwordEncoder.encode(newPassword);
         return this;
@@ -59,12 +58,12 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Cart> carts;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<Auction> auctions;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonManagedReference
     private List<Board> boards;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
