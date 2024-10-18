@@ -1,6 +1,8 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.config.error.exception.DatabaseException;
 import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
+import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.util.RedisUtil;
@@ -43,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
         try {
             memberRepository.save(member);
         } catch (Exception e) {
-            throw new DuplicateResourceException();
+            throw new DatabaseException();
         }
     }
 
@@ -52,8 +54,7 @@ public class MemberServiceImpl implements MemberService {
         try {
             // 해당 ID의 멤버 조회
             Member member = memberRepository.findById(memberID)
-                    .orElseThrow(() -> new EntityNotFoundException("Member not found"));
-            System.out.println("member 조회 완료");
+                    .orElseThrow(MemberNotFoundException::new);
 
             member.updateMemberInfo(
                     memberDTO.getName(),
@@ -61,13 +62,9 @@ public class MemberServiceImpl implements MemberService {
                     memberDTO.getPwd(),
                     memberDTO.getAddress()
             );
-
-            // 업데이트된 기존 객체를 저장
             memberRepository.save(member);
-            System.out.println(member + " 저장 완료");
-
         } catch (Exception e) {
-            System.out.println(e + " 실패");
+            throw new RuntimeException();
         }
     }
 
@@ -77,10 +74,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void remove(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow();
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         memberRepository.deleteByEmail(email);
-        // cascade.remove로 멤버 삭제시 그 멤버의 게시글도 같이 삭제하려면 삭제하려는 엔티티가 이미 로드되어 있어야 함.
-        // 그래서 그냥 딜리트만 하면 안되고 엔티티를 한번 찾아야 함.
     }
 
 
