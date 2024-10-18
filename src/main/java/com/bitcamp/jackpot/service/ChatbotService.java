@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor  // 생성자를 자동으로 생성하여 의존성 주입 처리
@@ -51,11 +53,15 @@ public class ChatbotService {
             int responseCode = con.getResponseCode();
             if (responseCode == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response = new StringBuilder();
                 String decodedString;
                 while ((decodedString = in.readLine()) != null) {
-                    chatbotMessage = decodedString;
+                    response.append(decodedString);
                 }
                 in.close();
+
+                // JSON 응답에서 description 추출
+                chatbotMessage = extractDescription(response.toString());
             } else {
                 chatbotMessage = con.getResponseMessage(); // 에러 메시지 처리
             }
@@ -94,9 +100,10 @@ public class ChatbotService {
             // 최상위 JSON 객체 생성
             ObjectNode obj = objectMapper.createObjectNode();
             long timestamp = new Date().getTime();
+            String userId = UUID.randomUUID().toString();
 
             obj.put("version", "v2");
-            obj.put("userId", "U47b00b58c90f8e47428af8b7bddc1231heo2");  // 실제 구현시 고유 ID 사용 필요
+            obj.put("userId", userId);  // 실제 구현시 고유 ID 사용 필요
             obj.put("timestamp", timestamp);
 
             // bubbles 객체 생성
@@ -125,4 +132,28 @@ public class ChatbotService {
 
         return requestBody;
     }
+
+    // JSON 응답에서 description 필드를 추출하고 JSON 형식으로 반환하는 메소드
+    private String extractDescription(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode bubblesArray = rootNode.path("bubbles");
+            if (bubblesArray.isArray() && !bubblesArray.isEmpty()) {
+                JsonNode firstBubble = bubblesArray.get(0);
+                JsonNode dataNode = firstBubble.path("data");
+                String description = dataNode.path("description").asText();
+
+                // JSON 형식으로 message 값 설정
+                ObjectNode responseObj = objectMapper.createObjectNode();
+                responseObj.put("message", description);
+
+                // JSON 문자열로 변환하여 반환
+                return objectMapper.writeValueAsString(responseObj);
+            }
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+        return "{\"message\": \"\"}";  // 오류 발생 시 빈 메시지 반환
+    }
+
 }
