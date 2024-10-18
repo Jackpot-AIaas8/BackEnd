@@ -20,6 +20,7 @@ public class OrdersDTO {
     private String address;            // 배송지 주소
     private int deliveryState;         // 배송 상태
     private int quantity;
+    private int totalPrice;
     private int memberID;              // 회원 ID 추가
     private int shopId;
 }
