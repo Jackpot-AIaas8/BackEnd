@@ -120,10 +120,6 @@ public class WidgetController {
             ordersDTO.setQuantity(quantity);
             ordersDTO.setTotalPrice(amount);
 
-            logger.info("Order ID: {}", ordersDTO.getOrderId());
-            logger.info("Member ID: {}", ordersDTO.getMemberID());
-            logger.info("Name: {}", ordersDTO.getName());
-            logger.info("Quantity: {}", ordersDTO.getQuantity());
 
             // 서비스로 넘겨 주문 등록 처리
             ordersService.register(ordersDTO);
