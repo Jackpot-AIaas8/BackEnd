@@ -73,7 +73,7 @@ public class DogServiceImpl implements DogService {
         Dog dog = oDog.orElseThrow();
 
         int isHeart= 0;
-        
+
         if(isSignInUser()){
             CustomUserDetails ud = getUserDetails();
             Member member = memberRepository.findByEmail(ud.getUsername()).orElseThrow();
@@ -240,17 +240,15 @@ public class DogServiceImpl implements DogService {
         return dogRepository.count();
     }
 
-    public List<FundDTO> fundListMyPage() {
+    public Map<String,Object> fundListMyPage() {
         // 현재 사용자의 memberId 가져오기
         CustomUserDetails ud = getUserDetails();
         Optional<Member> oMember = memberRepository.findByEmail(ud.getUsername());
         Member member = oMember.orElseThrow();
         int memberId = member.getMemberId();
-//        log.info("Current memberId: {}", memberId);
 
         // memberId로 게시글 조회 (해당 멤버의 게시글만 조회)
         List<Fund> result = fundRepository.findAllByMemberId(memberId);
-//        log.info(result.toString());
 
         // ModelMapper 설정
         ModelMapper modelMapper = new ModelMapper();
@@ -262,9 +260,16 @@ public class DogServiceImpl implements DogService {
         List<FundDTO> dtoList = result.stream()
                 .map(fund -> modelMapper.map(fund, FundDTO.class))
                 .collect(Collectors.toList());
-//        log.info(dtoList.toString());
 
-        return dtoList;
+        List<DogResponseDTO> dogResponseList = result.stream()
+                        .map(fund -> findOne(fund.getDog().getDogId())).collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("fundList", dtoList);
+        response.put("dogResponseList", dogResponseList);
+
+        return response;
     }
 
 }
