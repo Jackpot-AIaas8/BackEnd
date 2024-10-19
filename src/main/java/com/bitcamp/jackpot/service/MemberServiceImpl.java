@@ -7,9 +7,7 @@ import com.bitcamp.jackpot.config.error.exception.InvalidPasswordException;
 import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,7 +32,6 @@ public class MemberServiceImpl implements MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
-    private final RedisUtil redisUtil;
 
     @Override
     public void signUp(MemberDTO memberDTO) {
@@ -67,30 +64,30 @@ public class MemberServiceImpl implements MemberService {
             );
             memberRepository.save(member);
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new DatabaseException();
         }
     }
 
 
-
-
-
     @Override
     public void remove(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
-        memberRepository.deleteByEmail(email);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+        memberRepository.delete(member);
+        log.info(" 성공적 탈퇴 {} ", email);
     }
+
 
 
     @Override
     public MemberDTO findOne(String email) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
 
-        Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
-        log.info("member : " + member);
+        log.info("Member 를 찾을 수 없습니다.: {}", member);
         return modelMapper.map(member, MemberDTO.class);
-
     }
+
 
     @NonNull
     @Override
@@ -148,21 +145,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean resetPwd(String email, String pwd) {
-        try{
-        // 1. 이메일로 회원 조회
+
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
-
-        // 2. 명시적 메서드를 통해 비밀번호만 변경
+                .orElseThrow(MemberNotFoundException::new);
+        try{
         member.changePassword(pwd, bCryptPasswordEncoder);
-
-        // 3. 변경된 엔티티 저장
         memberRepository.save(member);
         }catch (Exception e){
         log.error(e);
-        return false;
+        throw new DatabaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
-
         return true;
     }
 
@@ -178,9 +170,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String findId(String name, String phone) {
         Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
-
+        result.orElseThrow(MemberNotFoundException::new);
         return result.map(Member::getEmail)
-                .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name"));
+                .orElseThrow(() -> new DatabaseException(ErrorCode.DATABASE_ERROR));
     }
 
 
@@ -206,7 +198,8 @@ public class MemberServiceImpl implements MemberService {
             Page<Member> members = memberRepository.findByNameContaining(name, pageable);
             return members.map(member -> modelMapper.map(member, MemberDTO.class));
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while searching members by name", e);
+            log.error("Error occurred while searching members by name: {}", name, e);
+            throw new MemberNotFoundException(null,ErrorCode.MEMBER_NOT_FOUND);
         }
     }
 
