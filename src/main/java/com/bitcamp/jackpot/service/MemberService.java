@@ -5,6 +5,8 @@ import com.bitcamp.jackpot.dto.MemberDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 
 public interface MemberService {
 
@@ -18,9 +20,10 @@ public interface MemberService {
 
     public Page<MemberDTO> findAll(int page, int size);
 
-    public boolean checkEmail(String email);
-    public boolean checkPwd(String email,String pwd);
-    public boolean checkNickName(String password);
+    public Map<String, Boolean> checkEmail(String email);
+
+    public Map<String, Boolean> checkPwd(String email,String pwd);
+    public Map<String, Boolean> checkNickName(String nickName);
 
     public String findId(String name, String phone);
 
