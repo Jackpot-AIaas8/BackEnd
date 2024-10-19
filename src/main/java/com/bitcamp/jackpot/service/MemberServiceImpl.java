@@ -50,10 +50,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void edit(int memberID, MemberDTO memberDTO) {
+    public void edit(MemberDTO memberDTO) {
         try {
             // 해당 ID의 멤버 조회
-            Member member = memberRepository.findById(memberID)
+            Member member = memberRepository.findById(memberDTO.getMemberID())
                     .orElseThrow(MemberNotFoundException::new);
 
             member.updateMemberInfo(

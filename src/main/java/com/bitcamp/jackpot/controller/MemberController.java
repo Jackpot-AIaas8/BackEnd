@@ -49,10 +49,9 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);
     }
 
-    @PutMapping("/edit/{memberID}")
-    public ResponseEntity<Void> edit(@PathVariable int memberID, @RequestBody MemberDTO memberDTO) {
-
-        memberService.edit(memberID,memberDTO);
+    @PutMapping("/edit")
+    public ResponseEntity<Void> edit(@RequestBody MemberDTO memberDTO) {
+        memberService.edit(memberDTO);
         return ResponseEntity.noContent().build();
     }
 
