@@ -73,6 +73,7 @@ public class DogServiceImpl implements DogService {
         Dog dog = oDog.orElseThrow();
 
         int isHeart= 0;
+        
         if(isSignInUser()){
             CustomUserDetails ud = getUserDetails();
             Member member = memberRepository.findByEmail(ud.getUsername()).orElseThrow();
@@ -94,6 +95,7 @@ public class DogServiceImpl implements DogService {
         return DogResponseDTO.builder()
                 .dogId(dogId)
                 .name(dog.getName())
+                .species(dog.getSpecies())
                 .age(dog.getAge())
                 .gender(dog.getGender())
                 .heart(dog.getHeart())
@@ -169,9 +171,9 @@ public class DogServiceImpl implements DogService {
         }
     }
 
-    private List<DogListDTO> dogsToDogListDTOs(List<Dog> heartDogs, boolean isHeart) {
+    private List<DogListDTO> dogsToDogListDTOs(List<Dog> dogs, boolean isHeart) {
         List<DogListDTO> response = new LinkedList<>();
-        heartDogs.forEach((dog)-> response.add(
+        dogs.forEach((dog)-> response.add(
                 DogListDTO.builder()
                         .dogId(dog.getDogId())
                         .name(dog.getName())
@@ -179,6 +181,7 @@ public class DogServiceImpl implements DogService {
                         .heart(dog.getHeart())
                         .isHeart((isHeart)? 1:0)
                         .regDate(dog.getRegDate())
+                        .thumbNail(dog.getMainImage())
                         .build()
         ));
         return response;

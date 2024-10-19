@@ -37,9 +37,9 @@ public class BiddingServiceImpl implements BiddingService {
         biddingRepository.save(bidding);
     }
 
-    public void remove(int auctionId) {
-        biddingRepository.deleteAllByAuctionId(auctionId);
-    }
+//    public void remove(int auctionId) {
+//        biddingRepository.deleteAllByAuctionId(auctionId);
+//    }
 
     public BiddingDTO findBeforeBidding(int biddingId) {
         return null;
