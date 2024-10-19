@@ -16,6 +16,8 @@ public class DogResponseDTO {
 
     private String name;
 
+    private String species;
+
     private int age;
 
     private int gender;
