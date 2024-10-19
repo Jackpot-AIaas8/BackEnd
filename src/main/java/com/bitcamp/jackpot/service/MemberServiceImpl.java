@@ -53,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
     public void edit(MemberDTO memberDTO) {
         try {
             // 해당 ID의 멤버 조회
-            Member member = memberRepository.findById(memberDTO.getMemberID())
+            Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
             member.updateMemberInfo(
