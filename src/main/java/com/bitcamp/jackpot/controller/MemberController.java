@@ -35,7 +35,7 @@ public class MemberController {
         //회원가입처리
         memberService.signUp(memberDTO);
 
-//        log.info("회원가입 성공 - 이메일: {}", memberDTO);
+        log.info("회원가입 성공 - 이메일: {}", memberDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
@@ -69,31 +69,22 @@ public class MemberController {
 
     @GetMapping("/checkEmail")
     public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
-        return buildDuplicateCheckResponse(memberService.checkEmail(email));
+        Map<String, Boolean> response = memberService.checkEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/checkPwd")
     public ResponseEntity<Map<String, Boolean>> checkPwd(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String pwd) {
         String email = customUserDetails.getUsername();
-        return buildDuplicateCheckResponse(memberService.checkPwd(email,pwd));
+        Map<String, Boolean> response = memberService.checkPwd(email,pwd);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/checkNickName")
     public ResponseEntity<Map<String, Boolean>> checkNickName(@RequestParam String nickName) {
-        return buildDuplicateCheckResponse(memberService.checkNickName(nickName));
+        Map<String, Boolean> response = memberService.checkNickName(nickName);
+        return ResponseEntity.ok(response);
     }
-
-    // 중복 체크 결과 응답을 생성하는 메서드 리팩토링해야함
-    private ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isDuplicate", isDuplicate);
-
-        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
-        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
-        return ResponseEntity.status(status).body(response);
-    }
-
-
 
 
     @GetMapping("/findOne")
@@ -121,6 +112,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @PatchMapping("/resetPwd")
     public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
         String email = request.get("email");
