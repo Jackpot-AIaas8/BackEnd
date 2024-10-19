@@ -15,10 +15,10 @@ public class Cart extends BaseEntity {
     private Integer cartId;
 
     @ManyToOne
-    @JoinColumn(name="shopId", referencedColumnName = "shopId")
+    @JoinColumn(name="shop_id")
     Shop shop;
 
-    @ManyToOne
-    @JoinColumn(name="memberId", referencedColumnName = "memberId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="member_id")
     Member member;
 }
