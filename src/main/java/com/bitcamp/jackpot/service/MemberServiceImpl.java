@@ -5,6 +5,7 @@ import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
 import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
+import com.bitcamp.jackpot.repository.HeartRepository;
 import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,6 +34,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberRepository memberRepository;
+    private final HeartRepository heartRepository;
     private final ModelMapper modelMapper;
     private final RedisUtil redisUtil;
 
@@ -78,6 +80,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void remove(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        heartRepository.deleteByMemberId(member); // 외래키 제약조건때문에 하트를 삭제하지 않으면 회원탈퇴가 안되서 강제삭제
         memberRepository.deleteByEmail(email);
     }
 
