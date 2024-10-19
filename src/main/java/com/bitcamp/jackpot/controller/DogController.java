@@ -71,11 +71,11 @@ public class DogController {
 
     // 1:1문의게시판마이페이지 게시글 목록 조회, read.
     @GetMapping("/fundListMyPage")
-    public ResponseEntity<List<FundDTO>> fundListMyPage() {
-        List<FundDTO> fundDTOList = dogService.fundListMyPage(); // 메서드 호출 시 반환 타입에 맞춰 변수 수정
-        System.out.println(fundDTOList);
+    public ResponseEntity<Map<String,Object>> fundListMyPage() {
+        Map<String,Object> response = dogService.fundListMyPage();
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(fundDTOList); // 반환 타입에 맞춰서 fundDTOList를 사용
+                .body(response); // 반환 타입에 맞춰서 fundDTOList를 사용
     }
 }
