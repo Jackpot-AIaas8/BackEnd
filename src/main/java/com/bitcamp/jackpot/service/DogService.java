@@ -3,6 +3,7 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.dto.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DogService {
 
@@ -22,5 +23,5 @@ public interface DogService {
 
     Long getTotalDogNum();
 
-     public List<FundDTO> fundListMyPage();
+     public Map<String,Object> fundListMyPage();
 }
