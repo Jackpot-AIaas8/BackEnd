@@ -23,4 +23,6 @@ public class DogListDTO {
     private int isHeart;
 
     private LocalDateTime regDate;
+
+    private String thumbNail;
 }
