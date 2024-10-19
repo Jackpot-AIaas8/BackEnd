@@ -13,7 +13,7 @@ public interface BiddingService {
 
     void register(BiddingDTO biddingDTO);
 
-    void remove(int auctionId);
+    //void remove(int auctionId);
 
     BiddingDTO findBeforeBidding(int biddingId);
 

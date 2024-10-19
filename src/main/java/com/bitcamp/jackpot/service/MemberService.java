@@ -12,7 +12,7 @@ public interface MemberService {
 
     public void signUp(MemberDTO memberDTO);
 
-    public void edit(int memberID, MemberDTO memberDTO);
+    public void edit(MemberDTO memberDTO);
 
     public void remove(String email);
 
