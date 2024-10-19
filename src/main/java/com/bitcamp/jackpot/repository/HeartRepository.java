@@ -18,4 +18,6 @@ public interface HeartRepository extends JpaRepository<Heart, Integer> {
     public Page<Heart> findByDogId(Dog dog, Pageable pageable);
 
     public Page<Heart> findByMemberId(Member member, Pageable pageable);
+
+    Optional <Heart> deleteByMemberId(Member member);
 }
