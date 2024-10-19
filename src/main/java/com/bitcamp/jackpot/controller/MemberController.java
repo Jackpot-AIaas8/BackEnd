@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.controller;
 
+import com.bitcamp.jackpot.dto.SignInDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.jwt.LogoutService;
@@ -16,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestController
@@ -35,7 +34,7 @@ public class MemberController {
         //회원가입처리
         memberService.signUp(memberDTO);
 
-//        log.info("회원가입 성공 - 이메일: {}", memberDTO);
+        log.info("회원가입 성공 - 이메일: {}", memberDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
@@ -50,11 +49,9 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);
     }
 
-    @PutMapping("/edit/{memberID}")
-    public ResponseEntity<Void> edit(@PathVariable int memberID, @RequestBody MemberDTO memberDTO) {
-
-        memberService.edit(memberID,memberDTO);
-
+    @PutMapping("/edit")
+    public ResponseEntity<Void> edit(@RequestBody MemberDTO memberDTO) {
+        memberService.edit(memberDTO);
         return ResponseEntity.noContent().build();
     }
 
@@ -69,67 +66,54 @@ public class MemberController {
 
     @GetMapping("/checkEmail")
     public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
-        return buildDuplicateCheckResponse(memberService.checkEmail(email));
+        Map<String, Boolean> response = memberService.checkEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/checkPwd")
     public ResponseEntity<Map<String, Boolean>> checkPwd(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String pwd) {
         String email = customUserDetails.getUsername();
-        return buildDuplicateCheckResponse(memberService.checkPwd(email,pwd));
+        Map<String, Boolean> response = memberService.checkPwd(email,pwd);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/checkNickName")
     public ResponseEntity<Map<String, Boolean>> checkNickName(@RequestParam String nickName) {
-        return buildDuplicateCheckResponse(memberService.checkNickName(nickName));
+        Map<String, Boolean> response = memberService.checkNickName(nickName);
+        return ResponseEntity.ok(response);
     }
-
-    // 중복 체크 결과 응답을 생성하는 메서드 리팩토링해야함
-    private ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isDuplicate", isDuplicate);
-
-        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
-        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
-        return ResponseEntity.status(status).body(response);
-    }
-
-
 
 
     @GetMapping("/findOne")
-    public ResponseEntity<MemberDTO> getMember(@RequestParam String email ) {
-        try{
-            MemberDTO memberDTO = memberService.findOne(email);
-            return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
-        } catch (
-                NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<MemberDTO> getMember(@RequestParam String email) {
+
+        MemberDTO memberDTO = memberService.findOne(email);
+        return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
     }
+
 
 
     @GetMapping("/findId")
     public ResponseEntity<String> findId(@RequestParam String name, String phone) {
-        try {
-            // 서비스에서 이메일 찾기
             String email = memberService.findId(name, phone);
-            return ResponseEntity.ok(email);  // 200 OK와 함께 이메일 반환
-        } catch (RuntimeException e) {
-            // Member가 없을 경우 404 Not Found 반환
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+            return ResponseEntity.ok(email);
     }
-    @PatchMapping("/resetPwd")
-    public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String pwd = request.get("pwd");
 
-        if (memberService.resetPwd(email, pwd)) {
-            return ResponseEntity.ok("비밀번호 변경 성공");
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
+//    @PatchMapping("/resetPwd")
+//    public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
+//        String email = request.get("email");
+//        String pwd = request.get("pwd");
+//
+//        if (memberService.resetPwd(email, pwd)) {
+//            return ResponseEntity.ok("비밀번호 변경 성공");
+//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
+//    }
+
+@PatchMapping("/resetPwd")
+public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
+    memberService.resetPwd(signInDTO.getEmail(), signInDTO.getPwd());
+        return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
 
@@ -138,12 +122,9 @@ public class MemberController {
     public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
             Pageable pageable) {
-        try {
             Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
             return new ResponseEntity<>(members, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+
     }
 
 
