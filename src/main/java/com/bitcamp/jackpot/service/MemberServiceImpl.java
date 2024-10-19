@@ -1,7 +1,9 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.config.error.ErrorCode;
 import com.bitcamp.jackpot.config.error.exception.DatabaseException;
 import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
+import com.bitcamp.jackpot.config.error.exception.InvalidPasswordException;
 import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
@@ -55,10 +57,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void edit(int memberID, MemberDTO memberDTO) {
+    public void edit(MemberDTO memberDTO) {
         try {
+
+
             // 해당 ID의 멤버 조회
-            Member member = memberRepository.findById(memberID)
+            Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
             member.updateMemberInfo(
@@ -110,28 +114,46 @@ public class MemberServiceImpl implements MemberService {
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
     @Override
-    public boolean checkNickName(String nickName) {
-        return memberRepository.existsByNickName(nickName);
-    }
-
-    @Override
-    public boolean checkEmail(String email) {
-        return memberRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean checkPwd(String email, String pwd) {
-        // 이메일로 사용자 조회
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-
-        if (memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-
-            return bCryptPasswordEncoder.matches(pwd, member.getPwd());
+    public Map<String, Boolean> checkNickName(String nickName) {
+        Map<String, Boolean> response = new HashMap<>();
+        if (memberRepository.existsByEmail(nickName)) {
+            response.put("isDuplicate", true);
+            throw new DuplicateResourceException(true);
+        } else {
+            response.put("isDuplicate", false);
         }
-
-        return false;
+        return response;
     }
+
+
+    @Override
+    public Map<String, Boolean> checkEmail(String email) {
+        Map<String, Boolean> response = new HashMap<>();
+        if (memberRepository.existsByEmail(email)) {
+            response.put("isDuplicate", true);
+            throw new DuplicateResourceException(true);
+        } else {
+            response.put("isDuplicate", false);
+        }
+        return response;
+    }
+
+
+    @Override
+    public Map<String, Boolean> checkPwd(String email, String pwd) {
+        // 이메일로 사용자 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+
+        boolean isMatchedPwd = bCryptPasswordEncoder.matches(pwd, member.getPwd());
+        if (!isMatchedPwd) {
+            throw new InvalidPasswordException("알맞지 않은 비밀번호", ErrorCode.INVALID_INPUT_VALUE); // 더 적절한 예외를 사용
+        }
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isMatchedPwd", true);
+        return response;
+    }
+
 
     public ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
         Map<String, Boolean> response = new HashMap<>();
@@ -143,23 +165,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean resetPwd(String email, String pwd) {
-        try{
-        // 1. 이메일로 회원 조회
+
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
-
-        // 2. 명시적 메서드를 통해 비밀번호만 변경
-        member.changePassword(pwd, bCryptPasswordEncoder);
-
-        // 3. 변경된 엔티티 저장
-        memberRepository.save(member);
+                .orElseThrow(MemberNotFoundException::new);
+        try{
+            member.changePassword(pwd, bCryptPasswordEncoder);
+            memberRepository.save(member);
         }catch (Exception e){
-        log.error(e);
-        return false;
+            log.error(e);
+            throw new DatabaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
-
         return true;
     }
+
 
 
 
