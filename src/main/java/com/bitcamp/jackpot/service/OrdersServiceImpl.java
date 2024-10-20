@@ -3,6 +3,7 @@ package com.bitcamp.jackpot.service;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
+import com.bitcamp.jackpot.dto.OrdersDetailDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 
 import com.bitcamp.jackpot.dto.OrdersDTO;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,10 +74,26 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public OrdersDTO findOne(Integer id) {
-        Orders orders = ordersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orders not found"));
-        return entityToDto(orders);
+    public List<OrdersDetailDTO> findOne(int orderId) {
+        List<OrdersDetailDTO> ordersDetailList = ordersRepository.findAllByOrderId(orderId)
+                .stream().map(orders -> OrdersDetailDTO.builder()
+                        .id(orders.getId())
+                        .regDate(orders.getRegDate())
+                        .orderId(orders.getOrderId())
+                        .shopId(orders.getShop().getShopId())
+                        .shopName(orders.getShop().getName())
+                        .price(orders.getShop().getPrice())
+                        .quantity(orders.getQuantity())
+                        .memberId(orders.getMember().getMemberId())
+                        .name(orders.getMember().getName())
+                        .phone(orders.getMember().getPhone())
+                        .address(orders.getMember().getAddress())
+                        .deliveryState(orders.getDelivery_state())
+                        .deliveryPrice(3000)
+                        .totalPrice(orders.getTotalPrice())
+                        .build())
+                .collect(Collectors.toList());
+        return ordersDetailList;
     }
 
     @Override
@@ -118,8 +136,14 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersDTOList;
     }
 
-
-
+    @Override
+    public int cancel(int orderId) {
+        ordersRepository.findAllByOrderId(orderId)
+                .stream()
+                .peek(order -> order.setDelivery_state(4))
+                .forEach(ordersRepository::save);
+        return 0;
+    }
 
     // 주문을 orderId로 조회하는 메서드 추가 (orderId는 String)
     public OrdersDTO findOneByOrderId(String orderId) {
