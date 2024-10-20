@@ -88,12 +88,19 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public PageResponseDTO<ShopDTO> search(String name, PageRequestDTO pageRequestDTO) {
+//        log.info(name);
+//        log.info(pageRequestDTO.toString());
+
         Pageable pageable = pageRequestDTO.getPageable("shopId");
         Page<Shop> result = shopRepository.findByShopName(name, pageable);
+
+//        log.info(pageable);
+//        log.info(result);
+
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-
+//        log.info(shopDTOList);
         return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
     }
 
