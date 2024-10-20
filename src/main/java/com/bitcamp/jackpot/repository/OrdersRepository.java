@@ -11,5 +11,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
     Optional<Orders> findByOrderId(String orderId);
 
     @Query("SELECT o FROM Orders o WHERE o.member.memberId = :memberId")
-    List<Orders> findByMemberId(int memberId);
+    List<Orders> findAllByMemberId(int memberId);
+
+    @Query("SELECT o From Orders o Where o.orderId = :orderId")
+    List<Orders> findAllByOrderId(int orderId);
 }

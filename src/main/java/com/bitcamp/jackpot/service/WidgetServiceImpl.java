@@ -109,7 +109,7 @@ public class WidgetServiceImpl implements WidgetService {
             CustomUserDetails ud = (CustomUserDetails) auth.getPrincipal();
             Member member = memberRepository.findByEmail(ud.getUsername()).orElseThrow();
             List<Fund> memberFunds = fundRepository.findAllByMemberId(member.getMemberId());
-            List<Orders> memberOrders = ordersRepository.findByMemberId(member.getMemberId());
+            List<Orders> memberOrders = ordersRepository.findAllByMemberId(member.getMemberId());
             int memberTotalAmount = memberFunds.stream().mapToInt(Fund::getCollection).sum() +
                     memberOrders.stream().mapToInt(Orders::getTotalPrice).sum();
             if (memberTotalAmount >= 50000){
