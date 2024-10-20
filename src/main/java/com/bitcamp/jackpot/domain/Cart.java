@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart extends BaseEntity {
@@ -13,6 +14,8 @@ public class Cart extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
+
+    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name="shop_id")

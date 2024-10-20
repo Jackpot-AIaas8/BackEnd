@@ -2,10 +2,12 @@ package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Cart;
 import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.CartDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.CartRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
+import com.bitcamp.jackpot.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -72,5 +74,19 @@ public class CartServiceImpl implements CartService {
         String email = getUserEmailFromToken();
         List<Cart> carts = cartRepository.findByMemberEmail(email);
         return entityListToDtoList(carts);
+    }
+
+    public boolean updateCartQuantity(Integer cartId, int quantity) {
+        // cartId로 장바구니 항목 찾기
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("해당 장바구니 항목을 찾을 수 없습니다."));
+
+        // 수량 업데이트
+        cart.setQuantity(quantity);
+
+        // 변경사항 저장
+        cartRepository.save(cart);
+
+        return true;
     }
 }

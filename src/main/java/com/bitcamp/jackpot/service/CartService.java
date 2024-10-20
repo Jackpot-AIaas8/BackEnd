@@ -17,6 +17,8 @@ public interface CartService {
 
     List<CartDTO> findAll();
 
+    public boolean updateCartQuantity(Integer cartId, int quantity);
+
     default Cart dtoToEntity(CartDTO cartDTO, Member member) {
         Shop shop = Shop.builder().shopId(cartDTO.getShopId()).build();
         return Cart.builder()
