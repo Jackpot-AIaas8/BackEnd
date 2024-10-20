@@ -17,7 +17,9 @@ public class BiddingDTO {
     private int biddingId;
     private int bidPrice;
     private LocalDateTime bidTime;
-    private int memberId;
+    private int memberID;
     private String memberName;
     private int auctionId;
+
+    private int auctionStatus;
 }
