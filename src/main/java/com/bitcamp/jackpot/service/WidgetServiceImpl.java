@@ -1,6 +1,7 @@
 package com.bitcamp.jackpot.service;
 
 import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.dto.FundDTO;
 import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.repository.MemberRepository;
@@ -81,7 +82,14 @@ public class WidgetServiceImpl implements WidgetService {
 
         if(isSuccess){
             if(isFunding){
-
+                System.out.println("여기부터 orderName : \n" + requestData.get("orderName"));
+                dogService.addFund(
+                        FundDTO.builder()
+                                .dogId(((Long)requestData.get("dogId")).intValue())
+                                .orderId(orderId)
+                                .collection(amount)
+                                .build()
+                );
             }
             else{
                 String sProductNames = requestData.get("productNames") != null ? requestData.get("productNames").toString() : null;
@@ -113,9 +121,5 @@ public class WidgetServiceImpl implements WidgetService {
                             .build()
             );
         }
-    }
-
-    @Override
-    public void payDataRegistFund(JSONArray jsonArray) {
     }
 }
