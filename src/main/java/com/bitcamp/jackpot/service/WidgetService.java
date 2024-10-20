@@ -8,5 +8,4 @@ import org.springframework.http.ResponseEntity;
 public interface WidgetService {
     ResponseEntity<JSONObject> confirmTossPayments(JSONObject jsonObject) throws Exception;
     void payDataRegistOrder(JSONArray jsonObject, String orderId) throws ParseException;
-    void payDataRegistFund(JSONArray jsonObject);
 }

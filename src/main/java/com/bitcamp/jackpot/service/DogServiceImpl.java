@@ -230,6 +230,7 @@ public class DogServiceImpl implements DogService {
 
         Fund fund = Fund.builder()
                 .dog(oDog.orElseThrow())
+                .orderId(fundDTO.getOrderId())
                 .member(oMember.orElseThrow())
                 .collection(fundDTO.getCollection())
                 .build();
