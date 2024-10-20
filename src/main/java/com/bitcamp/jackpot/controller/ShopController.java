@@ -46,7 +46,10 @@ public class ShopController {
     @GetMapping("/search")
     public PageResponseDTO<ShopDTO> search(@RequestParam("name") String name, PageRequestDTO pageRequestDTO) {
 //        log.info(name);
-        return shopService.search(name, pageRequestDTO);
+//        log.info(pageRequestDTO.toString());
+        PageResponseDTO<ShopDTO> result = shopService.search(name, pageRequestDTO);
+//        log.info(result);
+        return result;
     }
 
     @GetMapping("/category/{category}")
