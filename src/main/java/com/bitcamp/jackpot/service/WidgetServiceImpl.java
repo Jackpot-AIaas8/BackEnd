@@ -1,16 +1,22 @@
 package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.domain.Fund;
 import com.bitcamp.jackpot.domain.Member;
+import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.dto.FundDTO;
+import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.dto.OrdersDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
+import com.bitcamp.jackpot.repository.FundRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
+import com.bitcamp.jackpot.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +30,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @Log4j2
@@ -33,6 +40,9 @@ public class WidgetServiceImpl implements WidgetService {
     private final OrdersServiceImpl ordersService;
     private final DogServiceImpl dogService;
     private final MemberRepository memberRepository;
+    private final FundRepository fundRepository;
+    private final OrdersRepository ordersRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public ResponseEntity<JSONObject> confirmTossPayments(JSONObject requestData) throws Exception{
@@ -82,7 +92,6 @@ public class WidgetServiceImpl implements WidgetService {
 
         if(isSuccess){
             if(isFunding){
-                System.out.println("여기부터 orderName : \n" + requestData.get("orderName"));
                 dogService.addFund(
                         FundDTO.builder()
                                 .dogId(((Long)requestData.get("dogId")).intValue())
@@ -95,6 +104,18 @@ public class WidgetServiceImpl implements WidgetService {
                 String sProductNames = requestData.get("productNames") != null ? requestData.get("productNames").toString() : null;
                 JSONArray productNames = (JSONArray) parser.parse(sProductNames);
                 payDataRegistOrder(productNames,orderId);
+            }
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails ud = (CustomUserDetails) auth.getPrincipal();
+            Member member = memberRepository.findByEmail(ud.getUsername()).orElseThrow();
+            List<Fund> memberFunds = fundRepository.findAllByMemberId(member.getMemberId());
+            List<Orders> memberOrders = ordersRepository.findByMemberId(member.getMemberId());
+            int memberTotalAmount = memberFunds.stream().mapToInt(Fund::getCollection).sum() +
+                    memberOrders.stream().mapToInt(Orders::getTotalPrice).sum();
+            if (memberTotalAmount >= 50000){
+                MemberDTO memberDTO = modelMapper.map(member, MemberDTO.class);
+                memberDTO.setGrade(2);
+                memberRepository.save(modelMapper.map(memberDTO, Member.class));
             }
         }
         return ResponseEntity.status(code).body(jsonObject);
