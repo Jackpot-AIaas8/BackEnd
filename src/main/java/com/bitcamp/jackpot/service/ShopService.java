@@ -19,6 +19,7 @@ public interface ShopService {
 
     ShopDTO findOne(int shopId);
 
+
     PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO);
 
     PageResponseDTO<ShopDTO> search(String name, PageRequestDTO pageRequestDTO);

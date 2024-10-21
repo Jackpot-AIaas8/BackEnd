@@ -50,8 +50,6 @@ public class Member extends BaseEntity {
         return this;
     }
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Review> reviews;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Orders> orders;

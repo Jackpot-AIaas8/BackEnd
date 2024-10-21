@@ -86,24 +86,28 @@ public class ShopServiceImpl implements ShopService {
 //        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
 //    }
 
+
+
     @Override
     public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
-
         Pageable pageable = pageRequestDTO.getPageable("shopId");
 
         Page<Shop> result = shopRepository.findAll(pageable);
-
 
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
 
+//        log.info("Pageable 정보: {}", pageable);
+//        log.info("총 상품 개수: {}", result.getTotalElements());
 
-        int totalElements = (int) result.getTotalElements(); // 전체 요소 수
-        int totalPages = result.getTotalPages(); // 전체 페이지 수
-
-        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, totalPages);
+        return PageResponseDTO.<ShopDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(shopDTOList)
+                .total((int) result.getTotalElements())
+                .build();
     }
+
 
 
     @Override

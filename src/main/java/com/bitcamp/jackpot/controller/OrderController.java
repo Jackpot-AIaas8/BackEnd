@@ -20,15 +20,15 @@ public class OrderController {
 
     @PostMapping("/register")
     public void register(@RequestBody OrdersDTO ordersDTO) {
-        log.info("Order ID from Frontend: " + ordersDTO.getOrderId());
+//        log.info("Order ID from Frontend: " + ordersDTO.getOrderId());
 
-        log.info(ordersDTO);
+//        log.info(ordersDTO);
         ordersService.register(ordersDTO);
     }
 
     @PostMapping("/edit")
     public void edit(@RequestBody OrdersDTO ordersDTO) {
-        log.info("Received OrdersDTO: {}", ordersDTO);
+//        log.info("Received OrdersDTO: {}", ordersDTO);
 
         // 주문 상태 업데이트 로직
         ordersService.updateDeliveryState(ordersDTO.getDeliveryState(), ordersDTO.getOrderId(), ordersDTO.getShopId());

@@ -48,8 +48,7 @@ public class Shop extends BaseEntity {
     @Column(nullable = false)
     private String detailImage4;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Review> reviews;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Cart> carts;
     @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
