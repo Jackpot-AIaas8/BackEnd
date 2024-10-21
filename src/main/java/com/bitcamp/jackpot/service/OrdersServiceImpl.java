@@ -67,11 +67,8 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public void updateDeliveryState(int deliveryStatus, String orderId, int shopId) {
-        Orders order = ordersRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다: " + orderId));
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다: " + shopId));
-        order.setShop(shop);
+        Orders order = ordersRepository.findByOrderIdAndShop_ShopId(orderId, shopId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다: " + orderId + ", 상품 ID: " + shopId));
         order.setDelivery_state(deliveryStatus);
         ordersRepository.save(order);
     }

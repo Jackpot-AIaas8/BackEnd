@@ -13,7 +13,7 @@ public class PageResponseDTO<E> {
 
     private int page;           // 현재 페이지
     private int size;           // 페이지 크기
-    private int total;         // 전체 row 개수
+    private int total;          // 전체 row 개수
 
     private int start;          // 현재 페이지에서 시작 페이지 숫자
     private int end;            // 현재 페이지에서 끝 페이지 숫자
@@ -33,10 +33,10 @@ public class PageResponseDTO<E> {
         this.dtoList = dtoList;
 
         // Math.ceil을 사용하여 올림 처리
-        this.end = (int)(Math.ceil(this.page / 10.0)) * 10;
+        this.end = (int) (Math.ceil(this.page / 10.0)) * 10;
         this.start = this.end - 9;
 
-        int last = (int)(Math.ceil((total / (double)size)));
+        int last = (int) (Math.ceil((total / (double) size)));
         this.end = end > last ? last : end;
 
         this.prev = this.start > 1;
