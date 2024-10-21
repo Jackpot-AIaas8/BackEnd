@@ -1,5 +1,6 @@
-package com.bitcamp.jackpot.jwt;
+package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.jwt.JWTUtil;
 import com.bitcamp.jackpot.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;

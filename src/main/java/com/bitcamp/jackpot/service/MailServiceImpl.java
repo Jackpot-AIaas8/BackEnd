@@ -29,21 +29,15 @@ public class MailServiceImpl implements MailService {
 
     public void checkVerificationCode(VerificationCodeDTO verificationCodeDTO) {
 
-        String name = verificationCodeDTO.getName();
         String code = verificationCodeDTO.getCode();
         String email = verificationCodeDTO.getEmail();
 
         try {
-            // 사용자 존재 여부를 먼저 확인하고, 없으면 바로 false 반환
-            if (!memberRepository.existsByNameAndEmail(name, email)) {
-                throw new MemberNotFoundException();
-            }
-
             // Redis에서 인증 코드 비교, 일치하지 않으면 false 반환
             if (!redisUtil.isValueEqual(email, code)) {
                 throw new RuntimeException();
             }
-            redisUtil.delete(email);
+            else redisUtil.delete(email);
         } catch (Exception e) {
             throw new MailCheckException(ErrorCode.INVALID_INPUT_VALUE);
         }
@@ -64,8 +58,6 @@ public class MailServiceImpl implements MailService {
 
     public void sendSimpleMailMessage(String email) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        final int REDIS_EXPIRATION_MINUTE = 3; // 3분 만료 시간 설정 (초 단위)
-
         try {
             // 이메일 형식 검증
             validateEmail(email);
@@ -76,15 +68,15 @@ public class MailServiceImpl implements MailService {
             simpleMailMessage.setSubject("ppyppy 인증번호");
 
             // 인증 코드 생성
-            String secretCode = createCode();
-            simpleMailMessage.setText("인증번호 : " + secretCode);
+            String code = createCode();
+            simpleMailMessage.setText("인증번호 : " + code);
 
             // 메일 발송
             javaMailSender.send(simpleMailMessage);
             log.info("메일 발송 성공! 대상: {}", email);
 
             // Redis에 인증 코드 저장
-            saveVerificationCodeToRedis(email, secretCode, REDIS_EXPIRATION_MINUTE);
+            saveVerificationCodeToRedis(email, code);
 
         } catch (Exception e) {
             log.error("메일 서비스 중 오류 발생! 대상: {}", email, e);
@@ -92,9 +84,9 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    private void saveVerificationCodeToRedis(String email, String code, int expirationTime) {
-        redisUtil.set(email, code, expirationTime);
-        log.info("Redis에 인증 코드 저장 성공! 대상: {}, 만료 시간: {}초", email, expirationTime);
+    private void saveVerificationCodeToRedis(String email, String code) {
+        redisUtil.set(email, code, 3);
+        log.info("Redis에 인증 코드 저장 성공! 대상: {}, 만료 시간: {}분", email, 3);
     }
 
     private void validateEmail(String email) {

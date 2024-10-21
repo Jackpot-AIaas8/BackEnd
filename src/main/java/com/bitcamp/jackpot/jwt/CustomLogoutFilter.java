@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.jwt;
 
+import com.bitcamp.jackpot.service.LogoutService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
