@@ -25,6 +25,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper; // ModelMapper 주입
+    private final ShopRepository shopRepository;
 
     // 로그인된 사용자 정보를 가져오는 메서드
     private CustomUserDetails getUserDetails() {
@@ -45,10 +46,13 @@ public class CartServiceImpl implements CartService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() ->
                 new IllegalArgumentException("유효한 사용자를 찾을 수 없습니다."));
 
-        Cart cart = dtoToEntity(cartDTO, member);
-        log.info("장바구니에 상품 등록: {}", cart);
+        Shop shop = shopRepository.findById(cartDTO.getShopId()).orElseThrow();
 
-        cartRepository.save(cart);
+        cartRepository.save(Cart.builder()
+                .quantity(cartDTO.getQuantity())
+                .shop(shop)
+                .member(member)
+                .build());
     }
 
     @Override
