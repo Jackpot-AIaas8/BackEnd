@@ -38,7 +38,7 @@ public class ShopController {
 
     @GetMapping("/findList")
     public ResponseEntity<PageResponseDTO<ShopDTO>> findList(PageRequestDTO pageRequestDTO) {
-        // log.info(pageRequestDTO);
+        log.info(pageRequestDTO);
         PageResponseDTO<ShopDTO> pageResponseDTO = shopService.findList(pageRequestDTO);
         log.info(pageResponseDTO);
         return ResponseEntity
@@ -53,7 +53,6 @@ public class ShopController {
         log.info(result);
         return (List<OrdersDTO>) result;
     }
-
 
 
     @GetMapping("/search")

@@ -23,7 +23,7 @@ public class WidgetController {
 
     @PostMapping("/confirm")
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
-
+        System.out.println(jsonBody);
         JSONParser parser = new JSONParser();
         JSONObject requestData = (JSONObject) parser.parse(jsonBody);
 

@@ -70,7 +70,6 @@ public class Member extends BaseEntity {
     @JsonManagedReference
     private List<Bidding> bids;
 
-
     public void updateMemberInfo(String name, String phone, String pwd, String address) {
         this.name = name;
         this.phone = phone;
@@ -81,4 +80,5 @@ public class Member extends BaseEntity {
     public void updateMemberGrade(int grade) {
         this.grade = grade;
     }
+
 }
