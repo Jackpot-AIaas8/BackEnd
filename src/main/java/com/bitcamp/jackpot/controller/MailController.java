@@ -21,6 +21,7 @@ public class MailController {
     }
     @PostMapping("/checkVerificationCode")
     public ResponseEntity<String> checkVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
+            System.out.println(verificationCodeDTO.getCode()+verificationCodeDTO.getEmail());
            mailService.checkVerificationCode(verificationCodeDTO);
             return  ResponseEntity.ok("인증 성공");
         }

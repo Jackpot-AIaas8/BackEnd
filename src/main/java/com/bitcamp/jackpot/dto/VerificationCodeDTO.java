@@ -9,8 +9,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class VerificationCodeDTO {
-    @NotBlank(message = "Name is required")
-    private String name;
 
     @NotBlank(message = "Code is required")
     @Size(min = 6, max = 6, message = "Code must be exactly 6 characters")
