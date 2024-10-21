@@ -28,8 +28,10 @@ public class OrderController {
 
     @PostMapping("/edit")
     public void edit(@RequestBody OrdersDTO ordersDTO) {
-        log.info(ordersDTO);
-        ordersService.edit(ordersDTO);
+        log.info("Received OrdersDTO: {}", ordersDTO);
+
+        // 주문 상태 업데이트 로직
+        ordersService.updateDeliveryState(ordersDTO.getDeliveryState(), ordersDTO.getOrderId(), ordersDTO.getShopId());
     }
 
     @GetMapping("/findAll")

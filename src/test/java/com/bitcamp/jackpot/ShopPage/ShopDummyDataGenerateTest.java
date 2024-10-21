@@ -20,26 +20,26 @@ public class ShopDummyDataGenerateTest {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Test
-    void ShopDummyDataGenerateRegister() {
-
-        // 더미 데이터 생성
-        for (int i = 1; i <= 20; i++) {
-            ShopDTO shopDTO = ShopDTO.builder()
-                    .name("Test Product " + i)
-                    .detail("This is a test product detail " + i)
-                    .category(i % 5 + 1) // 카테고리 1~5로 나눠 설정
-                    .price(String.valueOf(10000 + i)) // 가격 설정 (int)
-                    .build();
-
-            // DTO를 엔티티로 변환
-            Shop shopEntity = modelMapper.map(shopDTO, Shop.class);
-
-            // 더미 데이터를 저장
-            shopRepository.save(shopEntity);
-
-            log.info("Saved Shop Entity: " + shopEntity);
-
-        }
-    }
+//    @Test
+//    void ShopDummyDataGenerateRegister() {
+//
+//        // 더미 데이터 생성
+//        for (int i = 1; i <= 20; i++) {
+//            ShopDTO shopDTO = ShopDTO.builder()
+//                    .name("Test Product " + i)
+//                    .detail("This is a test product detail " + i)
+//                    .category(i % 5 + 1) // 카테고리 1~5로 나눠 설정
+//                    .price(String.valueOf(10000 + i)) // 가격 설정 (int)
+//                    .build();
+//
+//            // DTO를 엔티티로 변환
+//            Shop shopEntity = modelMapper.map(shopDTO, Shop.class);
+//
+//            // 더미 데이터를 저장
+//            shopRepository.save(shopEntity);
+//
+//            log.info("Saved Shop Entity: " + shopEntity);
+//
+//        }
+//    }
 }

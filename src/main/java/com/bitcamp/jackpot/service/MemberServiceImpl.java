@@ -8,7 +8,6 @@ import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.repository.HeartRepository;
-import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -18,8 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,17 +35,11 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final HeartRepository heartRepository;
     private final ModelMapper modelMapper;
-    private final RedisUtil redisUtil;
 
     @Override
     public void signUp(MemberDTO memberDTO) {
-        log.info("dto 확인  - 확인: {}", memberDTO);
-
         Member member = modelMapper.map(memberDTO, Member.class);
-        // 비밀번호 인코딩
         member.encodePassword(memberDTO.getPwd(), bCryptPasswordEncoder);
-        log.info("저장할 멤버 - 확인: {}", member);
-        //엔티티 저장
         try {
             memberRepository.save(member);
         } catch (Exception e) {
@@ -59,9 +50,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void edit(MemberDTO memberDTO) {
         try {
-
-
-            // 해당 ID의 멤버 조회
             Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
@@ -77,14 +65,10 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
-
-
-
     @Override
     public void remove(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
-        heartRepository.deleteByMemberId(member); // 외래키 제약조건때문에 하트를 삭제하지 않으면 회원탈퇴가 안되서 강제삭제
+        heartRepository.deleteByMemberId(member);
         memberRepository.deleteByEmail(email);
     }
 
@@ -94,7 +78,6 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         Member member = optionalMember.orElseThrow(() -> new EntityNotFoundException("Member not found"));
-        log.info("member : " + member);
         return modelMapper.map(member, MemberDTO.class);
 
     }
@@ -113,10 +96,11 @@ public class MemberServiceImpl implements MemberService {
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
+
     @Override
     public Map<String, Boolean> checkNickName(String nickName) {
         Map<String, Boolean> response = new HashMap<>();
-        if (memberRepository.existsByEmail(nickName)) {
+        if (memberRepository.existsByNickName(nickName)) {
             response.put("isDuplicate", true);
             throw new DuplicateResourceException(true);
         } else {
@@ -147,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
 
         boolean isMatchedPwd = bCryptPasswordEncoder.matches(pwd, member.getPwd());
         if (!isMatchedPwd) {
-            throw new InvalidPasswordException("알맞지 않은 비밀번호", ErrorCode.INVALID_INPUT_VALUE); // 더 적절한 예외를 사용
+            throw new InvalidPasswordException("알맞지 않은 비밀번호", ErrorCode.INVALID_INPUT_VALUE);
         }
         Map<String, Boolean> response = new HashMap<>();
         response.put("isMatchedPwd", true);
@@ -155,13 +139,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    public ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isDuplicate", isDuplicate);
-        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
-        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
-        return ResponseEntity.status(status).body(response);
-    }
 
     @Override
     public boolean resetPwd(String email, String pwd) {
@@ -172,43 +149,31 @@ public class MemberServiceImpl implements MemberService {
             member.changePassword(pwd, bCryptPasswordEncoder);
             memberRepository.save(member);
         }catch (Exception e){
-            log.error(e);
             throw new DatabaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public String findId(String name, String phone) {
         Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
 
         return result.map(Member::getEmail)
-                .orElseThrow(() -> new RuntimeException("Member not found with provided phone and name"));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
 
 
     public void adminRemove(int memberId) {
-        log.info(memberId);
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("해당 상품을 찾을 수 없습니다."));
         memberRepository.deleteById(memberId);
     }
 
     @Override
     public void adminEdit(int memberId, MemberDTO memberDTO) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("해당 상품을 찾을 수 없습니다."));
         modelMapper.map(memberDTO, member);
         memberRepository.save(member);
     }
@@ -219,7 +184,7 @@ public class MemberServiceImpl implements MemberService {
             Page<Member> members = memberRepository.findByNameContaining(name, pageable);
             return members.map(member -> modelMapper.map(member, MemberDTO.class));
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while searching members by name", e);
+            throw new MemberNotFoundException("이름으로 회원을 검색하는 중 오류가 발생했습니다.");
         }
     }
 

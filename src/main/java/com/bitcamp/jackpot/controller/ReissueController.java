@@ -1,5 +1,7 @@
-package com.bitcamp.jackpot.jwt;
+package com.bitcamp.jackpot.controller;
 
+import com.bitcamp.jackpot.jwt.JWTUtil;
+import com.bitcamp.jackpot.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,6 @@ public class ReissueController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     return reissueService.reissue(request,response);
     }
 }

@@ -21,7 +21,7 @@ public class Shop extends BaseEntity {
     @Column(length = 20, nullable = false)
     private String name;
 
-    @Column(length = 100, nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String detail;
 
     @Column(nullable = false)

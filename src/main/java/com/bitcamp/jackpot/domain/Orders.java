@@ -44,4 +44,8 @@ public class Orders extends BaseEntity {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime regDate;
+
+    public void setDelivery_state(int delivery_state) {
+        this.delivery_state = delivery_state;
+    }
 }

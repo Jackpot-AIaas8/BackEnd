@@ -3,7 +3,7 @@ package com.bitcamp.jackpot.controller;
 import com.bitcamp.jackpot.dto.SignInDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.jwt.LogoutService;
+import com.bitcamp.jackpot.service.LogoutService;
 import com.bitcamp.jackpot.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,6 @@ public class MemberController {
         //회원가입처리
         memberService.signUp(memberDTO);
 
-        log.info("회원가입 성공 - 이메일: {}", memberDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
@@ -45,7 +44,6 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
         MemberDTO memberDTO = memberService.findOne(email);
-        log.info(memberDTO.toString());
         return ResponseEntity.ok(memberDTO);
     }
 
@@ -73,7 +71,7 @@ public class MemberController {
     @GetMapping("/checkPwd")
     public ResponseEntity<Map<String, Boolean>> checkPwd(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String pwd) {
         String email = customUserDetails.getUsername();
-        Map<String, Boolean> response = memberService.checkPwd(email,pwd);
+        Map<String, Boolean> response = memberService.checkPwd(email, pwd);
         return ResponseEntity.ok(response);
     }
 
@@ -92,23 +90,12 @@ public class MemberController {
     }
 
 
-
     @GetMapping("/findId")
     public ResponseEntity<String> findId(@RequestParam String name, String phone) {
-            String email = memberService.findId(name, phone);
-            return ResponseEntity.ok(email);
+        String email = memberService.findId(name, phone);
+        return ResponseEntity.ok(email);
     }
 
-//    @PatchMapping("/resetPwd")
-//    public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
-//        String email = request.get("email");
-//        String pwd = request.get("pwd");
-//
-//        if (memberService.resetPwd(email, pwd)) {
-//            return ResponseEntity.ok("비밀번호 변경 성공");
-//        }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
-//    }
 
 @PatchMapping("/resetPwd")
 public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
@@ -117,17 +104,14 @@ public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
     }
 
 
-
     @GetMapping("/search")
     public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
             Pageable pageable) {
-            Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
-            return new ResponseEntity<>(members, HttpStatus.OK);
+        Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
+        return new ResponseEntity<>(members, HttpStatus.OK);
 
     }
-
-
 
 
 }

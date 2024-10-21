@@ -1,14 +1,15 @@
 package com.bitcamp.jackpot.jwt;
 
+import com.bitcamp.jackpot.dto.RefreshDTO;
+import com.bitcamp.jackpot.util.RedisUtil;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Date;
 
 //0.12.3방식
@@ -47,6 +48,27 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Cookie createCookie(String key ,String value){
+        Cookie cookie = new Cookie(key,value);
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
+    }
+
+    public void addRefreshDTO(String username, String refresh, Long expiredMs, RedisUtil redisUtil){
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshDTO refreshDTO = new RefreshDTO();
+        refreshDTO.setUsername(username);
+        refreshDTO.setRefresh(refresh);
+        refreshDTO.setExpiration(date.toString());
+
+        redisUtil.set(username, refreshDTO, expiredMs.intValue() / (1000 * 60));  // 밀리초를 분 단위로 변환
 
     }
 

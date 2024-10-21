@@ -12,6 +12,7 @@ public class NotFoundException extends BusinessBaseException {
     }
 
 
-
-
+    public NotFoundException(String message, ErrorCode errorCode) {
+        super(message, errorCode);
+    }
 }

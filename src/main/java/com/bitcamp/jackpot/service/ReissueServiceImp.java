@@ -1,7 +1,7 @@
-package com.bitcamp.jackpot.jwt;
+package com.bitcamp.jackpot.service;
 
+import com.bitcamp.jackpot.jwt.JWTUtil;
 import com.bitcamp.jackpot.util.RedisUtil;
-import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,6 @@ public class ReissueServiceImp implements ReissueService {
         if (cookie.getName().equals("refresh")) {
 
             refresh = cookie.getValue();
-            System.out.println(refresh);
             break;
         }
     }
@@ -89,10 +87,10 @@ public class ReissueServiceImp implements ReissueService {
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         redisUtil.delete(username);
 
-        addRefreshEntity(username, newRefresh, 86400000L,redisUtil);
+        jwtUtil.addRefreshDTO(username, newRefresh, 86400000L,redisUtil);
 
         //response
-        response.addCookie(createCookie("refresh", newRefresh));
+        response.addCookie(jwtUtil.createCookie("refresh", newRefresh));
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> tokenResponse = new HashMap<>();
         tokenResponse.put("access", newAccess);

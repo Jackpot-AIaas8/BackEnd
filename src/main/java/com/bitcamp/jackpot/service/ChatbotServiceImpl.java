@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -18,6 +19,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor  // 생성자를 자동으로 생성하여 의존성 주입 처리
 public class ChatbotServiceImpl implements ChatbotService {
@@ -67,7 +69,7 @@ public class ChatbotServiceImpl implements ChatbotService {
                 chatbotMessage = con.getResponseMessage(); // 에러 메시지 처리
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            log.error("Exception: " + e);
         }
 
         return chatbotMessage;
@@ -88,7 +90,7 @@ public class ChatbotServiceImpl implements ChatbotService {
             // java.util.Base64 사용하여 인코딩
             encodeBase64String = Base64.getEncoder().encodeToString(rawHmac);
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            log.error("Exception: " + e);
         }
 
         return encodeBase64String;
@@ -130,7 +132,7 @@ public class ChatbotServiceImpl implements ChatbotService {
             requestBody = objectMapper.writeValueAsString(obj);
 
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            log.error("Exception: " + e);
         }
 
         return requestBody;
@@ -155,7 +157,8 @@ public class ChatbotServiceImpl implements ChatbotService {
                 return objectMapper.writeValueAsString(responseObj);
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            log.error("Exception: " + e);
+
         }
         return "{\"message\": \"\"}";  // 오류 발생 시 빈 메시지 반환
     }
