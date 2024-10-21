@@ -29,13 +29,12 @@ public class MailServiceImpl implements MailService {
 
     public void checkVerificationCode(VerificationCodeDTO verificationCodeDTO) {
 
-        String name = verificationCodeDTO.getName();
         String code = verificationCodeDTO.getCode();
         String email = verificationCodeDTO.getEmail();
 
         try {
             // 사용자 존재 여부를 먼저 확인하고, 없으면 바로 false 반환
-            if (!memberRepository.existsByNameAndEmail(name, email)) {
+            if (!memberRepository.existsByEmail(email)) {
                 throw new MemberNotFoundException();
             }
 
