@@ -37,7 +37,7 @@ public class MailServiceImpl implements MailService {
             if (!redisUtil.isValueEqual(email, code)) {
                 throw new RuntimeException();
             }
-            redisUtil.delete(email);
+            else redisUtil.delete(email);
         } catch (Exception e) {
             throw new MailCheckException(ErrorCode.INVALID_INPUT_VALUE);
         }
