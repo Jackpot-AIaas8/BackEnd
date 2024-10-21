@@ -1,8 +1,6 @@
 package com.bitcamp.jackpot.config.error;
 
-import com.bitcamp.jackpot.config.error.exception.BusinessBaseException;
-import com.bitcamp.jackpot.config.error.exception.DuplicateResourceException;
-import com.bitcamp.jackpot.config.error.exception.InvalidPasswordException;
+import com.bitcamp.jackpot.config.error.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +38,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorResponse> handle(InvalidPasswordException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage()); // 예외 메시지
+        response.put("errorCode", e.getErrorCode()); // 커스텀 에러 코드
+
+        return createErrorResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle(MemberNotFoundException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage()); // 예외 메시지
+        response.put("errorCode", e.getErrorCode()); // 커스텀 에러 코드
+
+        return createErrorResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MailCheckException.class)
+    public ResponseEntity<ErrorResponse> handle(MailCheckException e) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", e.getMessage()); // 예외 메시지
         response.put("errorCode", e.getErrorCode()); // 커스텀 에러 코드

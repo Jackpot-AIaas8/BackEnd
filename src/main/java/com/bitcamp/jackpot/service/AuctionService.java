@@ -23,6 +23,7 @@ public interface AuctionService {
 
     AuctionDTO getAuction();
 
+
     default Auction dtoToEntity(AuctionDTO dto, Shop shop) {
         return Auction.builder()
 //                .auctionId(dto.getAuctionId())

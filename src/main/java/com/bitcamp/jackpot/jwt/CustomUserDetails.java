@@ -17,16 +17,13 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                if(member.getGrade()==0){
-                    return "ROLE_ADMIN";
-                }else if(member.getGrade()==2){
-                    return "ROLE_PREMIUM";
-                }else return "ROLE_USER";
+        collection.add((GrantedAuthority) () -> {
+            if(member.getGrade()==0){
+                return "ROLE_ADMIN";
+            }else if(member.getGrade()==2){
+                return "ROLE_PREMIUM";
+            }else return "ROLE_USER";
 
-            }
         });
 
         return collection;
@@ -61,4 +58,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true; //
     }
+
 }

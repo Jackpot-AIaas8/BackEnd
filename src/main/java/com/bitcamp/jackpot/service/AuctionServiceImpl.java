@@ -36,16 +36,10 @@ public class AuctionServiceImpl implements AuctionService {
         LocalDateTime now = LocalDateTime.now();
         Auction ongoingAuction = auctionRepository.findOngoingAuction();
         if (ongoingAuction != null) {
-            log.info("진행 중인 경매가 있음: " + ongoingAuction);
             return entityToDto(ongoingAuction);
         }
         Auction upcomingAuction = auctionRepository.findUpcomingAuction(now);
-        if (upcomingAuction != null && upcomingAuction.getAuctionId() == auction.getAuctionId()) {
-            log.info("새로 등록된 경매가 가장 가까운 경매임: " + upcomingAuction);
-            return entityToDto(upcomingAuction);
-        }
-        // 3. 기존의 가장 가까운 경매를 반환
-        log.info("가장 가까운 기존 경매: " + upcomingAuction);
+
         return entityToDto(upcomingAuction);
     }
 
@@ -77,7 +71,6 @@ public class AuctionServiceImpl implements AuctionService {
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
         auction.setAuctionStatus(auctionStatus);
-        log.info(auction);
         auctionRepository.save(auction);
     }
 
@@ -88,6 +81,7 @@ public class AuctionServiceImpl implements AuctionService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
         auctionRepository.deleteById(auctionId);
     }
+
 
     @Override
     public AuctionDTO findOne(int auctionId) {

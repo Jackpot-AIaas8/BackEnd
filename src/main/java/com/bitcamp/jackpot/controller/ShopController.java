@@ -10,6 +10,8 @@ import com.bitcamp.jackpot.service.MemberService;
 import com.bitcamp.jackpot.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,11 +30,22 @@ public class ShopController {
         return shopService.findOne(shopId);
     }
 
+//    @GetMapping("/findList")
+//    public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
+////        log.info(pageRequestDTO);
+//        return shopService.findList(pageRequestDTO);
+//    }
+
     @GetMapping("/findList")
-    public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
-//        log.info(pageRequestDTO);
-        return shopService.findList(pageRequestDTO);
+    public ResponseEntity<PageResponseDTO<ShopDTO>> findList(PageRequestDTO pageRequestDTO) {
+        // log.info(pageRequestDTO);
+        PageResponseDTO<ShopDTO> pageResponseDTO = shopService.findList(pageRequestDTO);
+        log.info(pageResponseDTO);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pageResponseDTO);
     }
+
 
     @GetMapping("/findOrderList")
     public List<OrdersDTO> findOrderList(PageRequestDTO pageRequestDTO) {
@@ -46,7 +59,10 @@ public class ShopController {
     @GetMapping("/search")
     public PageResponseDTO<ShopDTO> search(@RequestParam("name") String name, PageRequestDTO pageRequestDTO) {
 //        log.info(name);
-        return shopService.search(name, pageRequestDTO);
+//        log.info(pageRequestDTO.toString());
+        PageResponseDTO<ShopDTO> result = shopService.search(name, pageRequestDTO);
+//        log.info(result);
+        return result;
     }
 
     @GetMapping("/category/{category}")

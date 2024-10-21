@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,12 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShopDTO {
     private int shopId;
     private String name;
     private int category;
-    private String price;
+    private int price;
     private String detail;
     private int buy_count;
     private int cell_count;

@@ -1,9 +1,8 @@
 package com.bitcamp.jackpot.controller;
 
 import com.bitcamp.jackpot.dto.VerificationCodeDTO;
-import com.bitcamp.jackpot.service.MailService;
+import com.bitcamp.jackpot.service.MailServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,26 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MailController {
 
-    private final MailService mailService;
+    private final MailServiceImpl mailService;
 
 
     @GetMapping("/sendEmail")
-    public void sendSimpleMailMessage(@RequestParam String email) {
+    public ResponseEntity<String> sendSimpleMailMessage(@RequestParam String email) {
         mailService.sendSimpleMailMessage(email);
-
+        return ResponseEntity.ok("메일이 성공적으로 송신 되었습니다.");
     }
     @PostMapping("/checkVerificationCode")
     public ResponseEntity<String> checkVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
-        boolean isVerified = mailService.checkVerificationCode(verificationCodeDTO);
-        // 인증 성공
-        if (isVerified) {
-            return ResponseEntity.ok("인증 성공");
+           mailService.checkVerificationCode(verificationCodeDTO);
+            return  ResponseEntity.ok("인증 성공");
         }
-        // 인증 실패
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("인증 정보가 일치하지 않습니다.");
-        }
-    }
-
 
 }

@@ -16,4 +16,5 @@ public class CartDTO {
     private int memberId;
     private String shopName;
     private int shopPrice;
+    private int quantity;
 }

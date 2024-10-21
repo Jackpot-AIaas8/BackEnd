@@ -7,7 +7,7 @@ import com.bitcamp.jackpot.config.error.exception.InvalidPasswordException;
 import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.util.RedisUtil;
+import com.bitcamp.jackpot.repository.HeartRepository;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -33,8 +33,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberRepository memberRepository;
+    private final HeartRepository heartRepository;
     private final ModelMapper modelMapper;
-    private final RedisUtil redisUtil;
 
     @Override
     public void signUp(MemberDTO memberDTO) {
@@ -53,10 +53,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void edit(int memberID, MemberDTO memberDTO) {
+    public void edit(MemberDTO memberDTO) {
         try {
+
+
             // 해당 ID의 멤버 조회
-            Member member = memberRepository.findById(memberID)
+            Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
             member.updateMemberInfo(
@@ -71,13 +73,10 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
-
-
-
     @Override
     public void remove(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        heartRepository.deleteByMemberId(member); // 외래키 제약조건때문에 하트를 삭제하지 않으면 회원탈퇴가 안되서 강제삭제
         memberRepository.deleteByEmail(email);
     }
 
@@ -106,10 +105,11 @@ public class MemberServiceImpl implements MemberService {
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
+
     @Override
     public Map<String, Boolean> checkNickName(String nickName) {
         Map<String, Boolean> response = new HashMap<>();
-        if (memberRepository.existsByEmail(nickName)) {
+        if (memberRepository.existsByNickName(nickName)) {
             response.put("isDuplicate", true);
             throw new DuplicateResourceException(true);
         } else {
@@ -117,6 +117,7 @@ public class MemberServiceImpl implements MemberService {
         }
         return response;
     }
+
 
     @Override
     public Map<String, Boolean> checkEmail(String email) {
@@ -130,6 +131,7 @@ public class MemberServiceImpl implements MemberService {
         return response;
     }
 
+
     @Override
     public Map<String, Boolean> checkPwd(String email, String pwd) {
         // 이메일로 사용자 조회
@@ -138,7 +140,7 @@ public class MemberServiceImpl implements MemberService {
 
         boolean isMatchedPwd = bCryptPasswordEncoder.matches(pwd, member.getPwd());
         if (!isMatchedPwd) {
-            throw new InvalidPasswordException("알맞지 않은 비밀번호",ErrorCode.INVALID_INPUT_VALUE); // 더 적절한 예외를 사용
+            throw new InvalidPasswordException("알맞지 않은 비밀번호", ErrorCode.INVALID_INPUT_VALUE); // 더 적절한 예외를 사용
         }
         Map<String, Boolean> response = new HashMap<>();
         response.put("isMatchedPwd", true);
@@ -146,35 +148,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+
     @Override
     public boolean resetPwd(String email, String pwd) {
-        try{
-        // 1. 이메일로 회원 조회
+
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
-
-        // 2. 명시적 메서드를 통해 비밀번호만 변경
-        member.changePassword(pwd, bCryptPasswordEncoder);
-
-        // 3. 변경된 엔티티 저장
-        memberRepository.save(member);
+                .orElseThrow(MemberNotFoundException::new);
+        try{
+            member.changePassword(pwd, bCryptPasswordEncoder);
+            memberRepository.save(member);
         }catch (Exception e){
-        log.error(e);
-        return false;
+            log.error(e);
+            throw new DatabaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
-
         return true;
     }
-
-
-
-
-
-
-
-
-
-
+    
     @Override
     public String findId(String name, String phone) {
         Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);

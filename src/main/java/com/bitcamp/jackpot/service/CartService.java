@@ -15,11 +15,11 @@ public interface CartService {
 
     void remove(Integer cartId);
 
-    //     CartDTO findOne(Integer CartId);
     List<CartDTO> findAll();
 
-    default Cart dtoToEntity(CartDTO cartDTO) {
-        Member member = Member.builder().memberId(cartDTO.getMemberId()).build();
+    public boolean updateCartQuantity(Integer cartId, int quantity);
+
+    default Cart dtoToEntity(CartDTO cartDTO, Member member) {
         Shop shop = Shop.builder().shopId(cartDTO.getShopId()).build();
         return Cart.builder()
                 .cartId(cartDTO.getCartId())
@@ -31,10 +31,10 @@ public interface CartService {
     default CartDTO entityToDto(Cart cart) {
         return CartDTO.builder()
                 .cartId(cart.getCartId())
-                .memberId(cart.getMember() != null ? cart.getMember().getMemberId() : null)  // memberId 처리
-                .shopId(cart.getShop() != null ? cart.getShop().getShopId() : null)  // shopId 처리
-                .shopName(cart.getShop() != null ? cart.getShop().getName() : null)  // shopName 처리
-                .shopPrice(cart.getShop() != null ? cart.getShop().getPrice() : null) // shopPrice 처리
+                .memberId(cart.getMember() != null ? cart.getMember().getMemberId() : null)
+                .shopId(cart.getShop() != null ? cart.getShop().getShopId() : null)
+                .shopName(cart.getShop() != null ? cart.getShop().getName() : null)
+                .shopPrice(cart.getShop() != null ? cart.getShop().getPrice() : null)
                 .build();
     }
 

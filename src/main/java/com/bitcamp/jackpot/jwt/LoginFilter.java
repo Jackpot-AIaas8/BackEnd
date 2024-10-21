@@ -1,11 +1,9 @@
 package com.bitcamp.jackpot.jwt;
 
 import com.bitcamp.jackpot.util.RedisUtil;
-import com.bitcamp.jackpot.domain.RefreshEntity;
 import com.bitcamp.jackpot.dto.SignInDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -69,10 +67,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
         //refresh 토큰 저장
-        addRefreshEntity(username, refresh, 86400000L);
+
+        jwtUtil.addRefreshDTO(username, refresh, 86400000L,redisUtil);
         //응답 설정
 
-        response.addCookie(createCookie("refresh", refresh));
+        response.addCookie(jwtUtil.createCookie("refresh", refresh));
 
         try {
             // JSON 응답을 작성할 때 ObjectMapper 사용
@@ -101,26 +100,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUsername(username);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
-
-        // Redis에 저장 (키는 username, 값은 refreshEntity 객체, 만료 시간은 밀리초 단위로 설정)
-        redisUtil.set(username, refreshEntity, expiredMs.intValue() / (1000 * 60));  // 밀리초를 분 단위로 변환
-    }
-
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-//        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true); // 클라에서 접근을막아 XSS 방지
-        return cookie;
-    }
 }

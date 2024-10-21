@@ -76,24 +76,51 @@ public class ShopServiceImpl implements ShopService {
         return modelMapper.map(shop, ShopDTO.class);
     }
 
+//    @Override
+//    public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
+//        Pageable pageable = pageRequestDTO.getPageable("shopId");
+//        Page<Shop> result = shopRepository.findAll(pageable);
+//        List<ShopDTO> shopDTOList = result.getContent().stream()
+//                .map(shop -> modelMapper.map(shop, ShopDTO.class))
+//                .collect(Collectors.toList());
+//        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
+//    }
+
     @Override
     public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
+
         Pageable pageable = pageRequestDTO.getPageable("shopId");
+
         Page<Shop> result = shopRepository.findAll(pageable);
+
+
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
+
+
+        int totalElements = (int) result.getTotalElements(); // 전체 요소 수
+        int totalPages = result.getTotalPages(); // 전체 페이지 수
+
+        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, totalPages);
     }
+
 
     @Override
     public PageResponseDTO<ShopDTO> search(String name, PageRequestDTO pageRequestDTO) {
+//        log.info(name);
+//        log.info(pageRequestDTO.toString());
+
         Pageable pageable = pageRequestDTO.getPageable("shopId");
         Page<Shop> result = shopRepository.findByShopName(name, pageable);
+
+//        log.info(pageable);
+//        log.info(result);
+
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-
+//        log.info(shopDTOList);
         return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
     }
 

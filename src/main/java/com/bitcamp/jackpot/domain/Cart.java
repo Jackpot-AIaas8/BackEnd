@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart extends BaseEntity {
@@ -14,11 +15,13 @@ public class Cart extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
 
-    @ManyToOne
-    @JoinColumn(name="shopId", referencedColumnName = "shopId")
-    Shop shop;
+    private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name="memberId", referencedColumnName = "memberId")
+    @JoinColumn(name="shop_id")
+    Shop shop;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="member_id")
     Member member;
 }
