@@ -20,6 +20,9 @@ public class Fund extends  BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fundId;
 
+    @Column(name = "orderId", nullable = false)
+    private String orderId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dogId", referencedColumnName = "dogId")
     private Dog dog;

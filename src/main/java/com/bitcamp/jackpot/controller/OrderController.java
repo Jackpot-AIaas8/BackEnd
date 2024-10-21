@@ -1,6 +1,7 @@
 package com.bitcamp.jackpot.controller;
 
 import com.bitcamp.jackpot.dto.OrdersDTO;
+import com.bitcamp.jackpot.dto.OrdersDetailDTO;
 import com.bitcamp.jackpot.service.OrdersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,12 +38,13 @@ public class OrderController {
     }
 
     @GetMapping("/findOne")
-    public OrdersDTO findOne(@RequestParam Integer orderId) {
-        log.info(orderId);
-        OrdersDTO ordersDTO = ordersService.findOne(orderId);
-//        log.info(orderDTO);
-        return ordersDTO;
+    public List<OrdersDetailDTO> findOne(@RequestParam Integer orderId) {
+        return ordersService.findOne(orderId);
     }
 
+    @PostMapping("/cancel")
+    public int cancel(@RequestParam Integer orderId) {
+        return ordersService.cancel(orderId);
+    }
 
 }

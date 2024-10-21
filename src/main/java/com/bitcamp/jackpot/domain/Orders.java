@@ -4,13 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor public class Orders extends BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+public class Orders extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -34,5 +41,7 @@ import lombok.*;
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime regDate;
 }

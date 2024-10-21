@@ -11,11 +11,17 @@ import com.bitcamp.jackpot.dto.PageResponseDTO;
 
 public interface BiddingService {
 
+    int findHighestBidPrice();
+
     void register(BiddingDTO biddingDTO);
 
-    //void remove(int auctionId);
+    void remove(int auctionId, int memberID);
 
     BiddingDTO findBeforeBidding(int biddingId);
+
+    boolean isAuctionEnded(int auctionId);
+
+    BiddingDTO findLastBidder();
 
     default Bidding dtoToEntity(BiddingDTO dto, Auction auction, Member member) {
         return Bidding.builder()
@@ -32,9 +38,10 @@ public interface BiddingService {
                 .biddingId(bidding.getBiddingId())
                 .bidTime(bidding.getBid_time())
                 .bidPrice(bidding.getBid_price())
-                .memberId(bidding.getMember() != null ? bidding.getMember().getMemberId() : null)
+                .memberID(bidding.getMember() != null ? bidding.getMember().getMemberId() : null)
                 .memberName(bidding.getMember() != null ? bidding.getMember().getName() : null)
                 .auctionId(bidding.getAuction() != null ? bidding.getAuction().getAuctionId() : null)
+                .auctionStatus(bidding.getAuction() != null ? bidding.getAuction().getAuctionStatus() : null)
                 .build();
     }
 }

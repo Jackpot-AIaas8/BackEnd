@@ -32,6 +32,10 @@ public class DogServiceImpl implements DogService {
     private final FundRepository fundRepository;
     private final ModelMapper modelMapper;
 
+//    private final String thumbnailOpt = "?type=u&w=333&h=139";
+//    private final String mainImageOpt = "?type=f&w=630&h=450";
+//    private final String detailImageOpt = "?type=f&w=225&h=150";
+
     private Boolean isSignInUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getClass() == UsernamePasswordAuthenticationToken.class;
@@ -230,6 +234,7 @@ public class DogServiceImpl implements DogService {
 
         Fund fund = Fund.builder()
                 .dog(oDog.orElseThrow())
+                .orderId(fundDTO.getOrderId())
                 .member(oMember.orElseThrow())
                 .collection(fundDTO.getCollection())
                 .build();

@@ -4,6 +4,7 @@ import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.domain.Orders;
 import com.bitcamp.jackpot.domain.Shop;
 import com.bitcamp.jackpot.dto.OrdersDTO;
+import com.bitcamp.jackpot.dto.OrdersDetailDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +15,13 @@ public interface OrdersService {
 
     void edit(OrdersDTO ordersDTO);
 
-    OrdersDTO findOne(Integer id);
+    List<OrdersDetailDTO> findOne(int orderId);
 
     OrdersDTO findOneByOrderId(Integer memberId);
 
     List<OrdersDTO> findAll();
+
+    int cancel(int orderId);
 
     // DTO -> Entity 변환 메서드 (orderId는 String으로, id는 DB에서 자동 생성)
     default Orders dtoToEntity(OrdersDTO ordersDTO) {

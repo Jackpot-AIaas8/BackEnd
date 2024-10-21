@@ -45,7 +45,11 @@ public class ObjectStorageServiceImpl implements ObjectStorageService{
                     .withCannedAcl(CannedAccessControlList.PublicRead);
 
             s3.putObject(objectRequest);
+            //이건 그냥 objectStorage url
             return s3.getUrl(bucketName, directoryPath + fileName).toString();
+
+            //이건 imageOptimizer 형식(imgOpt프로젝트 주소 뒤에 storage의 디렉토리), 실제 리턴할 때는 DTO에서 opt형식 붙여줘야 함.
+            //return "https://we7dnye15245.edge.naverncp.com/mLmykgysED/" + directoryPath + fileName;
         }catch ( Exception e ) {
             throw new RuntimeException("파일 업로드 오류",e);
         }

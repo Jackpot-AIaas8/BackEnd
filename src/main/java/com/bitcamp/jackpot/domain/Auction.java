@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = {"shop", "member"})
@@ -45,8 +44,24 @@ public class Auction extends BaseEntity {
     @OneToMany(mappedBy = "auction", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<Bidding> bids;
-
+    
     public void setAuctionStatus(int auction_status) {
         this.auctionStatus = auction_status;
+    }
+
+    public void setEnd_time(LocalDateTime endTime) {
+        this.end_time = endTime;
+    }
+
+    public void setEnd_Price(int endPrice) {
+        this.end_price = endPrice;
+    }
+
+    public void setEnd_Time(LocalDateTime now) {
+        this.end_time = now;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
