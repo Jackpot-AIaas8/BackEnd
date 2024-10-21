@@ -113,9 +113,8 @@ public class WidgetServiceImpl implements WidgetService {
             int memberTotalAmount = memberFunds.stream().mapToInt(Fund::getCollection).sum() +
                     memberOrders.stream().mapToInt(Orders::getTotalPrice).sum();
             if (memberTotalAmount >= 50000){
-                MemberDTO memberDTO = modelMapper.map(member, MemberDTO.class);
-                memberDTO.setGrade(2);
-                memberRepository.save(modelMapper.map(memberDTO, Member.class));
+                member.updateMemberGrade(2);
+                memberRepository.save(member);
             }
         }
         return ResponseEntity.status(code).body(jsonObject);
