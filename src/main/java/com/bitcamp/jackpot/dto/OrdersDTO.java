@@ -23,4 +23,6 @@ public class OrdersDTO {
     private int totalPrice;
     private int memberId;              // 회원 ID 추가
     private int shopId;
+    private String shopName;
+    private int shopPrice;
 }
