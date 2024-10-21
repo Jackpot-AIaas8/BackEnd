@@ -77,4 +77,8 @@ public class Member extends BaseEntity {
         this.pwd = pwd;
         this.address = address;
     }
+
+    public void updateMemberGrade(int grade) {
+        this.grade = grade;
+    }
 }
