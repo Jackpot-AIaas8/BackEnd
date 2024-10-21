@@ -85,6 +85,4 @@ public class BiddingServiceImpl implements BiddingService {
     public BiddingDTO findBeforeBidding(int biddingId) {
         return null;
     }
-
-
 }

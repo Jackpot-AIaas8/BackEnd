@@ -20,6 +20,5 @@ public class BiddingDTO {
     private int memberID;
     private String memberName;
     private int auctionId;
-
     private int auctionStatus;
 }

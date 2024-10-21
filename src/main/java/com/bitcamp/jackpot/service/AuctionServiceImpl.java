@@ -64,7 +64,7 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void edit(int auctionId, int auctionStatus) {
+    public AuctionDTO edit(int auctionId, int auctionStatus) {
         CustomUserDetails userDetails = getUserDetails();
         Member member = memberRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
@@ -72,6 +72,7 @@ public class AuctionServiceImpl implements AuctionService {
                 .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
         auction.setAuctionStatus(auctionStatus);
         auctionRepository.save(auction);
+        return entityToDto(auction);
     }
 
     @Override
