@@ -8,7 +8,6 @@ import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.repository.HeartRepository;
-import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -74,10 +73,6 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
-
-
-
     @Override
     public void remove(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
@@ -110,6 +105,7 @@ public class MemberServiceImpl implements MemberService {
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
+
     @Override
     public Map<String, Boolean> checkNickName(String nickName) {
         Map<String, Boolean> response = new HashMap<>();
@@ -167,17 +163,7 @@ public class MemberServiceImpl implements MemberService {
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
+    
     @Override
     public String findId(String name, String phone) {
         Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
