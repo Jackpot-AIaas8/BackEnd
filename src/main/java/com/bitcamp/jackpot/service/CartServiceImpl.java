@@ -76,8 +76,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartDTO> findAll() {
         String email = getUserEmailFromToken();
-        List<Cart> carts = cartRepository.findByMemberEmail(email);
-        return entityListToDtoList(carts);
+        List<Cart> carts = cartRepository.findAllByMemberEmail(email);
+
+        return carts.stream().map(cart -> CartDTO.builder()
+                .cartId(cart.getCartId())
+                .shopId(cart.getShop().getShopId())
+                .shopName(cart.getShop().getName())
+                .shopPrice(cart.getShop().getPrice())
+                .quantity(cart.getQuantity())
+                .memberId(cart.getMember().getMemberId())
+                .build()).collect(Collectors.toList());
     }
 
     public boolean updateCartQuantity(Integer cartId, int quantity) {
