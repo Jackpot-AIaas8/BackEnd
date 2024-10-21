@@ -186,6 +186,8 @@ public class DogServiceImpl implements DogService {
                         .isHeart((isHeart)? 1:0)
                         .regDate(dog.getRegDate())
                         .thumbNail(dog.getMainImage())
+                        .title(dog.getTitle())
+                        .totalFund(fundRepository.findSumOfCollectionByDogId(dog.getDogId()).orElseThrow())
                         .build()
         ));
         return response;

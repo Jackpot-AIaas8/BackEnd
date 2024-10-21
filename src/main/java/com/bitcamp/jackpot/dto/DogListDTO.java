@@ -25,4 +25,8 @@ public class DogListDTO {
     private LocalDateTime regDate;
 
     private String thumbNail;
+
+    private String title;
+
+    private int totalFund;
 }

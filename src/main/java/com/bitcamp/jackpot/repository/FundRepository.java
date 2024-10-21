@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FundRepository extends JpaRepository<Fund, Integer> {
     @Query("SELECT f FROM Fund f WHERE f.dog.dogId = :dogId")
@@ -20,6 +21,8 @@ public interface FundRepository extends JpaRepository<Fund, Integer> {
      @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
      List<Fund> findAllByMemberId(int memberId);
 
+     @Query("SELECT SUM(F.collection) from Fund F WHERE F.dog.dogId = :dogId")
+     Optional<Integer> findSumOfCollectionByDogId(int dogId);
 //    @Query("SELECT f FROM Fund f WHERE f.member.memberId = :memberId")
 //    List<Fund> findFundByMemberId(@Param("memberId") int memberId, Pageable pageable);
 

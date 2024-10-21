@@ -8,7 +8,6 @@ import com.bitcamp.jackpot.config.error.exception.MemberNotFoundException;
 import com.bitcamp.jackpot.domain.Member;
 import com.bitcamp.jackpot.dto.MemberDTO;
 import com.bitcamp.jackpot.repository.HeartRepository;
-import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -18,8 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +35,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final HeartRepository heartRepository;
     private final ModelMapper modelMapper;
-    private final RedisUtil redisUtil;
 
     @Override
     public void signUp(MemberDTO memberDTO) {
@@ -77,10 +73,6 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
-
-
-
     @Override
     public void remove(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
@@ -113,10 +105,11 @@ public class MemberServiceImpl implements MemberService {
 
         return members.map(member -> modelMapper.map(member, MemberDTO.class));
     }
+
     @Override
     public Map<String, Boolean> checkNickName(String nickName) {
         Map<String, Boolean> response = new HashMap<>();
-        if (memberRepository.existsByEmail(nickName)) {
+        if (memberRepository.existsByNickName(nickName)) {
             response.put("isDuplicate", true);
             throw new DuplicateResourceException(true);
         } else {
@@ -155,13 +148,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    public ResponseEntity<Map<String, Boolean>> buildDuplicateCheckResponse(boolean isDuplicate) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isDuplicate", isDuplicate);
-        HttpStatus status = isDuplicate ? HttpStatus.CONFLICT : HttpStatus.OK;
-        log.info("중복 체크 응답 생성 - 중복 여부: {}, 상태 코드: {}", isDuplicate, status);
-        return ResponseEntity.status(status).body(response);
-    }
 
     @Override
     public boolean resetPwd(String email, String pwd) {
@@ -177,17 +163,7 @@ public class MemberServiceImpl implements MemberService {
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
+    
     @Override
     public String findId(String name, String phone) {
         Optional<Member> result = memberRepository.findByNameAndPhone(name, phone);
