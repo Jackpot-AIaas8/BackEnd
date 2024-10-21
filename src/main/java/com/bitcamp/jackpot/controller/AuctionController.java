@@ -33,7 +33,8 @@ public class AuctionController {
     @PostMapping("/edit")
     public void editAuctionStatus(@RequestBody AuctionStatusDTO auctionStatusDTO) {
         log.info(auctionStatusDTO);
-        auctionService.edit(auctionStatusDTO.getAuctionId(), auctionStatusDTO.getAuctionStatus());
+        AuctionDTO auctionDTO = auctionService.edit(auctionStatusDTO.getAuctionId(), auctionStatusDTO.getAuctionStatus());
+        sendToNodeWebSocket(auctionDTO, "/send-auction");
     }
 
     @GetMapping("/findOne/{auctionId}")

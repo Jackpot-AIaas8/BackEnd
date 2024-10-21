@@ -71,7 +71,7 @@ public class MemberController {
     @GetMapping("/checkPwd")
     public ResponseEntity<Map<String, Boolean>> checkPwd(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String pwd) {
         String email = customUserDetails.getUsername();
-        Map<String, Boolean> response = memberService.checkPwd(email,pwd);
+        Map<String, Boolean> response = memberService.checkPwd(email, pwd);
         return ResponseEntity.ok(response);
     }
 
@@ -92,9 +92,10 @@ public class MemberController {
 
     @GetMapping("/findId")
     public ResponseEntity<String> findId(@RequestParam String name, String phone) {
-            String email = memberService.findId(name, phone);
-            return ResponseEntity.ok(email);
+        String email = memberService.findId(name, phone);
+        return ResponseEntity.ok(email);
     }
+
 
 @PatchMapping("/resetPwd")
 public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
@@ -107,12 +108,10 @@ public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
     public ResponseEntity<Page<MemberDTO>> searchMembers(
             @RequestParam("name") String name,
             Pageable pageable) {
-            Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
-            return new ResponseEntity<>(members, HttpStatus.OK);
+        Page<MemberDTO> members = memberService.searchMembersByName(name, pageable);
+        return new ResponseEntity<>(members, HttpStatus.OK);
 
     }
-
-
 
 
 }
