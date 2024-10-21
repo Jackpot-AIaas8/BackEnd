@@ -18,7 +18,6 @@ public class ReissueController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     return reissueService.reissue(request,response);
     }
 }

@@ -91,7 +91,7 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
     }
 
-    
+
     @GetMapping("/findId")
     public ResponseEntity<String> findId(@RequestParam String name, String phone) {
             String email = memberService.findId(name, phone);
