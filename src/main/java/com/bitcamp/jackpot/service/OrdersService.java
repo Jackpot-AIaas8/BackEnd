@@ -13,7 +13,7 @@ public interface OrdersService {
 
     void register(OrdersDTO ordersDTO);
 
-    void edit(OrdersDTO ordersDTO);
+    void updateDeliveryState(int deliveryStatus, String orderId, int shopId);
 
     List<OrdersDetailDTO> findOne(int orderId);
 

@@ -66,11 +66,14 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void edit(OrdersDTO ordersDTO) {
-        log.info("OrdersDTO for Edit: {}", ordersDTO);
-
-        Orders orders = dtoToEntity(ordersDTO);
-        ordersRepository.save(orders);
+    public void updateDeliveryState(int deliveryStatus, String orderId, int shopId) {
+        Orders order = ordersRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다: " + orderId));
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다: " + shopId));
+        order.setShop(shop);
+        order.setDelivery_state(deliveryStatus);
+        ordersRepository.save(order);
     }
 
     @Override
@@ -125,14 +128,20 @@ public class OrdersServiceImpl implements OrdersService {
                         .orderId(order.getOrderId())
                         .quantity(order.getQuantity())
                         .deliveryState(order.getDelivery_state())
+                        .phone(order.getMember().getPhone())
+                        .address(order.getMember().getAddress())
                         .totalPrice(order.getTotalPrice())
                         .shopId(order.getShop().getShopId())
+                        .shopPrice(order.getShop().getPrice())
+                        .shopName(order.getShop().getName())
+                        .name(order.getMember().getName())
                         .memberId(order.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());
 
 //        log.info("Orders found2: {}", ordersDTOList);
 
+        log.info(ordersDTOList);
         return ordersDTOList;
     }
 
