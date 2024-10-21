@@ -94,7 +94,7 @@ public class MailServiceImpl implements MailService {
 
     private void saveVerificationCodeToRedis(String email, String code, int expirationTime) {
         redisUtil.set(email, code, expirationTime);
-        log.info("Redis에 인증 코드 저장 성공! 대상: {}, 만료 시간: {}초", email, expirationTime);
+        log.info("Redis에 인증 코드 저장 성공! 대상: {}, 만료 시간: {}분", email, expirationTime);
     }
 
     private void validateEmail(String email) {

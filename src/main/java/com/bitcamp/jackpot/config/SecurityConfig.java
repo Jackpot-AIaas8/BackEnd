@@ -1,5 +1,6 @@
 package com.bitcamp.jackpot.config;
 
+import com.bitcamp.jackpot.service.LogoutServiceImp;
 import com.bitcamp.jackpot.util.RedisUtil;
 import com.bitcamp.jackpot.jwt.*;
 import jakarta.servlet.http.HttpServletRequest;
