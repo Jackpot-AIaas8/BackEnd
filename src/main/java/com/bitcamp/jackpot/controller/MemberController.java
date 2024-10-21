@@ -91,31 +91,18 @@ public class MemberController {
         return ResponseEntity.ok(memberDTO);  // 성공 시, OK 상태와 함께 MemberDTO 반환
     }
 
-
-
+    
     @GetMapping("/findId")
     public ResponseEntity<String> findId(@RequestParam String name, String phone) {
             String email = memberService.findId(name, phone);
             return ResponseEntity.ok(email);
     }
 
-//    @PatchMapping("/resetPwd")
-//    public ResponseEntity<String> resetPwd(@RequestBody Map<String, String> request) {
-//        String email = request.get("email");
-//        String pwd = request.get("pwd");
-//
-//        if (memberService.resetPwd(email, pwd)) {
-//            return ResponseEntity.ok("비밀번호 변경 성공");
-//        }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
-//    }
-
 @PatchMapping("/resetPwd")
 public ResponseEntity<String> resetPwd(@RequestBody SignInDTO signInDTO) {
     memberService.resetPwd(signInDTO.getEmail(), signInDTO.getPwd());
         return ResponseEntity.ok("비밀번호 변경 성공");
     }
-
 
 
     @GetMapping("/search")
