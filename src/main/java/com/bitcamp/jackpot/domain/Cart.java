@@ -13,7 +13,7 @@ public class Cart extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cartId;
+    private int cartId;
 
     private Integer quantity;
 
