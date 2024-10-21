@@ -1,4 +1,4 @@
-package com.bitcamp.jackpot.jwt;
+package com.bitcamp.jackpot.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

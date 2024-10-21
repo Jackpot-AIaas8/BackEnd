@@ -3,7 +3,7 @@ package com.bitcamp.jackpot.controller;
 import com.bitcamp.jackpot.dto.SignInDTO;
 import com.bitcamp.jackpot.jwt.CustomUserDetails;
 import com.bitcamp.jackpot.dto.MemberDTO;
-import com.bitcamp.jackpot.jwt.LogoutService;
+import com.bitcamp.jackpot.service.LogoutService;
 import com.bitcamp.jackpot.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,6 @@ public class MemberController {
         //회원가입처리
         memberService.signUp(memberDTO);
 
-        log.info("회원가입 성공 - 이메일: {}", memberDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
@@ -45,7 +44,6 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
         MemberDTO memberDTO = memberService.findOne(email);
-        log.info(memberDTO.toString());
         return ResponseEntity.ok(memberDTO);
     }
 
