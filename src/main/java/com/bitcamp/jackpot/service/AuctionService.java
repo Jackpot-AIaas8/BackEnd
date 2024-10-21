@@ -11,7 +11,7 @@ public interface AuctionService {
 
     AuctionDTO register(AuctionDTO auctionDTO, int shopId);
 
-    void edit(int auctionId, int auctionStatus);
+    AuctionDTO edit(int auctionId, int auctionStatus);
 
     void remove(Integer auctionId);
 
