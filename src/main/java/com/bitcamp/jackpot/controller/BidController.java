@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/bid")
 public class BidController {
     private final BiddingService biddingService;
-    private final String nodeWebSocketUrl = "http://localhost:3001";
+    private final String nodeWebSocketUrl = "http://10.0.7.6:3001";
 
     private void sendToNodeWebSocket(BiddingDTO biddingDTO, String endpoint) {
         String fullEndpoint = nodeWebSocketUrl + endpoint;
