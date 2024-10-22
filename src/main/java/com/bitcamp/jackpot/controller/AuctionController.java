@@ -16,7 +16,7 @@ import java.net.http.HttpRequest;
 @RequestMapping("/auction")
 public class AuctionController {
     private final AuctionService auctionService;
-    private final String nodeWebSocketUrl = "http://localhost:3001";
+    private final String nodeWebSocketUrl = "http://10.0.7.6:3001";
 
     private void sendToNodeWebSocket(AuctionDTO auctionDTO, String endpoint) {
         String fullEndpoint = nodeWebSocketUrl + endpoint;
