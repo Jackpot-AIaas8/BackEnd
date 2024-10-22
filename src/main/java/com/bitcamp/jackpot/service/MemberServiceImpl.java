@@ -53,13 +53,20 @@ public class MemberServiceImpl implements MemberService {
             Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
-            member.updateMemberInfo(
-                    memberDTO.getName(),
-                    memberDTO.getPhone(),
-                    memberDTO.getPwd(),
-                    memberDTO.getAddress()
-            );
-            memberRepository.save(member);
+//            member.updateMemberInfo(
+//                    memberDTO.getName(),
+//                    memberDTO.getPhone(),
+//                    memberDTO.getPwd(),
+//                    memberDTO.getAddress()
+//            );
+
+            memberRepository.save(
+                    Member.builder()
+                            .name(memberDTO.getName())
+                            .phone(memberDTO.getPhone())
+                            .pwd(memberDTO.getPwd())
+                            .address(memberDTO.getAddress())
+                            .build());
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -139,16 +146,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-
     @Override
     public boolean resetPwd(String email, String pwd) {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
-        try{
+        try {
             member.changePassword(pwd, bCryptPasswordEncoder);
             memberRepository.save(member);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DatabaseException(ErrorCode.INVALID_INPUT_VALUE);
         }
         return true;
@@ -161,7 +167,6 @@ public class MemberServiceImpl implements MemberService {
         return result.map(Member::getEmail)
                 .orElseThrow(MemberNotFoundException::new);
     }
-
 
 
     public void adminRemove(int memberId) {
@@ -187,7 +192,6 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberNotFoundException("이름으로 회원을 검색하는 중 오류가 발생했습니다.");
         }
     }
-
 
 
 }
