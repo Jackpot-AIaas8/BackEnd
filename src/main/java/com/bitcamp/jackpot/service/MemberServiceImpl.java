@@ -14,6 +14,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,20 +55,15 @@ public class MemberServiceImpl implements MemberService {
             Member member = memberRepository.findByEmail(memberDTO.getEmail())
                     .orElseThrow(MemberNotFoundException::new);
 
-//            member.updateMemberInfo(
-//                    memberDTO.getName(),
-//                    memberDTO.getPhone(),
-//                    memberDTO.getPwd(),
-//                    memberDTO.getAddress()
-//            );
+            member.updateMemberInfo(
+                    memberDTO.getName(),
+                    memberDTO.getPhone(),
+                    memberDTO.getPwd(),
+                    memberDTO.getAddress()
+            );
 
-            memberRepository.save(
-                    Member.builder()
-                            .name(memberDTO.getName())
-                            .phone(memberDTO.getPhone())
-                            .pwd(memberDTO.getPwd())
-                            .address(memberDTO.getAddress())
-                            .build());
+            member.encodePassword(memberDTO.getPwd(), bCryptPasswordEncoder);
+            memberRepository.save(member);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -193,5 +190,21 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        if (memberRepository.findByEmail("jackpot@admin.com").isEmpty()){
+            Member member = Member.builder()
+                    .name("관리자")
+                    .email("jackpot@admin.com")
+                    .pwd("jackpot!ai8")
+                    .phone("00000000000")
+                    .nickName("관리자")
+                    .address("관리자")
+                    .grade(0)
+                    .build();
+            member.encodePassword(member.getPwd(), bCryptPasswordEncoder);
+            memberRepository.save(member);
+        }
+    }
 
 }
