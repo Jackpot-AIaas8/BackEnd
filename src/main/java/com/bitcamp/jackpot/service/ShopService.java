@@ -21,6 +21,8 @@ public interface ShopService {
 
     PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO);
 
+    PageResponseDTO<ShopDTO> findListAdmin(PageRequestDTO pageRequestDTO);
+
     PageResponseDTO<ShopDTO> search(String name, PageRequestDTO pageRequestDTO);
 
     PageResponseDTO<ShopDTO> findByCategory(int category, PageRequestDTO pageRequestDTO);

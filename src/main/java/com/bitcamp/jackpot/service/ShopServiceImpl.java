@@ -76,15 +76,15 @@ public class ShopServiceImpl implements ShopService {
         return modelMapper.map(shop, ShopDTO.class);
     }
 
-//    @Override
-//    public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
-//        Pageable pageable = pageRequestDTO.getPageable("shopId");
-//        Page<Shop> result = shopRepository.findAll(pageable);
-//        List<ShopDTO> shopDTOList = result.getContent().stream()
-//                .map(shop -> modelMapper.map(shop, ShopDTO.class))
-//                .collect(Collectors.toList());
-//        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
-//    }
+    @Override
+    public PageResponseDTO<ShopDTO> findListAdmin(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable("shopId");
+        Page<Shop> result = shopRepository.findAll(pageable);
+        List<ShopDTO> shopDTOList = result.getContent().stream()
+                .map(shop -> modelMapper.map(shop, ShopDTO.class))
+                .collect(Collectors.toList());
+        return new PageResponseDTO<>(pageRequestDTO, shopDTOList, (int) result.getTotalElements());
+    }
 
     @Override
     public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
@@ -97,7 +97,6 @@ public class ShopServiceImpl implements ShopService {
         List<ShopDTO> shopDTOList = result.getContent().stream()
                 .map(shop -> modelMapper.map(shop, ShopDTO.class))
                 .collect(Collectors.toList());
-
 
         int totalElements = (int) result.getTotalElements(); // 전체 요소 수
         int totalPages = result.getTotalPages(); // 전체 페이지 수

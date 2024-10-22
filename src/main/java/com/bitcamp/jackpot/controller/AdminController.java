@@ -37,13 +37,23 @@ public class AdminController {
     public void shopRegister(@RequestParam("shopData") MultipartFile shopData, @RequestParam("files") List<MultipartFile> files) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ShopDTO shopDTO = objectMapper.readValue(shopData.getInputStream(), ShopDTO.class);
-        for (int i = 0; i< files.size(); ++i){
-            switch (i){
-                case 0 : shopDTO.setMainImage(objectStorageService.uploadFile("shop/",files.get(0))); break;
-                case 1 : shopDTO.setDetailImage1(objectStorageService.uploadFile("shop/",files.get(1))); break;
-                case 2 : shopDTO.setDetailImage2(objectStorageService.uploadFile("shop/",files.get(2))); break;
-                case 3 : shopDTO.setDetailImage3(objectStorageService.uploadFile("shop/",files.get(3))); break;
-                case 4 : shopDTO.setDetailImage4(objectStorageService.uploadFile("shop/",files.get(4))); break;
+        for (int i = 0; i < files.size(); ++i) {
+            switch (i) {
+                case 0:
+                    shopDTO.setMainImage(objectStorageService.uploadFile("shop/", files.get(0)));
+                    break;
+                case 1:
+                    shopDTO.setDetailImage1(objectStorageService.uploadFile("shop/", files.get(1)));
+                    break;
+                case 2:
+                    shopDTO.setDetailImage2(objectStorageService.uploadFile("shop/", files.get(2)));
+                    break;
+                case 3:
+                    shopDTO.setDetailImage3(objectStorageService.uploadFile("shop/", files.get(3)));
+                    break;
+                case 4:
+                    shopDTO.setDetailImage4(objectStorageService.uploadFile("shop/", files.get(4)));
+                    break;
             }
         }
         shopService.register(shopDTO);
@@ -68,7 +78,7 @@ public class AdminController {
 
     @GetMapping("/shop/findList")
     public PageResponseDTO<ShopDTO> findList(PageRequestDTO pageRequestDTO) {
-        return shopService.findList(pageRequestDTO);
+        return shopService.findListAdmin(pageRequestDTO);
     }
 
     @GetMapping("/shop/search/{searchText}")
@@ -89,13 +99,23 @@ public class AdminController {
         DogRegistDTO dogRegistDTO = objectMapper.readValue(dogData.getInputStream(), DogRegistDTO.class);
 
         DogDTO dogDTO = new DogDTO();
-        for (int i = 0; i< files.size(); ++i){
-            switch (i){
-                case 0 : dogDTO.setMainImage(objectStorageService.uploadFile("dog/",files.get(0))); break;
-                case 1 : dogDTO.setDetailImage1(objectStorageService.uploadFile("dog/",files.get(1))); break;
-                case 2 : dogDTO.setDetailImage2(objectStorageService.uploadFile("dog/",files.get(2))); break;
-                case 3 : dogDTO.setDetailImage3(objectStorageService.uploadFile("dog/",files.get(3))); break;
-                case 4 : dogDTO.setDetailImage4(objectStorageService.uploadFile("dog/",files.get(4))); break;
+        for (int i = 0; i < files.size(); ++i) {
+            switch (i) {
+                case 0:
+                    dogDTO.setMainImage(objectStorageService.uploadFile("dog/", files.get(0)));
+                    break;
+                case 1:
+                    dogDTO.setDetailImage1(objectStorageService.uploadFile("dog/", files.get(1)));
+                    break;
+                case 2:
+                    dogDTO.setDetailImage2(objectStorageService.uploadFile("dog/", files.get(2)));
+                    break;
+                case 3:
+                    dogDTO.setDetailImage3(objectStorageService.uploadFile("dog/", files.get(3)));
+                    break;
+                case 4:
+                    dogDTO.setDetailImage4(objectStorageService.uploadFile("dog/", files.get(4)));
+                    break;
             }
         }
         dogDTO.setName(dogRegistDTO.getName());
