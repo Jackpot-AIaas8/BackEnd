@@ -21,7 +21,9 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 @Configuration
@@ -56,7 +58,13 @@ public class SecurityConfig {
                                 //cicd로 기능구현
 
 //                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
-                                configuration.setAllowedOrigins(Collections.singletonList("http://101.79.11.109:80")); //프론트 로드밸런서
+                                List<String> frontUrls = new ArrayList<>();
+                                for (int i = 0; i < 256; i++){
+                                    String urls = "http://10.0.1."+ i+ ":80";
+                                    frontUrls.add(urls);
+                                }
+                                configuration.setAllowedOrigins(frontUrls);
+                                //configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.*:80")); //프론트 로드밸런서
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
