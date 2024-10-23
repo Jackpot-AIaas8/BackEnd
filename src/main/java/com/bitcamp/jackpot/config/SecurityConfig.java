@@ -22,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,7 +56,8 @@ public class SecurityConfig {
                             @Override
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
-                                configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //프론트 로드밸런서
+                                //configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //프론트
+                                configuration.setAllowedOrigins(Arrays.asList("http://223.130.158.97:80", "http://10.0.1.6:80", "http://10.0.5.6:8181","http://10.0.5.6:80"));
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
