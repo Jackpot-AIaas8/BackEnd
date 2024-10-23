@@ -56,7 +56,7 @@ public class SecurityConfig {
                                 //cicd로 기능구현
 
 //                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
-                                configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //실제 프론트서버
+                                configuration.setAllowedOrigins(Collections.singletonList("http://101.79.11.109:80")); //프론트 로드밸런서
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
