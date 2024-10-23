@@ -55,22 +55,12 @@ public class SecurityConfig {
                             @Override
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
-                                //cicd로 기능구현
-
-//                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));    //로컬서버
-                                List<String> frontUrls = new ArrayList<>();
-                                for (int i = 0; i < 256; i++){
-                                    String urls = "http://10.0.1."+ i+ ":80";
-                                    frontUrls.add(urls);
-                                }
-                                configuration.setAllowedOrigins(frontUrls);
-                                //configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.*:80")); //프론트 로드밸런서
+                                configuration.setAllowedOrigins(Collections.singletonList("http://10.0.1.6:80")); //프론트 로드밸런서
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
                                 configuration.setMaxAge(3600L);
                                 configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
                                 return configuration;
                             }
 
